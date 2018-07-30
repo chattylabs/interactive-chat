@@ -1,0 +1,3 @@
+[submodule "buildsystem"]
+	path = buildsystem
+	url = git@github.com:chattylabs/android-buildsystem.git
