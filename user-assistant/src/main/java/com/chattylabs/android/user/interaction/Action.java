@@ -1,10 +1,10 @@
-package com.chattylabs.android.user.assistant;
+package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
-public class Action implements Node, Identifier, Comparable<Action> {
+public class Action implements Node, Comparable<Action> {
     public final String id;
     public final String text1;
     public final String text2;

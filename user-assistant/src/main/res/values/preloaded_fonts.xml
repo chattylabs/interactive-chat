@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/permanent_marker</item>
+        <item>@font/source_sans_pro</item>
+        <item>@font/source_sans_pro_bold</item>
+        <item>@font/source_sans_pro_semibold</item>
+        <item>@font/source_sans_pro_extralight</item>
+        <item>@font/source_sans_pro_light</item>
+        <item>@font/source_sans_pro_semibold_italic</item>
+        <item>@font/rock_salt</item>
+    </array>
+</resources>
