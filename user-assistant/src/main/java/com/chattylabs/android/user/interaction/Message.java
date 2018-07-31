@@ -1,9 +1,9 @@
-package com.chattylabs.android.user.assistant;
+package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
-public class Message implements Node, Identifier {
+public class Message implements Node {
     public final String id;
     public final String text;
     public final int image;

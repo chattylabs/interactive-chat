@@ -1,4 +1,4 @@
-package com.chattylabs.android.user.assistant;
+package com.chattylabs.android.user.interaction;
 
 import java.util.ArrayList;
 
@@ -11,5 +11,10 @@ class ActionSet extends ArrayList<Action> implements Node {
             }
         }
         return get(0);
+    }
+
+    @Override
+    public String getId() {
+        return null;
     }
 }
