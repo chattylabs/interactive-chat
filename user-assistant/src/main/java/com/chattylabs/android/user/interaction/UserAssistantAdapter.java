@@ -87,23 +87,23 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         switch (viewType) {
             case LOADING:
-                v = inflater.inflate(R.layout.item_assistant_loading, viewGroup, false);
+                v = inflater.inflate(R.layout.item_user_assistant_loading, viewGroup, false);
                 viewHolder = new LoadingViewHolder(v);
                 break;
             case ACTIONS:
-                v = inflater.inflate(R.layout.item_assistant_actions, viewGroup, false);
+                v = inflater.inflate(R.layout.item_user_assistant_actions, viewGroup, false);
                 viewHolder = new ActionViewHolder(v);
                 break;
             case MESSAGE_OUT:
-                v = inflater.inflate(R.layout.item_assistant_action_selected, viewGroup, false);
+                v = inflater.inflate(R.layout.item_user_assistant_action_selected, viewGroup, false);
                 viewHolder = new MessageViewHolder(v);
                 break;
             case MESSAGE_IN_AS_FIRST:
-                v = inflater.inflate(R.layout.item_assistant_system_message_as_first, viewGroup, false);
+                v = inflater.inflate(R.layout.item_user_assistant_system_message_as_first, viewGroup, false);
                 viewHolder = new MessageViewHolder(v);
                 break;
             default:
-                v = inflater.inflate(R.layout.item_assistant_system_message, viewGroup, false);
+                v = inflater.inflate(R.layout.item_user_assistant_system_message, viewGroup, false);
                 viewHolder = new MessageViewHolder(v);
                 break;
         }
@@ -132,8 +132,8 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
         for (Action action : actionSet) {
             LayoutInflater inflater = LayoutInflater.from(viewHolder.actions.getContext());
             View button = inflater.inflate(action.image > 0
-                                                      ? R.layout.item_assistant_imagebutton
-                                                      : R.layout.item_assistant_button,
+                                                      ? R.layout.item_user_assistant_imagebutton
+                                                      : R.layout.item_user_assistant_button,
                                                       viewHolder.actions, false);
             if (action.image > 0) {
                 //noinspection ConstantConditions
@@ -163,13 +163,13 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void configureMessageViewHolder(MessageViewHolder viewHolder, int position) {
         Message message = (Message) items.get(position);
-        if (message.image > 0) {
+        if (message.imageId > 0) {
             viewHolder.text.setVisibility(View.GONE);
             viewHolder.image.setVisibility(View.VISIBLE);
             viewHolder.image.setTag(message.id);
-            viewHolder.image.setImageResource(message.image);
-            if (message.tintColor > 0) {
-                viewHolder.image.setImageTintList(ColorStateList.valueOf(message.tintColor));
+            viewHolder.image.setImageResource(message.imageId);
+            if (message.tintColorId > 0) {
+                viewHolder.image.setImageTintList(ColorStateList.valueOf(message.tintColorId));
             }
         } else {
             viewHolder.image.setVisibility(View.GONE);

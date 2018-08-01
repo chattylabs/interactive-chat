@@ -63,7 +63,7 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
             VerticalSpaceItemDecoration spaceItemDecoration = new VerticalSpaceItemDecoration(space);
             recyclerView.addItemDecoration(spaceItemDecoration);
         }
-        component = builder.component;
+        component = builder.voiceInteractionComponent;
         speechSynthesizer = component.getSpeechSynthesizer(recyclerView.getContext());
         speechRecognizer = component.getSpeechRecognizer(recyclerView.getContext());
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());

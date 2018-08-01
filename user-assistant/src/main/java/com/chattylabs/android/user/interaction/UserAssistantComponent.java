@@ -17,7 +17,7 @@ public interface UserAssistantComponent {
     }
 
     class Builder {
-        VoiceInteractionComponent component;
+        VoiceInteractionComponent voiceInteractionComponent;
         RecyclerView recyclerView;
 
         public Builder withRecyclerView(RecyclerView recyclerView) {
@@ -26,7 +26,7 @@ public interface UserAssistantComponent {
         }
 
         public Builder withVoiceInteraction(VoiceInteractionComponent component) {
-            this.component = component;
+            this.voiceInteractionComponent = component;
             return this;
         }
 

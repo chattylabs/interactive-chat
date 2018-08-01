@@ -2,12 +2,13 @@ package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 
 public class Message implements Node {
     public final String id;
     public final String text;
-    public final int image;
-    public final int tintColor;
+    public final int imageId;
+    public final int tintColorId;
     public final boolean aloud;
     public final boolean showAsFirst;
     public final boolean showAsAnswer;
@@ -17,8 +18,8 @@ public class Message implements Node {
     public static class Builder {
         private String id;
         private String text;
-        private int image;
-        private int tintColor;
+        private int imageId;
+        private int tintColorId;
         private boolean aloud;
         private boolean showAsFirst;
         private boolean showAsAnswer;
@@ -37,13 +38,13 @@ public class Message implements Node {
             return this;
         }
 
-        public Builder setImage(@DrawableRes int image) {
-            this.image = image;
+        public Builder setImage(@DrawableRes int resId) {
+            this.imageId = resId;
             return this;
         }
 
-        public Builder setTintColor(@ColorRes int tintColor) {
-            this.tintColor = tintColor;
+        public Builder setTintColor(@ColorRes int resId) {
+            this.tintColorId = resId;
             return this;
         }
 
@@ -73,8 +74,9 @@ public class Message implements Node {
         }
 
         public Message build() {
-            if (!(text != null && text.length() > 0) && !(image > 0)) {
-                throw new NullPointerException("At least Message properties \"text\" or \"image\" must be set");
+            if (!(text != null && text.length() > 0) && imageId <= 0) {
+                throw new NullPointerException("At least Message properties \"text\" " +
+                        "or \"image\" must be set");
             }
             return new Message(this);
         }
@@ -83,8 +85,8 @@ public class Message implements Node {
     private Message(Builder builder) {
         this.id = builder.id;
         this.text = builder.text;
-        this.image = builder.image;
-        this.tintColor = builder.tintColor;
+        this.imageId = builder.imageId;
+        this.tintColorId = builder.tintColorId;
         this.aloud = builder.aloud;
         this.showAsFirst = builder.showAsFirst;
         this.showAsAnswer = builder.showAsAnswer;
