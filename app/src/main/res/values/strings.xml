@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Demo: User Assistant</string>
+    <string name="demo_welcome"><![CDATA[&#x1f44b; Hi there, this is the User Assistant Demo!]]></string>
+    <string name="demo_ask_for_quiet_place"><![CDATA[I\'m going to talk aloud, <b>are you in a quiet place?</b>]]></string>
+    <string name="demo_yes">Yes</string>
+    <string name="demo_no">No</string>
+    <string name="demo_comeback_later">OK, no problem. Come back at anytime. See you later!</string>
+    <string name="demo_select_icon">What would say is your current sentiment?</string>
+    <string name="demo_done">Did you like chatting with me?</string>
+    <string name="demo_thumbs_up"><![CDATA[&#x1f44d;]]></string>
+    <string name="demo_thumbs_down"><![CDATA[&#x1f44e;]]></string>
 </resources>

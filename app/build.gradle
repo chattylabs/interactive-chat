@@ -46,6 +46,7 @@ dependencies {
     // SDK
     implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
     implementation "com.chattylabs.sdk.android:common:+"
+    implementation 'com.chattylabs.sdk.android:voice-interaction:+'
     implementation project(':user-assistant')
 
     // Test dependencies

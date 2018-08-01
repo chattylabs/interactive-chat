@@ -31,8 +31,8 @@ dependencies {
     api 'com.google.dagger:dagger:2.15'
     kapt 'com.google.dagger:dagger-compiler:2.15'
     // Dependencies
+    api 'com.chattylabs.sdk.android:voice-interaction:+'
     implementation 'com.chattylabs.sdk.android:common:+'
-    implementation 'com.chattylabs.sdk.android:voice-interaction:+'
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
     // Testing
     testImplementation 'junit:junit:4.12'
@@ -46,5 +46,5 @@ publish {
     artifactId = project.name
     publishVersion = project.version
     desc = 'Android Chat Assistant Component'
-    website = 'https://github.com/chattylabs/android-chat-assistant'
+    website = 'https://github.com/chattylabs/android-user-assistant'
 }
