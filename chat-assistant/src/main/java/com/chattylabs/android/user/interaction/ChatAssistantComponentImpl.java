@@ -25,7 +25,7 @@ import java.util.TimerTask;
 
 import static com.chattylabs.sdk.android.voice.VoiceInteractionComponent.*;
 
-final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistantComponent {
+final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssistantComponent {
 
     private static final long DEFAULT_MESSAGE_DELAY = 500L;
 
@@ -33,14 +33,14 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     static final String ASSISTANT_LAST_SAVED_NODE = "ASSISTANT_LAST_SAVED_NODE";
     public static final int LOADING_DISPLAY_DELAY = 1000;
 
-    private final Pools.Pool<ArrayList<Node>> mListPool = new Pools.SimplePool<>(10);
-    private final SimpleArrayMap<Node, ArrayList<Node>> graph = new SimpleArrayMap<>();
+    private final Pools.Pool<ArrayList<ChatNode>> mListPool = new Pools.SimplePool<>(10);
+    private final SimpleArrayMap<ChatNode, ArrayList<ChatNode>> graph = new SimpleArrayMap<>();
     private final LinearLayoutManager layoutManager;
     private final SharedPreferences sharedPreferences;
     private final VoiceInteractionComponent component;
     private final SpeechSynthesizer speechSynthesizer;
     private final SpeechRecognizer speechRecognizer;
-    private final UserAssistantAdapter adapter;
+    private final ChatAssistantAdapter adapter;
 
     private Timer timer = new Timer();
     private TimerTask task;
@@ -48,13 +48,13 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     private Handler voiceInteractionHandler = new Handler(Looper.getMainLooper());
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
     private boolean paused;
-    private Node currentNode;
-    private Action lastAction;
+    private ChatNode currentNode;
+    private ChatAction lastAction;
     private boolean enableVoiceInteraction;
     private boolean voiceInteractionInitialized;
     private boolean voiceInteractionInitializing;
 
-    UserAssistantComponentImpl(Builder builder) {
+    ChatAssistantComponentImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
         if (recyclerView.getItemDecorationCount() == 0) {
             int space = DimensionUtils.getDimension(
@@ -70,7 +70,7 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         layoutManager.setSmoothScrollbarEnabled(false);
         recyclerView.setItemAnimator(null);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(recyclerView.getContext());
-        adapter = new UserAssistantAdapter((view, action) -> {
+        adapter = new ChatAssistantAdapter((view, action) -> {
             setNode(action);
             lastAction = action;
             if (!action.keepAction) {
@@ -91,11 +91,11 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @Override
-    public void initialize(Node initialNode) {
-        String lastSavedNodeId = getLastVisitedNode(initialNode);
-        Node lastSavedNode = getNode(lastSavedNodeId);
-        adapter.addItem(initialNode);
-        traverse(adapter.getItems(), initialNode, lastSavedNode);
+    public void initialize(ChatNode rootNode) {
+        String lastSavedNodeId = getLastVisitedNode(rootNode);
+        ChatNode lastSavedNode = getNode(lastSavedNodeId);
+        adapter.addItem(rootNode);
+        traverse(adapter.getItems(), rootNode, lastSavedNode);
         currentNode = lastSavedNode;
         next();
     }
@@ -106,15 +106,15 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @Override
-    public void addNode(@NonNull Node node) {
+    public void addNode(@NonNull ChatNode node) {
         if (!graph.containsKey(node)) {
             graph.put(node, null);
         }
     }
 
     @Override
-    public Flow create() {
-        return new Flow(this);
+    public ChatFlow create() {
+        return new ChatFlow(this);
     }
 
     @Override
@@ -214,8 +214,8 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     public void showLoading() {
         loadingHandler.postDelayed(() -> {
             int size = adapter.getItemCount();
-            if (size == 0 || !Loading.class.isInstance(adapter.getItem(size - 1))) {
-                adapter.addItem(new Loading());
+            if (size == 0 || !ChatLoading.class.isInstance(adapter.getItem(size - 1))) {
+                adapter.addItem(new ChatLoading());
                 layoutManager.scrollToPosition(size);
             }
         }, LOADING_DISPLAY_DELAY);
@@ -224,17 +224,17 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     @Override
     public void hideLoading() {
         if (loadingHandler != null) loadingHandler.removeCallbacksAndMessages(null);
-        int position = adapter.getLastPositionOf(Loading.class);
+        int position = adapter.getLastPositionOf(ChatLoading.class);
         if (position != -1) adapter.removeItem(position);
     }
 
     @Override
     public void trackLastAction() {
-        ArrayList<Node> outgoingEdges = getOutgoingEdges(lastAction);
+        ArrayList<ChatNode> outgoingEdges = getOutgoingEdges(lastAction);
         if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
             if (outgoingEdges.size() == 1) {
-                Node node = outgoingEdges.get(0);
-                if (Message.class.isInstance(node)) {
+                ChatNode node = outgoingEdges.get(0);
+                if (ChatMessage.class.isInstance(node)) {
                     setLastVisitedNode(node);
                 }
                 else {
@@ -251,16 +251,16 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
 
     @Override
     public void resumeLastAction() {
-        Action action = (Action) getNode();
+        ChatAction action = (ChatAction) getNode();
         removeLast();
         if (action != null)
-            addLast(new Message.Builder().setText(action.text2 == null ? action.text1 : action.text2)
+            addLast(new ChatMessage.Builder().setText(action.text2 == null ? action.text1 : action.text2)
                                      .setImage(action.image).setTintColor(action.tintColor)
                                      .setTextSize(action.textSize).setShowAsAnswer(true).build());
     }
 
     @Override
-    public void addLast(Message build) {
+    public void addLast(ChatMessage build) {
         adapter.addItem(build);
     }
 
@@ -270,36 +270,36 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @Override
-    public void setLastVisitedNode(Node node) {
+    public void setLastVisitedNode(ChatNode node) {
         sharedPreferences.edit().putString(ASSISTANT_LAST_SAVED_NODE, node.getId()).apply();
     }
 
     @Override
-    public String getLastVisitedNode(Node node) {
+    public String getLastVisitedNode(ChatNode node) {
         return sharedPreferences.getString(ASSISTANT_LAST_SAVED_NODE, node.getId());
     }
 
     @Override
-    public Node getNode() {
+    public ChatNode getNode() {
         return currentNode;
     }
 
     @Override
-    public void setNode(Node node) {
+    public void setNode(ChatNode node) {
         this.currentNode = node;
     }
 
     @Override
-    public Node getNext() {
-        ArrayList<Node> outgoingEdges = getOutgoingEdges(currentNode);
+    public ChatNode getNext() {
+        ArrayList<ChatNode> outgoingEdges = getOutgoingEdges(currentNode);
         if (outgoingEdges == null || outgoingEdges.isEmpty()) {
             return null;
         }
 
         if (outgoingEdges.size() == 1) {
-            Node node = outgoingEdges.get(0);
-            if (Action.class.isInstance(node)) {
-                ArrayList<Node> nodes = new ArrayList<>(1);
+            ChatNode node = outgoingEdges.get(0);
+            if (ChatAction.class.isInstance(node)) {
+                ArrayList<ChatNode> nodes = new ArrayList<>(1);
                 nodes.add(node);
                 return getActionSet(nodes);
             }
@@ -311,12 +311,12 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @Override
-    void addEdge(@NonNull Node node, @NonNull Node incomingEdge) {
+    void addEdge(@NonNull ChatNode node, @NonNull ChatNode incomingEdge) {
         if (!graph.containsKey(node) || !graph.containsKey(incomingEdge)) {
             throw new IllegalArgumentException("All nodes must be present in the graph before being added as an edge");
         }
 
-        ArrayList<Node> edges = graph.get(node);
+        ArrayList<ChatNode> edges = graph.get(node);
         if (edges == null) {
             // If edges is null, we should try and get one from the pool and add it to the graph
             edges = getEmptyList();
@@ -330,35 +330,35 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         sharedPreferences.edit().remove(ASSISTANT_LAST_SAVED_NODE).apply();
     }
 
-    private void traverse(List<Node> items, Node root, Node target) {
+    private void traverse(List<ChatNode> items, ChatNode root, ChatNode target) {
         if (root.equals(target)) {
             return;
         }
-        final ArrayList<Node> edges = getOutgoingEdges(root);
+        final ArrayList<ChatNode> edges = getOutgoingEdges(root);
         if (edges != null && !edges.isEmpty()) {
             if (edges.size() == 1) {
-                Node node = edges.get(0);
+                ChatNode node = edges.get(0);
                 if (node.equals(target)) {
                     items.add(node);
                     return;
                 }
-                if (node instanceof Message) {
+                if (node instanceof ChatMessage) {
                     items.add(node);
                     traverse(items, node, target);
                 }
                 else {
-                    Action action = (Action) node;
-                    items.add(new Message.Builder().setText(action.text2 == null ? action.text1 : action.text2)
+                    ChatAction action = (ChatAction) node;
+                    items.add(new ChatMessage.Builder().setText(action.text2 == null ? action.text1 : action.text2)
                                                    .setImage(action.image).setTintColor(action.tintColor)
                                                    .setTextSize(action.textSize).setShowAsAnswer(true).build());
                     traverse(items, action, target);
                 }
             }
             else {
-                ActionSet actionSet = getActionSet(edges);
-                Action action = actionSet.getDefault();
+                ChatActionSet actionSet = getActionSet(edges);
+                ChatAction action = actionSet.getDefault();
                 if (action != null) {
-                    items.add(new Message.Builder().setText(action.text2 == null ? action.text1 : action.text2)
+                    items.add(new ChatMessage.Builder().setText(action.text2 == null ? action.text1 : action.text2)
                                                    .setImage(action.image).setTintColor(action.tintColor)
                                                    .setTextSize(action.textSize).setShowAsAnswer(true).build());
                     traverse(items, action, target);
@@ -367,11 +367,11 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         }
     }
 
-    private ActionSet getActionSet(ArrayList<Node> edges) {
+    private ChatActionSet getActionSet(ArrayList<ChatNode> edges) {
         try {
-            ActionSet actionSet = new ActionSet();
+            ChatActionSet actionSet = new ChatActionSet();
             for (int i = 0, size = edges.size(); i < size; i++) {
-                actionSet.add((Action) edges.get(i));
+                actionSet.add((ChatAction) edges.get(i));
             }
             Collections.sort(actionSet);
             actionSet.getDefault().isDefault = true;
@@ -381,9 +381,9 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         }
     }
 
-    private void show(@Nullable Node node, long delay, boolean showNext) {
+    private void show(@Nullable ChatNode node, long delay, boolean showNext) {
         if (node != null) {
-            if (node instanceof Message) {
+            if (node instanceof ChatMessage) {
                 schedule(node, delay, showNext);
             }
             else {
@@ -396,7 +396,7 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         }
     }
 
-    private void schedule(Node item, long timeout, boolean showNext) {
+    private void schedule(ChatNode item, long timeout, boolean showNext) {
         task = new TimerTask() {
             @Override
             public void run() {
@@ -404,8 +404,8 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
                 scheduleHandler.post(() -> {
                     currentNode = item;
                     hideLoading();
-                    if (item instanceof Message) {
-                        Message message = (Message) item;
+                    if (item instanceof ChatMessage) {
+                        ChatMessage message = (ChatMessage) item;
                         addLast(message);
                         if (message.onLoaded != null) {
                             message.onLoaded.run();
@@ -445,8 +445,8 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @NonNull
-    private ArrayList<Node> getEmptyList() {
-        ArrayList<Node> list = mListPool.acquire();
+    private ArrayList<ChatNode> getEmptyList() {
+        ArrayList<ChatNode> list = mListPool.acquire();
         if (list == null) {
             list = new ArrayList<>();
         }
@@ -454,15 +454,15 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @Nullable
-    private ArrayList<Node> getIncomingEdges(@NonNull Node node) {
+    private ArrayList<ChatNode> getIncomingEdges(@NonNull ChatNode node) {
         return graph.get(node);
     }
 
     @Nullable
-    private ArrayList<Node> getOutgoingEdges(@NonNull Node node) {
-        ArrayList<Node> result = null;
+    private ArrayList<ChatNode> getOutgoingEdges(@NonNull ChatNode node) {
+        ArrayList<ChatNode> result = null;
         for (int i = 0, size = graph.size(); i < size; i++) {
-            ArrayList<Node> edges = graph.valueAt(i);
+            ArrayList<ChatNode> edges = graph.valueAt(i);
             if (edges != null && edges.contains(node)) {
                 if (result == null) {
                     result = new ArrayList<>();
@@ -473,9 +473,10 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         return result;
     }
 
-    private Node getNode(@NonNull String id) {
+    @Override
+    public ChatNode getNode(@NonNull String id) {
         for (int i = 0, size = graph.size(); i < size; i++) {
-            Node node = graph.keyAt(i);
+            ChatNode node = graph.keyAt(i);
             if (node.getId().equals(id)) {
                 return node;
             }

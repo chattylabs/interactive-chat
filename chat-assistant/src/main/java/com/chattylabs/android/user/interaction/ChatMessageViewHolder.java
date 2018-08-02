@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.chattylabs.sdk.android.common.DimensionUtils;
 
-public class MessageViewHolder extends RecyclerView.ViewHolder {
+public class ChatMessageViewHolder extends RecyclerView.ViewHolder {
 
     TextView text;
     ImageView image;
 
-    MessageViewHolder(View v) {
+    ChatMessageViewHolder(View v) {
         super(v);
         text = v.findViewById(R.id.user_assistant_message_item_text);
         image = v.findViewById(R.id.user_assistant_message_item_image);

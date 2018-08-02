@@ -3,9 +3,9 @@ package com.chattylabs.android.user.interaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-class LoadingViewHolder extends RecyclerView.ViewHolder {
+class ChatLoadingViewHolder extends RecyclerView.ViewHolder {
 
-    LoadingViewHolder(View v) {
+    ChatLoadingViewHolder(View v) {
         super(v);
     }
 }

@@ -1,4 +1,4 @@
 package com.chattylabs.android.user.interaction;
 
-public interface Node extends Identifiable {
+public interface ChatNode extends Identifiable {
 }

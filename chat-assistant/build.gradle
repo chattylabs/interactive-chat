@@ -1,14 +1,17 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
     dependencies {
         classpath 'com.novoda:bintray-release:0.8.1'
     }
 }
+
+plugins {
+    id 'com.chattylabs.versioning' version '0.19.2'
+}
+
 repositories {
     maven { url "https://dl.bintray.com/chattylabs/maven" }
 }
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 apply from: '../buildsystem/android.gradle'
@@ -16,7 +19,21 @@ apply from: '../buildsystem/android.gradle'
 group = 'com.chattylabs.android'
 version = android.defaultConfig.versionName
 
+versioning {
+
+    tagPrefix "asst-version/"
+
+    keywords {
+        minor "[asst-feature]"
+        patch "[asst-bug]", "[asst-patch]"
+    }
+}
+
 android {
+    defaultConfig {
+        versionCode versioning.code()
+        versionName versioning.name()
+    }
     testOptions {
         //unitTests.returnDefaultValues = true
     }
@@ -46,5 +63,5 @@ publish {
     artifactId = project.name
     publishVersion = project.version
     desc = 'Android Chat Assistant Component'
-    website = 'https://github.com/chattylabs/android-user-assistant'
+    website = 'https://github.com/chattylabs/android-chat-assistant'
 }

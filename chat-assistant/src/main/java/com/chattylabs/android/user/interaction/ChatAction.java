@@ -4,7 +4,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
-public class Action implements Node, Comparable<Action> {
+public class ChatAction implements ChatNode, Comparable<ChatAction> {
     public final String id;
     public final String text1;
     public final String text2;
@@ -19,7 +19,7 @@ public class Action implements Node, Comparable<Action> {
     public boolean keepAction;
 
     public interface OnSelected {
-        void execute(Action action);
+        void execute(ChatAction action);
     }
 
     public static class Builder {
@@ -100,18 +100,18 @@ public class Action implements Node, Comparable<Action> {
             return this;
         }
 
-        public Action build() {
+        public ChatAction build() {
             if (id == null || id.length() == 0) {
                 throw new NullPointerException("Action id must be set");
             }
             if (!(text1 != null && text1.length() > 0) && !(image > 0)) {
                 throw new NullPointerException("At least Action properties \"text1\" or \"image\" must be set");
             }
-            return new Action(this);
+            return new ChatAction(this);
         }
     }
 
-    private Action(Builder builder) {
+    private ChatAction(Builder builder) {
         this.id = builder.id;
         this.text1 = builder.text1;
         this.text2 = builder.text2;
@@ -132,7 +132,7 @@ public class Action implements Node, Comparable<Action> {
     }
 
     @Override
-    public int compareTo(@NonNull Action o) {
+    public int compareTo(@NonNull ChatAction o) {
         return this.order < o.order ? -1 :
                (this.order > o.order ? 1 : 0);
     }

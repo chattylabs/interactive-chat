@@ -2,9 +2,8 @@ package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 
-public class Message implements Node {
+public class ChatMessage implements ChatNode {
     public final String id;
     public final String text;
     public final int imageId;
@@ -73,16 +72,16 @@ public class Message implements Node {
             return this;
         }
 
-        public Message build() {
+        public ChatMessage build() {
             if (!(text != null && text.length() > 0) && imageId <= 0) {
                 throw new NullPointerException("At least Message properties \"text\" " +
                         "or \"image\" must be set");
             }
-            return new Message(this);
+            return new ChatMessage(this);
         }
     }
 
-    private Message(Builder builder) {
+    private ChatMessage(Builder builder) {
         this.id = builder.id;
         this.text = builder.text;
         this.imageId = builder.imageId;

@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.chattylabs.sdk.android.voice.VoiceInteractionComponent;
 
-public interface UserAssistantComponent {
+public interface ChatAssistantComponent {
 
     interface OnError {
         void execute(Integer errorCode);
@@ -16,32 +16,45 @@ public interface UserAssistantComponent {
         void execute(Integer successCode);
     }
 
-    class Builder {
+    interface IBuild {
+        ChatAssistantComponent build();
+    }
+
+    interface IVoiceInteractionComponent {
+        IBuild withVoiceComponent(VoiceInteractionComponent voiceComponent);
+    }
+
+    interface IRecyclerView {
+        IVoiceInteractionComponent withViewComponent(RecyclerView recyclerView);
+    }
+
+    class Builder implements IRecyclerView {
         VoiceInteractionComponent voiceInteractionComponent;
         RecyclerView recyclerView;
 
-        public Builder withRecyclerView(RecyclerView recyclerView) {
+        @Override
+        public IVoiceInteractionComponent withViewComponent(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
-            return this;
+            return interfaceComponent;
         }
 
-        public Builder withVoiceInteraction(VoiceInteractionComponent component) {
-            this.voiceInteractionComponent = component;
-            return this;
-        }
+        IVoiceInteractionComponent interfaceComponent = voiceComponent -> {
+            voiceInteractionComponent = voiceComponent;
+            return this.interfaceBuilder;
+        };
 
-        public UserAssistantComponentImpl build() {
-            return new UserAssistantComponentImpl(this);
-        }
+        IBuild interfaceBuilder = () -> new ChatAssistantComponentImpl(this);
     }
 
-    void initialize(Node initialNode);
+    void initialize(ChatNode rootNode);
 
     void enableVoiceInteraction(boolean enable);
 
-    void addNode(@NonNull Node node);
+    void addNode(@NonNull ChatNode node);
 
-    Flow create();
+    ChatNode getNode(@NonNull String id);
+
+    ChatFlow create();
 
     void next();
 
@@ -62,17 +75,17 @@ public interface UserAssistantComponent {
     /**
      * Will be removed
      */
-    Node getNext();
+    ChatNode getNext();
 
     /**
      * Will be removed
      */
-    Node getNode();
+    ChatNode getNode();
 
     /**
      * Will be removed
      */
-    void setNode(Node node);
+    void setNode(ChatNode node);
 
     /**
      * Will be removed
@@ -87,7 +100,7 @@ public interface UserAssistantComponent {
     /**
      * Will be removed
      */
-    void addLast(Message build);
+    void addLast(ChatMessage build);
 
     /**
      * Will be removed
@@ -97,10 +110,10 @@ public interface UserAssistantComponent {
     /**
      * Will be removed
      */
-    void setLastVisitedNode(Node node);
+    void setLastVisitedNode(ChatNode node);
 
     /**
      * Will be removed
      */
-    String getLastVisitedNode(Node node);
+    String getLastVisitedNode(ChatNode node);
 }

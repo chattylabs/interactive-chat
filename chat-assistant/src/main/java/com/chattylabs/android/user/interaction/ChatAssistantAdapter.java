@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 
 import java.util.List;
 
-public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChatAssistantAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int MESSAGE_IN = 0;
     private static final int MESSAGE_IN_AS_FIRST = 1;
@@ -24,23 +24,23 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int LOADING = 4;
 
     private OnActionListener listener;
-    private List<Node> items;
+    private List<ChatNode> items;
 
     public interface OnActionListener {
-        void onClick(@NonNull View view, @NonNull Action action);
+        void onClick(@NonNull View view, @NonNull ChatAction action);
     }
 
-    UserAssistantAdapter(OnActionListener listener, List<Node> items) {
+    ChatAssistantAdapter(OnActionListener listener, List<ChatNode> items) {
         this.listener = listener;
         this.items = items;
     }
 
-    public void addItem(Node item) {
+    public void addItem(ChatNode item) {
         items.add(item);
         notifyItemInserted(getItemCount() - 1);
     }
 
-    public List<Node> getItems() {
+    public List<ChatNode> getItems() {
         return items;
     }
 
@@ -57,24 +57,24 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
         //notifyDataSetChanged();
     }
 
-    public Node getItem(int position) {
+    public ChatNode getItem(int position) {
         return this.items.get(position);
     }
 
     //Returns the view type of the item at position for the purposes of view recycling.
     @Override
     public int getItemViewType(int position) {
-        Node item = items.get(position);
-        if (item instanceof ActionSet) {
+        ChatNode item = items.get(position);
+        if (item instanceof ChatActionSet) {
             return ACTIONS;
         }
-        else if (item instanceof Loading) {
+        else if (item instanceof ChatLoading) {
             return LOADING;
         }
-        else if (item instanceof Message && ((Message) item).showAsAnswer) {
+        else if (item instanceof ChatMessage && ((ChatMessage) item).showAsAnswer) {
             return MESSAGE_OUT;
         }
-        return (item instanceof Message && ((Message) item).showAsFirst) ?
+        return (item instanceof ChatMessage && ((ChatMessage) item).showAsFirst) ?
                 MESSAGE_IN_AS_FIRST : MESSAGE_IN;
     }
 
@@ -88,23 +88,23 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
         switch (viewType) {
             case LOADING:
                 v = inflater.inflate(R.layout.item_user_assistant_loading, viewGroup, false);
-                viewHolder = new LoadingViewHolder(v);
+                viewHolder = new ChatLoadingViewHolder(v);
                 break;
             case ACTIONS:
                 v = inflater.inflate(R.layout.item_user_assistant_actions, viewGroup, false);
-                viewHolder = new ActionViewHolder(v);
+                viewHolder = new ChatActionViewHolder(v);
                 break;
             case MESSAGE_OUT:
                 v = inflater.inflate(R.layout.item_user_assistant_action_selected, viewGroup, false);
-                viewHolder = new MessageViewHolder(v);
+                viewHolder = new ChatMessageViewHolder(v);
                 break;
             case MESSAGE_IN_AS_FIRST:
                 v = inflater.inflate(R.layout.item_user_assistant_system_message_as_first, viewGroup, false);
-                viewHolder = new MessageViewHolder(v);
+                viewHolder = new ChatMessageViewHolder(v);
                 break;
             default:
                 v = inflater.inflate(R.layout.item_user_assistant_system_message, viewGroup, false);
-                viewHolder = new MessageViewHolder(v);
+                viewHolder = new ChatMessageViewHolder(v);
                 break;
         }
         return viewHolder;
@@ -115,21 +115,21 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         switch (viewHolder.getItemViewType()) {
             case ACTIONS:
-                configureActionViewHolder((ActionViewHolder) viewHolder, position);
+                configureActionViewHolder((ChatActionViewHolder) viewHolder, position);
                 break;
             case LOADING:
                 // no actions
                 break;
             default:
-                configureMessageViewHolder((MessageViewHolder) viewHolder, position);
+                configureMessageViewHolder((ChatMessageViewHolder) viewHolder, position);
                 break;
         }
     }
 
-    private void configureActionViewHolder(ActionViewHolder viewHolder, int position) {
-        @SuppressWarnings("unchecked") ActionSet actionSet = (ActionSet) items.get(position);
+    private void configureActionViewHolder(ChatActionViewHolder viewHolder, int position) {
+        @SuppressWarnings("unchecked") ChatActionSet actionSet = (ChatActionSet) items.get(position);
         viewHolder.actions.removeAllViews();
-        for (Action action : actionSet) {
+        for (ChatAction action : actionSet) {
             LayoutInflater inflater = LayoutInflater.from(viewHolder.actions.getContext());
             View button = inflater.inflate(action.image > 0
                                                       ? R.layout.item_user_assistant_imagebutton
@@ -161,8 +161,8 @@ public class UserAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    private void configureMessageViewHolder(MessageViewHolder viewHolder, int position) {
-        Message message = (Message) items.get(position);
+    private void configureMessageViewHolder(ChatMessageViewHolder viewHolder, int position) {
+        ChatMessage message = (ChatMessage) items.get(position);
         if (message.imageId > 0) {
             viewHolder.text.setVisibility(View.GONE);
             viewHolder.image.setVisibility(View.VISIBLE);

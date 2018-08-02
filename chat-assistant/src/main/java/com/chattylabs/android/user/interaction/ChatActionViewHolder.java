@@ -5,11 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-class ActionViewHolder extends RecyclerView.ViewHolder {
+class ChatActionViewHolder extends RecyclerView.ViewHolder {
 
     ViewGroup actions;
 
-    ActionViewHolder(View v) {
+    ChatActionViewHolder(View v) {
         super(v);
         actions = (ViewGroup) v;
     }

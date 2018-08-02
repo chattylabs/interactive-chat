@@ -2,10 +2,10 @@ package com.chattylabs.android.user.interaction;
 
 import java.util.ArrayList;
 
-class ActionSet extends ArrayList<Action> implements Node {
+class ChatActionSet extends ArrayList<ChatAction> implements ChatNode {
 
-    public Action getDefault() {
-        for (Action action : this) {
+    public ChatAction getDefault() {
+        for (ChatAction action : this) {
             if (action.isDefault) {
                 return action;
             }
