@@ -20,27 +20,24 @@ public class MainActivity extends DaggerAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RecyclerView view = findViewById(R.id.user_assistant);
-        assistantComponent = new UserAssistantFlow(view, voiceInteractionComponent).create();
+        assistantComponent = new UserAssistantHelper(view, voiceInteractionComponent).create();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (assistantComponent != null)
-            assistantComponent.pause();
+        assistantComponent.pause();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (assistantComponent != null)
-            assistantComponent.resume();
+        assistantComponent.resume();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (assistantComponent != null)
-            assistantComponent.release();
+        assistantComponent.release();
     }
 }

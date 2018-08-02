@@ -16,30 +16,43 @@ public interface UserAssistantComponent {
         void execute(Integer successCode);
     }
 
-    class Builder {
+    interface IBuild {
+        UserAssistantComponent build();
+    }
+
+    interface IVoiceInteractionComponent {
+        IBuild withVoiceComponent(VoiceInteractionComponent voiceComponent);
+    }
+
+    interface IRecyclerView {
+        IVoiceInteractionComponent withViewComponent(RecyclerView recyclerView);
+    }
+
+    class Builder implements IRecyclerView {
         VoiceInteractionComponent voiceInteractionComponent;
         RecyclerView recyclerView;
 
-        public Builder withRecyclerView(RecyclerView recyclerView) {
+        @Override
+        public IVoiceInteractionComponent withViewComponent(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
-            return this;
+            return interfaceComponent;
         }
 
-        public Builder withVoiceInteraction(VoiceInteractionComponent component) {
-            this.voiceInteractionComponent = component;
-            return this;
-        }
+        IVoiceInteractionComponent interfaceComponent = voiceComponent -> {
+            voiceInteractionComponent = voiceComponent;
+            return this.interfaceBuilder;
+        };
 
-        public UserAssistantComponentImpl build() {
-            return new UserAssistantComponentImpl(this);
-        }
+        IBuild interfaceBuilder = () -> new UserAssistantComponentImpl(this);
     }
 
-    void initialize(Node initialNode);
+    void initialize(Node rootNode);
 
     void enableVoiceInteraction(boolean enable);
 
     void addNode(@NonNull Node node);
+
+    Node getNode(@NonNull String id);
 
     Flow create();
 

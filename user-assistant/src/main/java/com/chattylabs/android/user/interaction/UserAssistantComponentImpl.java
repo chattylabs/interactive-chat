@@ -91,11 +91,11 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
     }
 
     @Override
-    public void initialize(Node initialNode) {
-        String lastSavedNodeId = getLastVisitedNode(initialNode);
+    public void initialize(Node rootNode) {
+        String lastSavedNodeId = getLastVisitedNode(rootNode);
         Node lastSavedNode = getNode(lastSavedNodeId);
-        adapter.addItem(initialNode);
-        traverse(adapter.getItems(), initialNode, lastSavedNode);
+        adapter.addItem(rootNode);
+        traverse(adapter.getItems(), rootNode, lastSavedNode);
         currentNode = lastSavedNode;
         next();
     }
@@ -473,7 +473,8 @@ final class UserAssistantComponentImpl extends Flow.Edge implements UserAssistan
         return result;
     }
 
-    private Node getNode(@NonNull String id) {
+    @Override
+    public Node getNode(@NonNull String id) {
         for (int i = 0, size = graph.size(); i < size; i++) {
             Node node = graph.keyAt(i);
             if (node.getId().equals(id)) {
