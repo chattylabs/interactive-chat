@@ -310,22 +310,6 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
         }
     }
 
-    @Override
-    void addEdge(@NonNull ChatNode node, @NonNull ChatNode incomingEdge) {
-        if (!graph.containsKey(node) || !graph.containsKey(incomingEdge)) {
-            throw new IllegalArgumentException("All nodes must be present in the graph before being added as an edge");
-        }
-
-        ArrayList<ChatNode> edges = graph.get(node);
-        if (edges == null) {
-            // If edges is null, we should try and get one from the pool and add it to the graph
-            edges = getEmptyList();
-            graph.put(node, edges);
-        }
-        // Finally add the edge to the list
-        edges.add(incomingEdge);
-    }
-
     private void finished() {
         sharedPreferences.edit().remove(ASSISTANT_LAST_SAVED_NODE).apply();
     }
@@ -471,6 +455,22 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
             }
         }
         return result;
+    }
+
+    @Override
+    void addEdge(@NonNull ChatNode node, @NonNull ChatNode incomingEdge) {
+        if (!graph.containsKey(node) || !graph.containsKey(incomingEdge)) {
+            throw new IllegalArgumentException("All nodes must be present in the graph before being added as an edge");
+        }
+
+        ArrayList<ChatNode> edges = graph.get(node);
+        if (edges == null) {
+            // If edges is null, we should try and get one from the pool and add it to the graph
+            edges = getEmptyList();
+            graph.put(node, edges);
+        }
+        // Finally add the edge to the list
+        edges.add(incomingEdge);
     }
 
     @Override

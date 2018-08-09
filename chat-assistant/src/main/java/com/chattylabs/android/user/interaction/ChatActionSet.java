@@ -15,6 +15,6 @@ class ChatActionSet extends ArrayList<ChatAction> implements ChatNode {
 
     @Override
     public String getId() {
-        return null;
+        return "";
     }
 }

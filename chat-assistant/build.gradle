@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.chattylabs.versioning' version '0.19.2'
+    id 'com.chattylabs.versioning' version '0.19.3'
 }
 
 repositories {
