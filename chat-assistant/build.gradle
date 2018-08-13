@@ -1,11 +1,11 @@
 buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://dl.bintray.com/chattylabs/maven" }
+    }
     dependencies {
         classpath 'com.novoda:bintray-release:0.8.1'
     }
-}
-
-plugins {
-    id 'com.chattylabs.versioning' version '0.19.3'
 }
 
 repositories {
@@ -14,18 +14,16 @@ repositories {
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.chattylabs.versioning'
 apply from: '../buildsystem/android.gradle'
-
-group = 'com.chattylabs.android'
-version = android.defaultConfig.versionName
 
 versioning {
 
-    tagPrefix "asst-version/"
+    tagPrefix "chat-version/"
 
     keywords {
-        minor "[asst-feature]"
-        patch "[asst-bug]", "[asst-patch]"
+        minor "[chat-feature]"
+        patch "[chat-bug]", "[chat-patch]"
     }
 }
 
@@ -47,8 +45,7 @@ dependencies {
     // Dagger
     api 'com.google.dagger:dagger:2.15'
     kapt 'com.google.dagger:dagger-compiler:2.15'
-    // Dependencies
-    api 'com.chattylabs.sdk.android:voice-interaction:+'
+    // SDK
     implementation 'com.chattylabs.sdk.android:common:+'
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
     // Testing
@@ -56,6 +53,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.19.1'
     testImplementation 'org.robolectric:robolectric:3.8'
 }
+
+group = 'com.chattylabs.android'
+version = android.defaultConfig.versionName
 
 publish {
     userOrg = 'chattylabs'
