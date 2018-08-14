@@ -15,7 +15,7 @@ import android.widget.ImageButton;
 
 import java.util.List;
 
-public class ChatAssistantAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int MESSAGE_IN = 0;
     private static final int MESSAGE_IN_AS_FIRST = 1;
@@ -30,7 +30,7 @@ public class ChatAssistantAdapter extends RecyclerView.Adapter<RecyclerView.View
         void onClick(@NonNull View view, @NonNull ChatAction action);
     }
 
-    ChatAssistantAdapter(OnActionListener listener, List<ChatNode> items) {
+    ChatInteractionAdapter(OnActionListener listener, List<ChatNode> items) {
         this.listener = listener;
         this.items = items;
     }

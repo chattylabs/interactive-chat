@@ -25,7 +25,7 @@ import java.util.TimerTask;
 
 import static com.chattylabs.sdk.android.voice.VoiceInteractionComponent.*;
 
-final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssistantComponent {
+final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatInteractionComponent {
 
     private static final long DEFAULT_MESSAGE_DELAY = 500L;
 
@@ -37,24 +37,24 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
     private final SimpleArrayMap<ChatNode, ArrayList<ChatNode>> graph = new SimpleArrayMap<>();
     private final LinearLayoutManager layoutManager;
     private final SharedPreferences sharedPreferences;
-    private final VoiceInteractionComponent component;
+    private final VoiceInteractionComponent speechComponent;
     private final SpeechSynthesizer speechSynthesizer;
     private final SpeechRecognizer speechRecognizer;
-    private final ChatAssistantAdapter adapter;
+    private final ChatInteractionAdapter adapter;
 
     private Timer timer = new Timer();
     private TimerTask task;
     private Handler loadingHandler = new Handler(Looper.getMainLooper());
-    private Handler voiceInteractionHandler = new Handler(Looper.getMainLooper());
+    private Handler speechHandler = new Handler(Looper.getMainLooper());
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
     private boolean paused;
     private ChatNode currentNode;
     private ChatAction lastAction;
-    private boolean enableVoiceInteraction;
-    private boolean voiceInteractionInitialized;
-    private boolean voiceInteractionInitializing;
+    private boolean enableSpeech;
+    private boolean speechReady;
+    private boolean speechInProgress;
 
-    ChatAssistantComponentImpl(Builder builder) {
+    ChatInteractionComponentImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
         if (recyclerView.getItemDecorationCount() == 0) {
             int space = DimensionUtils.getDimension(
@@ -63,25 +63,22 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
             VerticalSpaceItemDecoration spaceItemDecoration = new VerticalSpaceItemDecoration(space);
             recyclerView.addItemDecoration(spaceItemDecoration);
         }
-        component = builder.voiceInteractionComponent;
-        speechSynthesizer = component.getSpeechSynthesizer(recyclerView.getContext());
-        speechRecognizer = component.getSpeechRecognizer(recyclerView.getContext());
+        speechComponent = builder.voiceComponent;
+        speechSynthesizer = speechComponent.getSpeechSynthesizer(recyclerView.getContext());
+        speechRecognizer = speechComponent.getSpeechRecognizer(recyclerView.getContext());
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         layoutManager.setSmoothScrollbarEnabled(false);
         recyclerView.setItemAnimator(null);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(recyclerView.getContext());
-        adapter = new ChatAssistantAdapter((view, action) -> {
+        adapter = new ChatInteractionAdapter((view, action) -> {
             setNode(action);
             lastAction = action;
             if (!action.keepAction) {
-                resumeLastAction();
+                selectLastAction();
             }
-            component.stop();
+            speechComponent.stop();
             if (action.onSelected != null) {
                 action.onSelected.execute(action);
-            }
-            if (!action.skipTracking) {
-                trackLastAction();
             }
             if (!action.stopFlow) {
                 next();
@@ -91,18 +88,18 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
     }
 
     @Override
-    public void initialize(ChatNode rootNode) {
-        String lastSavedNodeId = getLastVisitedNode(rootNode);
+    public void initialize(ChatNode root) {
+        String lastSavedNodeId = getLastVisitedNode(root);
         ChatNode lastSavedNode = getNode(lastSavedNodeId);
-        adapter.addItem(rootNode);
-        traverse(adapter.getItems(), rootNode, lastSavedNode);
+        adapter.addItem(root);
+        traverse(adapter.getItems(), root, lastSavedNode);
         currentNode = lastSavedNode;
         next();
     }
 
     @Override
-    public void enableVoiceInteraction(boolean enable) {
-        this.enableVoiceInteraction = enable;
+    public void enableSpeech(boolean enable) {
+        this.enableSpeech = enable;
     }
 
     @Override
@@ -119,41 +116,30 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
 
     @Override
     public void next() {
+        if (lastAction != null && !lastAction.skipTracking) trackLastAction();
         show(getNext(), DEFAULT_MESSAGE_DELAY, true);
     }
 
     @Override
-    public boolean isVoiceInteractionInitialized() {
-        return voiceInteractionInitialized;
+    public boolean isSpeechReady() {
+        return speechReady;
     }
 
     @Override
-    public void prepareForVoiceInteraction(Context context, OnSuccess onSuccess, OnError onError) {
-        voiceInteractionInitializing = true;
+    public void prepareSpeech(Context context, VoiceInteractionComponent.OnSetup onPrepared) {
+        speechInProgress = true;
         showLoading();
-        component.setup(context, status -> {
-            boolean isSynthesizerAvailable =
-                    status.getSynthesizerStatus() == SYNTHESIZER_AVAILABLE;
-            if (status.isAvailable() || isSynthesizerAvailable) {
-                voiceInteractionInitialized = true;
-                voiceInteractionHandler.post(() -> {
-                    hideLoading();
-                    onSuccess.execute(status.isAvailable() ?
-                            SYNTHESIZER_AVAILABLE +
-                                    RECOGNIZER_AVAILABLE :
-                            SYNTHESIZER_AVAILABLE);
-                });
-            }
-            else {
-                // FIXME: Probably a Dagger issue
-                // Second time it exists the App seems like the TTS is still alive, so triedTtsData
-                // value is TRUE, causing checkAvailability never to be called.
-                // TODO: P2 - to show TTS error screen
-                voiceInteractionHandler.post(() -> {
-                    hideLoading();
-                    onError.execute(status.getSynthesizerStatus() | status.getRecognizerStatus());
-                });
-            }
+        speechComponent.setup(context, status -> {
+            boolean isSynthesizerAvailable = status.getSynthesizerStatus() == SYNTHESIZER_AVAILABLE;
+            speechReady = status.isAvailable() || isSynthesizerAvailable;
+            // FIXME: Probably a Dagger issue
+            // Second time it exists the App seems like the TTS is still alive, so triedTtsData
+            // value is TRUE, causing checkAvailability never to be called.
+            // TODO: P2 - to show TTS error screen
+            speechHandler.post(() -> {
+                hideLoading();
+                onPrepared.execute(status);
+            });
         });
     }
 
@@ -163,14 +149,14 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
         if (loadingHandler != null) {
             loadingHandler.removeCallbacksAndMessages(null);
         }
-        if (voiceInteractionHandler != null) {
-            voiceInteractionHandler.removeCallbacksAndMessages(null);
+        if (speechHandler != null) {
+            speechHandler.removeCallbacksAndMessages(null);
         }
         if (scheduleHandler != null) {
             scheduleHandler.removeCallbacksAndMessages(null);
         }
-        if (component != null) {
-            component.shutdown();
+        if (speechComponent != null) {
+            speechComponent.shutdown();
         }
     }
 
@@ -182,8 +168,8 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
             timer.cancel();
             timer = new Timer();
         }
-        if (component != null) {
-            component.stop();
+        if (speechComponent != null) {
+            speechComponent.stop();
         }
     }
 
@@ -214,7 +200,8 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
     public void showLoading() {
         loadingHandler.postDelayed(() -> {
             int size = adapter.getItemCount();
-            if (size == 0 || !ChatLoading.class.isInstance(adapter.getItem(size - 1))) {
+            if (size == 0 || !ChatLoading.class.isInstance(
+                    adapter.getItem(size - 1))) {
                 adapter.addItem(new ChatLoading());
                 layoutManager.scrollToPosition(size);
             }
@@ -228,69 +215,71 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
         if (position != -1) adapter.removeItem(position);
     }
 
-    @Override
-    public void trackLastAction() {
+    private void trackLastAction() {
         ArrayList<ChatNode> outgoingEdges = getOutgoingEdges(lastAction);
         if (outgoingEdges != null && !outgoingEdges.isEmpty()) {
             if (outgoingEdges.size() == 1) {
                 ChatNode node = outgoingEdges.get(0);
                 if (ChatMessage.class.isInstance(node)) {
                     setLastVisitedNode(node);
-                }
-                else {
+                } else {
                     throw new IllegalStateException("An Action can only have " +
-                                                    "an edge to a Message");
+                            "an edge to a Message");
                 }
-            }
-            else {
+            } else {
                 throw new IllegalStateException("An Action cannot have multiple " +
-                                                "edges in the graph");
+                        "edges in the graph");
             }
         }
     }
 
     @Override
-    public void resumeLastAction() {
-        ChatAction action = (ChatAction) getNode();
-        removeLast();
-        if (action != null)
+    public void selectLastAction() {
+        ChatNode node = getNode();
+        ChatAction action = null;
+        removeLastItem();
+        if (ChatAction.class.isInstance(node)) {
+            action = (ChatAction) node;
+        } else if (ChatActionSet.class.isInstance(node)) {
+            for (ChatAction a : ((ChatActionSet) node))
+                if (a.isDefault) {
+                    action = a;
+                    break;
+                }
+        }
+        if (action != null) {
+            lastAction = action;
             addLast(new ChatMessage.Builder().setText(action.text2 == null ? action.text1 : action.text2)
-                                     .setImage(action.image).setTintColor(action.tintColor)
-                                     .setTextSize(action.textSize).setShowAsAnswer(true).build());
+                    .setImage(action.image).setTintColor(action.tintColor)
+                    .setTextSize(action.textSize).setShowAsAnswer(true).build());
+        }
     }
 
-    @Override
-    public void addLast(ChatMessage build) {
+    private void addLast(ChatMessage build) {
         adapter.addItem(build);
     }
 
-    @Override
-    public void removeLast() {
+    private void removeLastItem() {
         if (adapter.getItemCount() > 0) adapter.removeItem(adapter.getItemCount() - 1);
     }
 
-    @Override
-    public void setLastVisitedNode(ChatNode node) {
+    private void setLastVisitedNode(ChatNode node) {
         sharedPreferences.edit().putString(ASSISTANT_LAST_SAVED_NODE, node.getId()).apply();
     }
 
-    @Override
-    public String getLastVisitedNode(ChatNode node) {
+    private String getLastVisitedNode(ChatNode node) {
         return sharedPreferences.getString(ASSISTANT_LAST_SAVED_NODE, node.getId());
     }
 
-    @Override
-    public ChatNode getNode() {
+    private ChatNode getNode() {
         return currentNode;
     }
 
-    @Override
-    public void setNode(ChatNode node) {
+    private void setNode(ChatNode node) {
         this.currentNode = node;
     }
 
-    @Override
-    public ChatNode getNext() {
+    private ChatNode getNext() {
         ArrayList<ChatNode> outgoingEdges = getOutgoingEdges(currentNode);
         if (outgoingEdges == null || outgoingEdges.isEmpty()) {
             return null;
@@ -304,8 +293,7 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
                 return getActionSet(nodes);
             }
             return outgoingEdges.get(0);
-        }
-        else {
+        } else {
             return getActionSet(outgoingEdges);
         }
     }
@@ -329,22 +317,24 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
                 if (node instanceof ChatMessage) {
                     items.add(node);
                     traverse(items, node, target);
-                }
-                else {
+                } else {
                     ChatAction action = (ChatAction) node;
-                    items.add(new ChatMessage.Builder().setText(action.text2 == null ? action.text1 : action.text2)
-                                                   .setImage(action.image).setTintColor(action.tintColor)
-                                                   .setTextSize(action.textSize).setShowAsAnswer(true).build());
+                    items.add(
+                            new ChatMessage.Builder().setText(
+                                    action.text2 == null ? action.text1 : action.text2)
+                                    .setImage(action.image).setTintColor(action.tintColor)
+                                    .setTextSize(action.textSize).setShowAsAnswer(true).build());
                     traverse(items, action, target);
                 }
-            }
-            else {
+            } else {
                 ChatActionSet actionSet = getActionSet(edges);
                 ChatAction action = actionSet.getDefault();
                 if (action != null) {
-                    items.add(new ChatMessage.Builder().setText(action.text2 == null ? action.text1 : action.text2)
-                                                   .setImage(action.image).setTintColor(action.tintColor)
-                                                   .setTextSize(action.textSize).setShowAsAnswer(true).build());
+                    items.add(
+                            new ChatMessage.Builder().setText(
+                                    action.text2 == null ? action.text1 : action.text2)
+                                    .setImage(action.image).setTintColor(action.tintColor)
+                                    .setTextSize(action.textSize).setShowAsAnswer(true).build());
                     traverse(items, action, target);
                 }
             }
@@ -369,12 +359,10 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
         if (node != null) {
             if (node instanceof ChatMessage) {
                 schedule(node, delay, showNext);
-            }
-            else {
+            } else {
                 schedule(node, delay, false); // Never show next node automatically for actions
             }
-        }
-        else {
+        } else {
             hideLoading(); // Otherwise there is no more nodes
             finished();
         }
@@ -394,28 +382,24 @@ final class ChatAssistantComponentImpl extends ChatFlow.Edge implements ChatAssi
                         if (message.onLoaded != null) {
                             message.onLoaded.run();
                         }
-                        if (enableVoiceInteraction && voiceInteractionInitialized) {
+                        if (enableSpeech && speechReady) {
                             showLoading();
                             speechSynthesizer.playText(message.text, (OnSynthesizerDone) s -> {
                                 //TODO: perhaps we can remove - speechSynthesizer.resume();
-                                voiceInteractionHandler.post(() -> {
+                                speechHandler.post(() -> {
                                     if (showNext) {
                                         next();
-                                    }
-                                    else {
+                                    } else {
                                         hideLoading();
                                     }
                                 });
                             });
-                        }
-                        else if (enableVoiceInteraction && !voiceInteractionInitializing) {
-                            throw new IllegalStateException("You must call #prepareForVoiceInteraction() before");
-                        }
-                        else if (showNext) {
+                        } else if (enableSpeech && !speechInProgress) {
+                            throw new IllegalStateException("You must call #prepareSpeech() before");
+                        } else if (showNext) {
                             next();
                         }
-                    }
-                    else {
+                    } else {
                         adapter.addItem(item);
                         if (showNext) {
                             next();

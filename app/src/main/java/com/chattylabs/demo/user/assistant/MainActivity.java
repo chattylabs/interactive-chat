@@ -3,7 +3,7 @@ package com.chattylabs.demo.user.assistant;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
-import com.chattylabs.android.user.interaction.ChatAssistantComponent;
+import com.chattylabs.android.user.interaction.ChatInteractionComponent;
 import com.chattylabs.sdk.android.voice.VoiceInteractionComponent;
 
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 public class MainActivity extends DaggerAppCompatActivity {
 
     @Inject VoiceInteractionComponent voiceInteractionComponent;
-    private ChatAssistantComponent assistantComponent;
+    private ChatInteractionComponent assistantComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

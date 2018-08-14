@@ -8,7 +8,7 @@ import com.chattylabs.android.user.interaction.ChatAction;
 import com.chattylabs.android.user.interaction.ChatFlow;
 import com.chattylabs.android.user.interaction.ChatMessage;
 import com.chattylabs.android.user.interaction.ChatNode;
-import com.chattylabs.android.user.interaction.ChatAssistantComponent;
+import com.chattylabs.android.user.interaction.ChatInteractionComponent;
 import com.chattylabs.sdk.android.voice.VoiceInteractionComponent;
 
 
@@ -28,22 +28,22 @@ class UserAssistantHelper {
     static final String LIKED_NO = "liked_no";
 
     private Context context;
-    private ChatAssistantComponent assistant;
+    private ChatInteractionComponent assistant;
 
     UserAssistantHelper(RecyclerView recyclerView,
                         VoiceInteractionComponent voiceInteractionComponent) {
         this.context = recyclerView.getContext();
-        assistant = new ChatAssistantComponent.Builder()
+        assistant = new ChatInteractionComponent.Builder()
                 .withViewComponent(recyclerView)
                 .withVoiceComponent(voiceInteractionComponent)
                 .build();
     }
 
-    public ChatAssistantComponent create() {
+    public ChatInteractionComponent create() {
 
         ChatNode rootNode = buildFlow();
 
-        assistant.prepareForVoiceInteraction(context, successCode -> {
+        assistant.prepareSpeech(context, successCode -> {
             assistant.initialize(rootNode);
         }, errorCode -> {});
 
@@ -59,7 +59,7 @@ class UserAssistantHelper {
 
         assistant.addNode(new ChatAction.Builder(QUIET_PLACE_YES)
                 .setText1(getString(R.string.demo_yes))
-                .setOnSelected(action -> assistant.enableVoiceInteraction(true))
+                .setOnSelected(action -> assistant.enableSpeech(true))
                 .build());
 
         assistant.addNode(new ChatAction.Builder(QUIET_PLACE_NO)

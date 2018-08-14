@@ -19,11 +19,11 @@ apply from: '../buildsystem/android.gradle'
 
 versioning {
 
-    tagPrefix "chat-version/"
+    tagPrefix "lib-version/"
 
     keywords {
-        minor "[chat-feature]"
-        patch "[chat-bug]", "[chat-patch]"
+        minor "[lib-feature]"
+        patch "[lib-bug]", "[lib-patch]"
     }
 }
 
@@ -46,6 +46,7 @@ dependencies {
     api 'com.google.dagger:dagger:2.15'
     kapt 'com.google.dagger:dagger-compiler:2.15'
     // SDK
+    api 'com.chattylabs.sdk.android:conversational-flow-core:+'
     implementation 'com.chattylabs.sdk.android:common:+'
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
     // Testing
@@ -62,6 +63,6 @@ publish {
     groupId = project.group
     artifactId = project.name
     publishVersion = project.version
-    desc = 'Android Chat Assistant Component'
-    website = 'https://github.com/chattylabs/android-chat-assistant'
+    desc = 'Android Chat Interaction Component'
+    website = 'https://github.com/chattylabs/android-chat-interaction'
 }
