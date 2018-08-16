@@ -46,7 +46,7 @@ dependencies {
     // SDK
     implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
     implementation "com.chattylabs.sdk.android:common:+"
-    implementation project(':chat-assistant')
+    implementation project(':interactive-chat')
 
     // Test dependencies
     testImplementation 'junit:junit:4.12'

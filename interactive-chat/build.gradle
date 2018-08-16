@@ -64,5 +64,5 @@ publish {
     artifactId = project.name
     publishVersion = project.version
     desc = 'Android Chat Interaction Component'
-    website = 'https://github.com/chattylabs/android-chat-interaction'
+    website = 'https://github.com/chattylabs/android-interactive-chat'
 }

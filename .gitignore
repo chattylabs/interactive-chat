@@ -59,3 +59,7 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+
+#Custom
+version.properties
+*/**/version.properties

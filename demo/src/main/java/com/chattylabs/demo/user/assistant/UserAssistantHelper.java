@@ -43,8 +43,8 @@ class UserAssistantHelper {
 
         ChatNode rootNode = buildFlow();
 
-        assistant.prepareSpeech(context, successCode -> {
-            assistant.initialize(rootNode);
+        assistant.setupSpeech(context, successCode -> {
+            assistant.init(rootNode);
         }, errorCode -> {});
 
         return assistant;

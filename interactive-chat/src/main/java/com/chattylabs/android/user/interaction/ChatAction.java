@@ -4,6 +4,8 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
+
 public class ChatAction implements ChatNode, Comparable<ChatAction> {
     public final String id;
     public final String text1;
@@ -133,7 +135,19 @@ public class ChatAction implements ChatNode, Comparable<ChatAction> {
 
     @Override
     public int compareTo(@NonNull ChatAction o) {
-        return this.order < o.order ? -1 :
-               (this.order > o.order ? 1 : 0);
+        return Integer.compare(this.order, o.order);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatAction that = (ChatAction) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

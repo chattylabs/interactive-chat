@@ -3,6 +3,8 @@ package com.chattylabs.android.user.interaction;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
+import java.util.Objects;
+
 public class ChatMessage implements ChatNode {
     public final String id;
     public final String text;
@@ -96,5 +98,18 @@ public class ChatMessage implements ChatNode {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatMessage that = (ChatMessage) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

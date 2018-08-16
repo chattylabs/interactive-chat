@@ -4,9 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import com.chattylabs.sdk.android.voice.ComponentSetup;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
-import com.chattylabs.sdk.android.voice.SynthesizerListener;
+import com.chattylabs.sdk.android.voice.OnComponentSetup;
 
 public interface ChatInteractionComponent {
 
@@ -40,9 +39,7 @@ public interface ChatInteractionComponent {
         IBuild interfaceBuilder = () -> new ChatInteractionComponentImpl(this);
     }
 
-    void initialize(ChatNode root);
-
-    void enableSpeech(boolean enable);
+    void init(ChatNode root);
 
     void addNode(@NonNull ChatNode node);
 
@@ -52,11 +49,13 @@ public interface ChatInteractionComponent {
 
     void next();
 
-    void selectLastAction();
+    void performLastAction();
 
-    boolean isSpeechReady();
+    void enableSpeech(boolean enable);
 
-    void prepareSpeech(Context context, ComponentSetup onPrepared);
+    boolean isSpeechEnabled();
+
+    void setupSpeech(Context context, OnComponentSetup onPrepared);
 
     void release();
 

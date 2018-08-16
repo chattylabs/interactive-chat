@@ -1,1 +1,1 @@
-include ':app', ':chat-assistant'
+include ':demo', ':interactive-chat'

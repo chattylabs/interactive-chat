@@ -1,10 +1,12 @@
 package com.chattylabs.android.user.interaction;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.speech.RecognitionListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -15,7 +17,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 
 import com.chattylabs.sdk.android.common.DimensionUtils;
-import com.chattylabs.sdk.android.voice.VoiceInteractionComponent;
+import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
+import com.chattylabs.sdk.android.voice.OnComponentSetup;
+import com.chattylabs.sdk.android.voice.RecognizerListener;
+import com.chattylabs.sdk.android.voice.SpeechRecognizerComponent;
+import com.chattylabs.sdk.android.voice.SpeechSynthesizerComponent;
+import com.chattylabs.sdk.android.voice.SynthesizerListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +30,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.chattylabs.sdk.android.voice.VoiceInteractionComponent.*;
 
 final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatInteractionComponent {
 
@@ -32,37 +38,41 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     @VisibleForTesting
     static final String ASSISTANT_LAST_SAVED_NODE = "ASSISTANT_LAST_SAVED_NODE";
     public static final int LOADING_DISPLAY_DELAY = 1000;
+    public static final int ITEM_SEPARATOR_SIZE_DIP = 4;
 
     private final Pools.Pool<ArrayList<ChatNode>> mListPool = new Pools.SimplePool<>(10);
     private final SimpleArrayMap<ChatNode, ArrayList<ChatNode>> graph = new SimpleArrayMap<>();
     private final LinearLayoutManager layoutManager;
     private final SharedPreferences sharedPreferences;
-    private final VoiceInteractionComponent speechComponent;
-    private final SpeechSynthesizer speechSynthesizer;
-    private final SpeechRecognizer speechRecognizer;
+    private final ConversationalFlowComponent speechComponent;
+    private final SpeechSynthesizerComponent speechSynthesizer;
+    private final SpeechRecognizerComponent speechRecognizer;
     private final ChatInteractionAdapter adapter;
 
-    private Timer timer = new Timer();
+    private Timer timer;
     private TimerTask task;
     private Handler loadingHandler = new Handler(Looper.getMainLooper());
     private Handler speechHandler = new Handler(Looper.getMainLooper());
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
-    private boolean paused;
     private ChatNode currentNode;
     private ChatAction lastAction;
+    private boolean paused;
     private boolean enableSpeech;
-    private boolean speechReady;
+    private boolean synthesizerReady;
+    private boolean recognizerReady;
     private boolean speechInProgress;
 
+    @SuppressLint("MissingPermission")
     ChatInteractionComponentImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
         if (recyclerView.getItemDecorationCount() == 0) {
             int space = DimensionUtils.getDimension(
                     recyclerView.getContext(),
-                    TypedValue.COMPLEX_UNIT_DIP, 4);
+                    TypedValue.COMPLEX_UNIT_DIP, ITEM_SEPARATOR_SIZE_DIP);
             VerticalSpaceItemDecoration spaceItemDecoration = new VerticalSpaceItemDecoration(space);
             recyclerView.addItemDecoration(spaceItemDecoration);
         }
+        timer = new Timer();
         speechComponent = builder.voiceComponent;
         speechSynthesizer = speechComponent.getSpeechSynthesizer(recyclerView.getContext());
         speechRecognizer = speechComponent.getSpeechRecognizer(recyclerView.getContext());
@@ -74,7 +84,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             setNode(action);
             lastAction = action;
             if (!action.keepAction) {
-                selectLastAction();
+                performLastAction();
             }
             speechComponent.stop();
             if (action.onSelected != null) {
@@ -88,8 +98,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void initialize(ChatNode root) {
-        String lastSavedNodeId = getLastVisitedNode(root);
+    public void init(ChatNode root) {
+        String lastSavedNodeId = getLastVisitedNodeId(root);
         ChatNode lastSavedNode = getNode(lastSavedNodeId);
         adapter.addItem(root);
         traverse(adapter.getItems(), root, lastSavedNode);
@@ -121,24 +131,27 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public boolean isSpeechReady() {
-        return speechReady;
+    public boolean isSpeechEnabled() {
+        return enableSpeech;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
-    public void prepareSpeech(Context context, VoiceInteractionComponent.OnSetup onPrepared) {
+    public void setupSpeech(Context context, OnComponentSetup onSetup) {
         speechInProgress = true;
         showLoading();
         speechComponent.setup(context, status -> {
-            boolean isSynthesizerAvailable = status.getSynthesizerStatus() == SYNTHESIZER_AVAILABLE;
-            speechReady = status.isAvailable() || isSynthesizerAvailable;
+            synthesizerReady = status.getSynthesizerStatus() ==
+                    SynthesizerListener.Status.AVAILABLE;
+            recognizerReady = status.getRecognizerStatus() ==
+                    RecognizerListener.Status.AVAILABLE;
             // FIXME: Probably a Dagger issue
             // Second time it exists the App seems like the TTS is still alive, so triedTtsData
             // value is TRUE, causing checkAvailability never to be called.
             // TODO: P2 - to show TTS error screen
             speechHandler.post(() -> {
                 hideLoading();
-                onPrepared.execute(status);
+                onSetup.execute(status);
             });
         });
     }
@@ -234,7 +247,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void selectLastAction() {
+    public void performLastAction() {
         ChatNode node = getNode();
         ChatAction action = null;
         removeLastItem();
@@ -267,7 +280,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         sharedPreferences.edit().putString(ASSISTANT_LAST_SAVED_NODE, node.getId()).apply();
     }
 
-    private String getLastVisitedNode(ChatNode node) {
+    private String getLastVisitedNodeId(ChatNode node) {
         return sharedPreferences.getString(ASSISTANT_LAST_SAVED_NODE, node.getId());
     }
 
@@ -384,7 +397,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                         }
                         if (enableSpeech && speechReady) {
                             showLoading();
-                            speechSynthesizer.playText(message.text, (OnSynthesizerDone) s -> {
+                            speechSynthesizer.playText(message.text,
+                                    (SynthesizerListener.OnDone) s -> {
                                 //TODO: perhaps we can remove - speechSynthesizer.resume();
                                 speechHandler.post(() -> {
                                     if (showNext) {
@@ -395,7 +409,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                                 });
                             });
                         } else if (enableSpeech && !speechInProgress) {
-                            throw new IllegalStateException("You must call #prepareSpeech() before");
+                            throw new IllegalStateException("You must call #setupSpeech() before");
                         } else if (showNext) {
                             next();
                         }
