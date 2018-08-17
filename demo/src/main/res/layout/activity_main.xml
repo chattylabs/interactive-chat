@@ -24,6 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:listitem="@layout/item_user_assistant_system_message_as_first"/>
+        tools:listitem="@layout/item_interactive_chat_head_message"/>
 
 </android.support.constraint.ConstraintLayout>
