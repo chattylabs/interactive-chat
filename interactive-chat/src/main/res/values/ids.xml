@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="user_assistant_item_position" />
-    <item type="id" name="user_assistant_action_id" />
-    <item type="id" name="user_assistant_message_item_text" />
-    <item type="id" name="user_assistant_message_item_image" />
-    <item type="id" name="user_assistant_actions" />
+    <item type="id" name="interactive_chat_item_position" />
+    <item type="id" name="interactive_chat_action_id" />
+    <item type="id" name="interactive_chat_message_item_text" />
+    <item type="id" name="interactive_chat_message_item_image" />
+    <item type="id" name="interactive_chat_actions" />
 </resources>

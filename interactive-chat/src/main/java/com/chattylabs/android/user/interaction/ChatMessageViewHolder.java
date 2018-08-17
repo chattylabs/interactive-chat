@@ -17,8 +17,8 @@ public class ChatMessageViewHolder extends RecyclerView.ViewHolder {
 
     ChatMessageViewHolder(View v) {
         super(v);
-        text = v.findViewById(R.id.user_assistant_message_item_text);
-        image = v.findViewById(R.id.user_assistant_message_item_image);
+        text = v.findViewById(R.id.interactive_chat_message_item_text);
+        image = v.findViewById(R.id.interactive_chat_message_item_image);
         text.setMovementMethod(LinkMovementMethod.getInstance());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             text.setLineSpacing(DimensionUtils.getDimension(v.getContext(),
