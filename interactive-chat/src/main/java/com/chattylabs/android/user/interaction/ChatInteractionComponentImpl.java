@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.support.text.emoji.EmojiCompat;
+import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
 import android.support.v4.util.Pools;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,7 +77,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             VerticalSpaceItemDecoration spaceItemDecoration = new VerticalSpaceItemDecoration(space);
             uiThreadHandler.post(() -> {
                 recyclerView.addItemDecoration(spaceItemDecoration);
-                recyclerView.setItemAnimator(null);
             });
         }
         timer = new Timer();
@@ -85,7 +86,12 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(recyclerView.getContext());
-        uiThreadHandler.post(() -> recyclerView.setAdapter(adapter));
+        uiThreadHandler.post(() -> {
+            recyclerView.setItemAnimator(null);
+            recyclerView.setAdapter(adapter);
+            EmojiCompat.Config config = new BundledEmojiCompatConfig(recyclerView.getContext());
+            EmojiCompat.init(config);
+        });
     }
 
     @Override

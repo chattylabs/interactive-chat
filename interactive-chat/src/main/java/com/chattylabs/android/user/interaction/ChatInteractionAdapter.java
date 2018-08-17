@@ -3,6 +3,7 @@ package com.chattylabs.android.user.interaction;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.text.emoji.EmojiCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
@@ -54,7 +55,6 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void removeItem(int position) {
         items.remove(position);
         notifyItemRemoved(position);
-        //notifyDataSetChanged();
     }
 
     public ChatNode getItem(int position) {
@@ -146,11 +146,12 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     ((Button) button).setTextSize(TypedValue.COMPLEX_UNIT_SP, action.textSize);
                 }
                 Spanned span;
+                String text = (String) EmojiCompat.get().process(action.text);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    span = Html.fromHtml(action.text, Html.FROM_HTML_MODE_COMPACT);
+                    span = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
                 }
                 else {
-                    span = Html.fromHtml(action.text);
+                    span = Html.fromHtml(text);
                 }
                 ((Button) button).setText(span);
             }
@@ -178,11 +179,12 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 viewHolder.text.setTextSize(TypedValue.COMPLEX_UNIT_SP, message.textSize);
             }
             Spanned span;
+            String text = (String) EmojiCompat.get().process(message.text);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                span = Html.fromHtml(message.text, Html.FROM_HTML_MODE_COMPACT);
+                span = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
             }
             else {
-                span = Html.fromHtml(message.text);
+                span = Html.fromHtml(text);
             }
             viewHolder.text.setTag(message.id);
             viewHolder.text.setText(span);
