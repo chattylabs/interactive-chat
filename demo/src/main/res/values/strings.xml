@@ -26,4 +26,8 @@
     <string name="thumbsup_4">Ok</string>
     <string name="thumbsdown_1">Thumbs down</string>
     <string name="thumbsdown_2">No</string>
+    <string name="demo_part_of_day">Ok. Which part of the day is your preferred one?</string>
+    <string name="demo_morning">Morning</string>
+    <string name="demo_noon">Noon</string>
+    <string name="demo_evening">Evening</string>
 </resources>
