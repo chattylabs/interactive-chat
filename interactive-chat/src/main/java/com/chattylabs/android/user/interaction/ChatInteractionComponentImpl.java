@@ -50,6 +50,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private Timer timer;
     private TimerTask task;
     private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
+    private Handler loadingHandler = new Handler(Looper.getMainLooper());
     private Handler speechHandler = new Handler(Looper.getMainLooper());
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
     private ChatNode currentNode;
@@ -61,9 +62,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private boolean recognizerReady;
     private boolean speechInProgress;
 
-    private final ChatInteractionAdapter adapter = new ChatInteractionAdapter((view, action) -> {
-        perform(action);
-    }, new ArrayList<>());
+    private final ChatInteractionAdapter adapter = new ChatInteractionAdapter(
+            (view, action) -> perform(action), new ArrayList<>());
 
     @SuppressLint("MissingPermission")
     ChatInteractionComponentImpl(Builder builder) {
@@ -150,6 +150,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     @Override
     public void release() {
         cancel();
+        loadingHandler.removeCallbacksAndMessages(null);
         uiThreadHandler.removeCallbacksAndMessages(null);
         speechHandler.removeCallbacksAndMessages(null);
         scheduleHandler.removeCallbacksAndMessages(null);
@@ -196,7 +197,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
 
     @Override
     public void showLoading() {
-        uiThreadHandler.postDelayed(() -> {
+        loadingHandler.postDelayed(() -> {
             int size = adapter.getItemCount();
             if (size == 0 || !ChatLoading.class.isInstance(
                     adapter.getItem(size - 1))) {
@@ -208,7 +209,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
 
     @Override
     public void hideLoading() {
-        if (uiThreadHandler != null) uiThreadHandler.removeCallbacksAndMessages(null);
+        if (loadingHandler != null) loadingHandler.removeCallbacksAndMessages(null);
         int position = adapter.getLastPositionOf(ChatLoading.class);
         if (position != -1 && uiThreadHandler != null)
             uiThreadHandler.post(() -> adapter.removeItem(position));
@@ -313,14 +314,13 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         }
     }
 
-    private void finished() {
+    @Override
+    public void reset() {
         sharedPreferences.edit().remove(LAST_SAVED_NODE).apply();
     }
 
     private void traverse(List<ChatNode> items, ChatNode root, ChatNode target) {
-        if (root.equals(target)) {
-            return;
-        }
+        if (root.equals(target)) return;
         final ArrayList<ChatNode> edges = getOutgoingEdges(root);
         if (edges != null && !edges.isEmpty()) {
             if (edges.size() == 1) {
@@ -375,7 +375,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             schedule(node, delay);
         } else {
             hideLoading(); // Otherwise there is no more nodes
-            finished();
         }
     }
 
@@ -396,10 +395,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                         if (enableSynthesizer && synthesizerReady) {
                             showLoading();
                             speechSynthesizer.playText(message.text,
-                                    (SynthesizerListener.OnDone) s -> {
-                                //TODO: perhaps we can remove - speechSynthesizer.resume();
-                                speechHandler.post(() -> next());
-                            });
+                                    (SynthesizerListener.OnDone) s ->
+                                            speechHandler.post(() -> next()));
                         } else if (enableSynthesizer && !speechInProgress) {
                             throw new IllegalStateException("Have you called #setupSpeech()?");
                         } else next();

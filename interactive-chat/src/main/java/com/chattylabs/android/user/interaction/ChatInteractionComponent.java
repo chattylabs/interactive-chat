@@ -63,6 +63,8 @@ public interface ChatInteractionComponent {
 
     void resume();
 
+    void reset();
+
     void showLoading();
 
     void hideLoading();

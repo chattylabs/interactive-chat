@@ -71,6 +71,9 @@ public class MainActivity extends DaggerAppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (assistantComponent != null) assistantComponent.release();
+        if (assistantComponent != null) {
+            assistantComponent.release();
+            assistantComponent.reset();
+        }
     }
 }
