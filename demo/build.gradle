@@ -1,15 +1,37 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://dl.bintray.com/chattylabs/maven" }
+    }
+}
+
 repositories {
     maven { url "https://dl.bintray.com/chattylabs/maven" }
 }
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.chattylabs.versioning'
 apply from: '../buildsystem/android.gradle'
+
+versioning {
+
+    tagPrefix "demo-version/"
+
+    keywords {
+        minor "[demo-feature]"
+        patch "[demo-bug]", "[demo-patch]"
+    }
+}
 
 android {
     defaultConfig {
         applicationId "com.chattylabs.demo.user.assistant"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        //manifestPlaceholders = [HOCKEYAPP_APP_ID: "658862d7f4d34d89b96ae8356aafdb05"]
+        versionCode versioning.code()
+        versionName versioning.name()
+
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "7932ed83b1af4cfba145be87d56c41fd"]
     }
     signingConfigs {
         debug {

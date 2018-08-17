@@ -1,5 +1,6 @@
 package com.chattylabs.demo.user.assistant;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
@@ -11,6 +12,8 @@ import com.chattylabs.android.user.interaction.ChatInteractionComponent;
 import com.chattylabs.android.user.interaction.ChatMessage;
 import com.chattylabs.android.user.interaction.ChatNode;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
+
+import net.hockeyapp.android.FeedbackManager;
 
 
 class ChatInteractionHelper {
@@ -51,7 +54,9 @@ class ChatInteractionHelper {
 
     private ChatNode buildFlow() {
         assistant.addNode(new ChatMessage.Builder(WELCOME_ID)
-                .setText(getString(R.string.demo_welcome)).build());
+                .setText(getString(R.string.demo_welcome))
+                .setOnLoaded(() ->
+                        FeedbackManager.setActivityForScreenshot((Activity) context)).build());
 
         assistant.addNode(new ChatMessage.Builder(QUIET_PLACE_ID)
                 .setText(getString(R.string.demo_ask_for_quiet_place)).build());
@@ -84,7 +89,9 @@ class ChatInteractionHelper {
                 .setContentDescriptions(getStringArray(R.array.satisfied)).build());
 
         assistant.addNode(new ChatMessage.Builder(DONE_ID)
-                .setText(getString(R.string.demo_done)).build());
+                .setText(getString(R.string.demo_done))
+                .setOnLoaded(() ->
+                        FeedbackManager.setActivityForScreenshot((Activity) context)).build());
 
         assistant.addNode(new ChatAction.Builder(LIKED_YES_ID)
                 .setText(getString(R.string.demo_thumbs_up))
