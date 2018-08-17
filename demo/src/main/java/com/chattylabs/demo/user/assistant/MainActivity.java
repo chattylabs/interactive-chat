@@ -13,6 +13,10 @@ import com.chattylabs.sdk.android.voice.AndroidSpeechRecognizer;
 import com.chattylabs.sdk.android.voice.AndroidSpeechSynthesizer;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.FeedbackManager;
+import net.hockeyapp.android.UpdateManager;
+
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
@@ -42,6 +46,22 @@ public class MainActivity extends DaggerAppCompatActivity {
                 () -> onRequestPermissionsResult(
                         PermissionsHelper.REQUEST_CODE, perms,
                         new int[] {PackageManager.PERMISSION_GRANTED}));
+
+        // HokeyApp Events
+        UpdateManager.register(this);
+        FeedbackManager.register(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (assistantComponent != null) assistantComponent.resume();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CrashManager.register(this);
     }
 
     @SuppressLint("MissingPermission")
@@ -63,14 +83,9 @@ public class MainActivity extends DaggerAppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (assistantComponent != null) assistantComponent.resume();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
+        UpdateManager.unregister();
         if (assistantComponent != null) {
             assistantComponent.release();
             assistantComponent.reset();
