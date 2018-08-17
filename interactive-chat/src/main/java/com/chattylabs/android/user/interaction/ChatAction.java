@@ -8,8 +8,9 @@ import java.util.Objects;
 
 public class ChatAction implements ChatNode, Comparable<ChatAction> {
     public final String id;
-    public final String text1;
-    public final String text2;
+    public final String text;
+    public final String textAfter;
+    public final String[] contentDescriptions;
     public final int image;
     public final int tintColor;
     public final OnSelected onSelected;
@@ -26,8 +27,9 @@ public class ChatAction implements ChatNode, Comparable<ChatAction> {
 
     public static class Builder {
         private String id;
-        private String text1;
-        private String text2;
+        private String text;
+        private String textAfter;
+        private String[] contentDescriptions;
         private int image;
         private int tintColor;
         private OnSelected onSelected;
@@ -47,18 +49,23 @@ public class ChatAction implements ChatNode, Comparable<ChatAction> {
             return this;
         }
 
-        public Builder setText1(String text1) {
-            this.text1 = text1;
+        public Builder setText(String text) {
+            this.text = text;
             return this;
         }
 
-        public Builder setText2(String text2) {
-            this.text2 = text2;
+        public Builder setTextAfter(String textAfter) {
+            this.textAfter = textAfter;
             return this;
         }
 
         public Builder setImage(@DrawableRes int image) {
             this.image = image;
+            return this;
+        }
+
+        public Builder setContentDescriptions(String[] contentDescriptions) {
+            this.contentDescriptions = contentDescriptions;
             return this;
         }
 
@@ -104,10 +111,10 @@ public class ChatAction implements ChatNode, Comparable<ChatAction> {
 
         public ChatAction build() {
             if (id == null || id.length() == 0) {
-                throw new NullPointerException("Action id must be set");
+                throw new NullPointerException("An Action object requires an ID");
             }
-            if (!(text1 != null && text1.length() > 0) && !(image > 0)) {
-                throw new NullPointerException("At least Action properties \"text1\" or \"image\" must be set");
+            if (!(text != null && text.length() > 0) && !(image > 0)) {
+                throw new NullPointerException("At least Action properties \"text\" or \"image\" must be set");
             }
             return new ChatAction(this);
         }
@@ -115,8 +122,9 @@ public class ChatAction implements ChatNode, Comparable<ChatAction> {
 
     private ChatAction(Builder builder) {
         this.id = builder.id;
-        this.text1 = builder.text1;
-        this.text2 = builder.text2;
+        this.text = builder.text;
+        this.textAfter = builder.textAfter;
+        this.contentDescriptions = builder.contentDescriptions;
         this.image = builder.image;
         this.tintColor = builder.tintColor;
         this.onSelected = builder.onSelected;

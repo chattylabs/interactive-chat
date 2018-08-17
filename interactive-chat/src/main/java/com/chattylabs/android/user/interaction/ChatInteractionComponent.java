@@ -49,11 +49,11 @@ public interface ChatInteractionComponent {
 
     void next();
 
-    void performLastAction();
+    void selectLastAction();
 
-    void enableSpeech(boolean enable);
+    void enableSpeechSynthesizer(boolean enable);
 
-    boolean isSpeechEnabled();
+    void enableSpeechRecognizer(boolean enable);
 
     void setupSpeech(Context context, OnComponentSetup onPrepared);
 

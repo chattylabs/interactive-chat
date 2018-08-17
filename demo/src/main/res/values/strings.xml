@@ -10,4 +10,20 @@
     <string name="demo_done">I see 🤔. By the way, did you like chatting with me?</string>
     <string name="demo_thumbs_up"><![CDATA[&#x1f44d;]]></string>
     <string name="demo_thumbs_down"><![CDATA[👎]]></string>
+    <string name="dissatisfied_1">Dissatisfied</string>
+    <string name="dissatisfied_2">Not satisfied</string>
+    <string name="dissatisfied_3">Not happy</string>
+    <string name="dissatisfied_4">Sad</string>
+    <string name="neutral_1">Neutral</string>
+    <string name="neutral_2">Nothing</string>
+    <string name="neutral_3">Impartial</string>
+    <string name="satisfied_1">Satisfied</string>
+    <string name="satisfied_2">Happy</string>
+    <string name="satisfied_3">Content</string>
+    <string name="thumbsup_1">Thumbs up</string>
+    <string name="thumbsup_2">Positive</string>
+    <string name="thumbsup_3">Yes</string>
+    <string name="thumbsup_4">Ok</string>
+    <string name="thumbsdown_1">Thumbs down</string>
+    <string name="thumbsdown_2">No</string>
 </resources>

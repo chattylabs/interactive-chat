@@ -11,8 +11,8 @@ public class ChatMessage implements ChatNode {
     public final int imageId;
     public final int tintColorId;
     public final boolean aloud;
-    public final boolean showAsFirst;
-    public final boolean showAsAnswer;
+    public final boolean shownAsHead;
+    public final boolean shownAsAction;
     public final Runnable onLoaded;
     public final float textSize;
 
@@ -22,8 +22,8 @@ public class ChatMessage implements ChatNode {
         private int imageId;
         private int tintColorId;
         private boolean aloud;
-        private boolean showAsFirst;
-        private boolean showAsAnswer;
+        private boolean shownAsHead;
+        private boolean shownAsAction;
         private Runnable onLoaded;
         private float textSize;
 
@@ -54,13 +54,13 @@ public class ChatMessage implements ChatNode {
             return this;
         }
 
-        public Builder setShowAsFirst(boolean showAsFirst) {
-            this.showAsFirst = showAsFirst;
+        public Builder setShownAsHead(boolean shownAsHead) {
+            this.shownAsHead = shownAsHead;
             return this;
         }
 
-        public Builder setShowAsAnswer(boolean showAsAnswer) {
-            this.showAsAnswer = showAsAnswer;
+        public Builder setShownAsAction(boolean shownAsAction) {
+            this.shownAsAction = shownAsAction;
             return this;
         }
 
@@ -89,8 +89,8 @@ public class ChatMessage implements ChatNode {
         this.imageId = builder.imageId;
         this.tintColorId = builder.tintColorId;
         this.aloud = builder.aloud;
-        this.showAsFirst = builder.showAsFirst;
-        this.showAsAnswer = builder.showAsAnswer;
+        this.shownAsHead = builder.shownAsHead;
+        this.shownAsAction = builder.shownAsAction;
         this.onLoaded = builder.onLoaded;
         this.textSize = builder.textSize;
     }

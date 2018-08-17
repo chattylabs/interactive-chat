@@ -2,7 +2,7 @@ package com.chattylabs.demo.user.assistant;
 
 import com.chattylabs.sdk.android.common.internal.ILogger;
 import com.chattylabs.sdk.android.common.internal.ILoggerImpl;
-import com.chattylabs.sdk.android.voice.VoiceInteractionModule;
+import com.chattylabs.sdk.android.voice.ConversationalFlowModule;
 
 import javax.inject.Singleton;
 
@@ -16,7 +16,7 @@ public class DemoApplication extends DaggerApplication {
     @dagger.Component(
             modules = {
                     AndroidSupportInjectionModule.class,
-                    VoiceInteractionModule.class,
+                    ConversationalFlowModule.class,
                     DemoModule.class
             }
     )

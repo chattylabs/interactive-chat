@@ -71,10 +71,10 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         else if (item instanceof ChatLoading) {
             return LOADING;
         }
-        else if (item instanceof ChatMessage && ((ChatMessage) item).showAsAnswer) {
+        else if (item instanceof ChatMessage && ((ChatMessage) item).shownAsAction) {
             return MESSAGE_OUT;
         }
-        return (item instanceof ChatMessage && ((ChatMessage) item).showAsFirst) ?
+        return (item instanceof ChatMessage && ((ChatMessage) item).shownAsHead) ?
                 MESSAGE_IN_AS_FIRST : MESSAGE_IN;
     }
 
@@ -147,10 +147,10 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
                 Spanned span;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    span = Html.fromHtml(action.text1, Html.FROM_HTML_MODE_COMPACT);
+                    span = Html.fromHtml(action.text, Html.FROM_HTML_MODE_COMPACT);
                 }
                 else {
-                    span = Html.fromHtml(action.text1);
+                    span = Html.fromHtml(action.text);
                 }
                 ((Button) button).setText(span);
             }

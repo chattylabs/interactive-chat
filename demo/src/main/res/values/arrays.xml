@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dissatisfied">
+        <item>@string/dissatisfied_1</item>
+        <item>@string/dissatisfied_2</item>
+        <item>@string/dissatisfied_3</item>
+        <item>@string/dissatisfied_4</item>
+    </string-array>
+    <string-array name="neutral">
+        <item>@string/neutral_1</item>
+        <item>@string/neutral_2</item>
+        <item>@string/neutral_3</item>
+    </string-array>
+    <string-array name="satisfied">
+        <item>@string/satisfied_1</item>
+        <item>@string/satisfied_2</item>
+        <item>@string/satisfied_3</item>
+    </string-array>
+    <string-array name="thumbsup">
+        <item>@string/thumbsup_1</item>
+        <item>@string/thumbsup_2</item>
+        <item>@string/thumbsup_3</item>
+        <item>@string/thumbsup_4</item>
+    </string-array>
+    <string-array name="thumbsdown">
+        <item>@string/thumbsdown_1</item>
+        <item>@string/thumbsdown_2</item>
+    </string-array>
+</resources>
