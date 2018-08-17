@@ -12,4 +12,5 @@
     android:gravity="center"
     style="@style/LibTheme.Button.BubbleChat"
     android:minHeight="40dp"
-    tools:src="@tools:sample/avatars"/>
+    tools:src="@tools:sample/avatars"
+    tools:ignore="ContentDescription" />

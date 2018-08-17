@@ -87,23 +87,23 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         switch (viewType) {
             case LOADING:
-                v = inflater.inflate(R.layout.item_user_assistant_loading, viewGroup, false);
+                v = inflater.inflate(R.layout.item_interactive_chat_loading, viewGroup, false);
                 viewHolder = new ChatLoadingViewHolder(v);
                 break;
             case ACTIONS:
-                v = inflater.inflate(R.layout.item_user_assistant_actions, viewGroup, false);
+                v = inflater.inflate(R.layout.item_interactive_chat_actions, viewGroup, false);
                 viewHolder = new ChatActionViewHolder(v);
                 break;
             case MESSAGE_OUT:
-                v = inflater.inflate(R.layout.item_user_assistant_action_selected, viewGroup, false);
+                v = inflater.inflate(R.layout.item_interactive_chat_action_selected, viewGroup, false);
                 viewHolder = new ChatMessageViewHolder(v);
                 break;
             case MESSAGE_IN_AS_FIRST:
-                v = inflater.inflate(R.layout.item_user_assistant_system_message_as_first, viewGroup, false);
+                v = inflater.inflate(R.layout.item_interactive_chat_head_message, viewGroup, false);
                 viewHolder = new ChatMessageViewHolder(v);
                 break;
             default:
-                v = inflater.inflate(R.layout.item_user_assistant_system_message, viewGroup, false);
+                v = inflater.inflate(R.layout.item_interactive_chat_message, viewGroup, false);
                 viewHolder = new ChatMessageViewHolder(v);
                 break;
         }
@@ -132,8 +132,8 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         for (ChatAction action : actionSet) {
             LayoutInflater inflater = LayoutInflater.from(viewHolder.actions.getContext());
             View button = inflater.inflate(action.image > 0
-                                                      ? R.layout.item_user_assistant_imagebutton
-                                                      : R.layout.item_user_assistant_button,
+                                                      ? R.layout.item_interactive_chat_imagebutton
+                                                      : R.layout.item_interactive_chat_button,
                                                       viewHolder.actions, false);
             if (action.image > 0) {
                 //noinspection ConstantConditions
@@ -155,8 +155,8 @@ public class ChatInteractionAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
                 ((Button) button).setText(span);
             }
-            button.setTag(R.id.user_assistant_action_id, action.id);
-            button.setTag(R.id.user_assistant_item_position, position);
+            button.setTag(R.id.interactive_chat_action_id, action.id);
+            button.setTag(R.id.interactive_chat_item_position, position);
             button.setOnClickListener(v -> listener.onClick(v, action));
             viewHolder.actions.addView(button);
         }

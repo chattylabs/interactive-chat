@@ -5,43 +5,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="50dp"
-    android:layout_marginBottom="16dp"
-    android:layout_marginTop="16dp">
+    android:layout_marginEnd="50dp"
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@id/user_assistant_message_item_text"
+    <android.support.text.emoji.widget.EmojiTextView
+        android:id="@id/interactive_chat_message_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="40dp"
-        android:gravity="center"
-        android:fontFamily="@font/source_sans_pro_semibold_italic"
-        android:includeFontPadding="false"
-        android:paddingBottom="8dp"
+        android:background="@drawable/bubble_normal"
+        android:paddingBottom="12dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:textColor="@color/background_opaque"
+        android:paddingTop="12dp"
+        android:textColor="#455a64"
         android:textSize="14sp"
+        android:fontFamily="@font/source_sans_pro"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:text="Done" />
+        tools:layout_constraintStart_creator="1"
+        tools:text="Hi there! Good to see you again!"/>
 
     <ImageView
-        android:id="@id/user_assistant_message_item_image"
+        android:id="@id/interactive_chat_message_item_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
+        android:background="@drawable/bubble_normal"
+        android:paddingBottom="10dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="8dp"
+        android:paddingTop="12dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:src="@tools:sample/avatars"/>
+        tools:layout_constraintStart_creator="1"
+        tools:src="@tools:sample/avatars"
+        tools:ignore="ContentDescription" />
 
 </android.support.constraint.ConstraintLayout>

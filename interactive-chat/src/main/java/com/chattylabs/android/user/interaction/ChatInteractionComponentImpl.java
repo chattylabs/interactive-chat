@@ -280,7 +280,10 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     private void addLast(ChatNode node) {
-        uiThreadHandler.post(() -> adapter.addItem(node));
+        uiThreadHandler.post(() -> {
+            adapter.addItem(node);
+            layoutManager.scrollToPosition(adapter.getItemCount() - 1);
+        });
     }
 
     private void removeLastItem() {
@@ -413,12 +416,10 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                                 ChatActionSet actionSet = (ChatActionSet) getNext();
                                 currentNode = item;
                                 if (actionSet != null) for (ChatAction action : actionSet) {
-                                    String[] descriptions = action.text != null ?
-                                            new String[]{action.text} : null;
-                                    if (descriptions == null) descriptions = action.textAfter != null ?
-                                            new String[]{action.textAfter} : null;
-                                    if (descriptions == null) descriptions = action.contentDescriptions;
-                                    if (checkWord(descriptions, result)){
+                                    String[] expected = action.contentDescriptions;
+                                    if (expected == null) expected = action.text != null ?
+                                            new String[]{action.text} : new String[]{action.textAfter};
+                                    if (checkWord(expected, result)){
                                         perform(action);
                                         break;
                                     }
@@ -431,16 +432,15 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                         }
                         // Never show next node automatically for actions
                     }
-                    layoutManager.scrollToPosition(adapter.getItemCount() - 1);
                 });
             }
         };
         timer.schedule(task, timeout);
     }
 
-    private boolean checkWord(String[] patterns, String text) {
+    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
         for (String pattern : patterns) {
-            if (ConversationalFlowComponent.matches(text, pattern)) return true;
+            if (pattern != null && ConversationalFlowComponent.matches(text, pattern)) return true;
         }
         return false;
     }
