@@ -64,6 +64,6 @@ publish {
     groupId = project.group
     artifactId = project.name
     publishVersion = project.version
-    desc = 'Android Interactive Chat Component'
+    desc = 'Android Interactive Chat (VUI SDK)'
     website = 'https://github.com/chattylabs/android-interactive-chat'
 }
