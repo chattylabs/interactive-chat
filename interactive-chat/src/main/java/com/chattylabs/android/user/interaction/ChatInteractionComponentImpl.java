@@ -413,9 +413,12 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                                 ChatActionSet actionSet = (ChatActionSet) getNext();
                                 currentNode = item;
                                 if (actionSet != null) for (ChatAction action : actionSet) {
-                                    if ((action.text != null && action.text.equals(result)) ||
-                                        (action.textAfter != null && action.textAfter.equals(result)) ||
-                                        checkWord(action.contentDescriptions, result)){
+                                    String[] descriptions = action.text != null ?
+                                            new String[]{action.text} : null;
+                                    if (descriptions == null) descriptions = action.textAfter != null ?
+                                            new String[]{action.textAfter} : null;
+                                    if (descriptions == null) descriptions = action.contentDescriptions;
+                                    if (checkWord(descriptions, result)){
                                         perform(action);
                                         break;
                                     }
