@@ -7,7 +7,7 @@
     <string name="demo_no">No</string>
     <string name="demo_comeback_later">OK, no problem. Come back at anytime. See you later!</string>
     <string name="demo_select_icon">What would you say is your current sentiment?</string>
-    <string name="demo_done">I see 🤔. By the way, did you like chatting with me?</string>
+    <string name="demo_done">I see 🤔. By the way, do you mind to send some feedback now and also a screenshot?</string>
     <string name="demo_thumbs_up"><![CDATA[&#x1f44d;]]></string>
     <string name="demo_thumbs_down"><![CDATA[👎]]></string>
     <string name="dissatisfied_1">Dissatisfied</string>
@@ -30,4 +30,6 @@
     <string name="demo_morning">Morning</string>
     <string name="demo_noon">Noon</string>
     <string name="demo_evening">Evening</string>
+    <string name="demo_explanation">Good! This is a demo where you can test to answer to my questions with your voice! Only english language is available here.</string>
+    <string name="demo_ok">Ok</string>
 </resources>

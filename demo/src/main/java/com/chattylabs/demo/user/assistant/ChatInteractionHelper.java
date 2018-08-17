@@ -1,6 +1,5 @@
 package com.chattylabs.demo.user.assistant;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
@@ -30,10 +29,12 @@ class ChatInteractionHelper {
     private static final String DONE_ID = "done";
     private static final String LIKED_YES_ID = "liked_yes";
     private static final String LIKED_NO_ID = "liked_no";
-    public static final String PART_OF_DAY_ID = "part_of_day";
-    public static final String MORNING_ID = "morning";
-    public static final String NOON_ID = "noon";
-    public static final String EVENING_ID = "evening";
+    private static final String PART_OF_DAY_ID = "part_of_day";
+    private static final String MORNING_ID = "morning";
+    private static final String NOON_ID = "noon";
+    private static final String EVENING_ID = "evening";
+    public static final String EXPLANATION_ID = "explanation";
+    public static final String OK_ID = "ok";
 
     private Context context;
     private ChatInteractionComponent assistant;
@@ -58,9 +59,7 @@ class ChatInteractionHelper {
 
     private ChatNode buildFlow() {
         assistant.addNode(new ChatMessage.Builder(WELCOME_ID)
-                .setText(getString(R.string.demo_welcome))
-                .setOnLoaded(() ->
-                        FeedbackManager.setActivityForScreenshot((Activity) context)).build());
+                .setText(getString(R.string.demo_welcome)).build());
 
         assistant.addNode(new ChatMessage.Builder(QUIET_PLACE_ID)
                 .setText(getString(R.string.demo_ask_for_quiet_place)).build());
@@ -78,6 +77,12 @@ class ChatInteractionHelper {
 
         assistant.addNode(new ChatMessage.Builder(COMEBACK_LATER_ID)
                 .setText(getString(R.string.demo_comeback_later)).build());
+
+        assistant.addNode(new ChatMessage.Builder(EXPLANATION_ID)
+                .setText(getString(R.string.demo_explanation)).build());
+
+        assistant.addNode(new ChatAction.Builder(OK_ID)
+                .setText(getString(R.string.demo_ok)).build());
 
         assistant.addNode(new ChatMessage.Builder(SELECT_ICON_ID)
                 .setText(getString(R.string.demo_select_icon)).build());
@@ -105,14 +110,17 @@ class ChatInteractionHelper {
                 .setText(getString(R.string.demo_evening)).build());
 
         assistant.addNode(new ChatMessage.Builder(DONE_ID)
-                .setText(getString(R.string.demo_done))
-                .setOnLoaded(() ->
-                        FeedbackManager.setActivityForScreenshot((Activity) context)).build());
+                .setText(getString(R.string.demo_done)).build());
 
         assistant.addNode(new ChatAction.Builder(LIKED_YES_ID)
                 .setText(getString(R.string.demo_thumbs_up))
                 .setContentDescriptions(getStringArray(R.array.thumbsup))
-                .setTextSize(24).build());
+                .setTextSize(24)
+                .setOnSelected(action -> {
+                    FeedbackManager.takeScreenshot(context);
+                    FeedbackManager.showFeedbackActivity(context);
+                })
+                .build());
 
         assistant.addNode(new ChatAction.Builder(LIKED_NO_ID)
                 .setText(getString(R.string.demo_thumbs_down))
@@ -123,7 +131,9 @@ class ChatInteractionHelper {
         flow.from(WELCOME_ID).to(QUIET_PLACE_ID);
         flow.from(QUIET_PLACE_ID).to(QUIET_PLACE_YES_ID, QUIET_PLACE_NO_ID);
         flow.from(QUIET_PLACE_NO_ID).to(COMEBACK_LATER_ID);
-        flow.from(QUIET_PLACE_YES_ID).to(SELECT_ICON_ID);
+        flow.from(QUIET_PLACE_YES_ID).to(EXPLANATION_ID);
+        flow.from(EXPLANATION_ID).to(OK_ID);
+        flow.from(OK_ID).to(SELECT_ICON_ID);
         flow.from(SELECT_ICON_ID).to(ICON_1_ID, ICON_2_ID, ICON_3_ID);
         flow.from(ICON_1_ID).to(PART_OF_DAY_ID); // mix it?
         flow.from(ICON_2_ID).to(PART_OF_DAY_ID);

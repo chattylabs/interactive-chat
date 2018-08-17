@@ -17,6 +17,8 @@ import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
@@ -37,6 +39,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         voiceComponent.updateConfiguration(builder -> {
             builder.setSynthesizerServiceType(() -> AndroidSpeechSynthesizer.class);
             builder.setRecognizerServiceType(() -> AndroidSpeechRecognizer.class);
+            builder.setSpeechLanguage(() -> Locale.ENGLISH);
             return builder.build();
         });
 
@@ -50,6 +53,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         // HokeyApp Events
         UpdateManager.register(this);
         FeedbackManager.register(this);
+        FeedbackManager.setActivityForScreenshot(this);
     }
 
     @Override
