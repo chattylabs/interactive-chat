@@ -56,7 +56,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:3.8'
 }
 
-group = 'com.chattylabs.android'
+group = 'com.chattylabs.sdk.android'
 version = android.defaultConfig.versionName
 
 publish {
@@ -64,6 +64,6 @@ publish {
     groupId = project.group
     artifactId = project.name
     publishVersion = project.version
-    desc = 'Android Chat Interaction Component'
+    desc = 'Android Interactive Chat Component'
     website = 'https://github.com/chattylabs/android-interactive-chat'
 }
