@@ -30,6 +30,10 @@ class ChatInteractionHelper {
     private static final String DONE_ID = "done";
     private static final String LIKED_YES_ID = "liked_yes";
     private static final String LIKED_NO_ID = "liked_no";
+    public static final String PART_OF_DAY_ID = "part_of_day";
+    public static final String MORNING_ID = "morning";
+    public static final String NOON_ID = "noon";
+    public static final String EVENING_ID = "evening";
 
     private Context context;
     private ChatInteractionComponent assistant;
@@ -88,6 +92,18 @@ class ChatInteractionHelper {
                 .setImage(R.drawable.ic_sentiment_satisfied_black_24dp)
                 .setContentDescriptions(getStringArray(R.array.satisfied)).build());
 
+        assistant.addNode(new ChatMessage.Builder(PART_OF_DAY_ID)
+                .setText(getString(R.string.demo_part_of_day)).build());
+
+        assistant.addNode(new ChatAction.Builder(MORNING_ID)
+                .setText(getString(R.string.demo_morning)).build());
+
+        assistant.addNode(new ChatAction.Builder(NOON_ID)
+                .setText(getString(R.string.demo_noon)).build());
+
+        assistant.addNode(new ChatAction.Builder(EVENING_ID)
+                .setText(getString(R.string.demo_evening)).build());
+
         assistant.addNode(new ChatMessage.Builder(DONE_ID)
                 .setText(getString(R.string.demo_done))
                 .setOnLoaded(() ->
@@ -109,9 +125,13 @@ class ChatInteractionHelper {
         flow.from(QUIET_PLACE_NO_ID).to(COMEBACK_LATER_ID);
         flow.from(QUIET_PLACE_YES_ID).to(SELECT_ICON_ID);
         flow.from(SELECT_ICON_ID).to(ICON_1_ID, ICON_2_ID, ICON_3_ID);
-        flow.from(ICON_1_ID).to(DONE_ID);
-        flow.from(ICON_2_ID).to(DONE_ID);
-        flow.from(ICON_3_ID).to(DONE_ID);
+        flow.from(ICON_1_ID).to(PART_OF_DAY_ID); // mix it?
+        flow.from(ICON_2_ID).to(PART_OF_DAY_ID);
+        flow.from(ICON_3_ID).to(PART_OF_DAY_ID);
+        flow.from(PART_OF_DAY_ID).to(MORNING_ID, NOON_ID, EVENING_ID);
+        flow.from(MORNING_ID).to(DONE_ID); // mix it?
+        flow.from(NOON_ID).to(DONE_ID);
+        flow.from(EVENING_ID).to(DONE_ID);
         flow.from(DONE_ID).to(LIKED_YES_ID, LIKED_NO_ID);
 
         return assistant.getNode(WELCOME_ID);
