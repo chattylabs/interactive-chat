@@ -57,6 +57,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
     private ChatNode currentNode;
     private ChatAction lastAction;
+    private Runnable doneListener;
     private boolean paused;
     private boolean enableSynthesizer;
     private boolean enableRecognizer;
@@ -151,6 +152,11 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 onSetup.execute(status);
             });
         });
+    }
+
+    @Override
+    public void onDone(Runnable callback) {
+        this.doneListener = callback;
     }
 
     @Override
@@ -384,6 +390,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             schedule(node, delay);
         } else {
             hideLoading(); // Otherwise there is no more nodes
+            if (doneListener != null) doneListener.run();
         }
     }
 
