@@ -77,7 +77,7 @@ class ChatInteractionHelper {
                 .build());
 
         assistant.addNode(new ChatActionText.Builder(QUIET_PLACE_NO_ID)
-                .setText(getString(R.string.demo_no)).build());
+                .setText(getString(R.string.demo_no)).skipTracking(true).build());
 
         assistant.addNode(new ChatMessageText.Builder(COMEBACK_LATER_ID)
                 .setText(getString(R.string.demo_comeback_later)).build());
