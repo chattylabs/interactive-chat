@@ -65,6 +65,8 @@ public interface ChatInteractionComponent {
 
     void reset();
 
+    void onDone(Runnable callback);
+
     void showLoading();
 
     void hideLoading();
