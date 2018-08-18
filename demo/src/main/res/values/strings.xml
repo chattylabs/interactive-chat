@@ -32,6 +32,6 @@
     <string name="demo_noon">Noon</string>
     <string name="demo_evening">Evening</string>
     <string name="demo_explanation_1">Great! This is a demo where you can answer questions with your voice!</string>
-    <string name="demo_explanation_2">Only english language is available here.</string>
+    <string name="demo_explanation_2">Only english language is available.</string>
     <string name="demo_ok">Ok</string>
 </resources>
