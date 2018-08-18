@@ -15,10 +15,8 @@ public class ChatActionText extends ChatAction {
     private final int order;
     public final Runnable onLoaded;
     private final OnSelected onSelected;
-    private boolean isDefault;
     private boolean skipTracking;
     private boolean stopFlow;
-    private boolean keepAction;
 
     public static class Builder {
         private String id;
@@ -27,13 +25,11 @@ public class ChatActionText extends ChatAction {
         private float textSize;
         private String[] contentDescriptions;
         private int tintColor;
+        private int order;
         private Runnable onLoaded;
         private OnSelected onSelected;
-        private boolean isDefault;
-        private int order;
         private boolean skipTracking;
         private boolean stopFlow;
-        private boolean keepAction;
 
         public Builder(String id) {
             this.id = id;
@@ -74,11 +70,6 @@ public class ChatActionText extends ChatAction {
             return this;
         }
 
-        public Builder setAsDefault(boolean aDefault) {
-            isDefault = aDefault;
-            return this;
-        }
-
         public Builder setOrder(int order) {
             this.order = order;
             return this;
@@ -91,11 +82,6 @@ public class ChatActionText extends ChatAction {
 
         public Builder stopFlow(boolean stopFlow) {
             this.stopFlow = stopFlow;
-            return this;
-        }
-
-        public Builder keepAction(boolean keepAction) {
-            this.keepAction = keepAction;
             return this;
         }
 
@@ -118,12 +104,10 @@ public class ChatActionText extends ChatAction {
         this.tintColor = builder.tintColor;
         this.onLoaded = builder.onLoaded;
         this.onSelected = builder.onSelected;
-        this.isDefault = builder.isDefault;
         this.textSize = builder.textSize;
         this.order = builder.order;
         this.skipTracking = builder.skipTracking;
         this.stopFlow = builder.stopFlow;
-        this.keepAction = builder.keepAction;
     }
 
     @Override
@@ -137,18 +121,8 @@ public class ChatActionText extends ChatAction {
     }
 
     @Override
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    @Override
     public boolean skipTracking() {
         return skipTracking;
-    }
-
-    @Override
-    public boolean keepAction() {
-        return keepAction;
     }
 
     @Override

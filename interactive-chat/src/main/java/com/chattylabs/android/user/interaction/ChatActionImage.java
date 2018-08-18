@@ -15,10 +15,8 @@ public class ChatActionImage extends ChatAction {
     private final int order;
     public final Runnable onLoaded;
     private final ChatAction.OnSelected onSelected;
-    private boolean isDefault;
     private boolean skipTracking;
     private boolean stopFlow;
-    private boolean keepAction;
 
     public static class Builder {
         private String id;
@@ -29,10 +27,8 @@ public class ChatActionImage extends ChatAction {
         private Runnable onLoaded;
         private OnSelected onSelected;
         private int order;
-        private boolean isDefault;
         private boolean skipTracking;
         private boolean stopFlow;
-        private boolean keepAction;
 
         public Builder(String id) {
             this.id = id;
@@ -73,11 +69,6 @@ public class ChatActionImage extends ChatAction {
             return this;
         }
 
-        public Builder setAsDefault(boolean aDefault) {
-            isDefault = aDefault;
-            return this;
-        }
-
         public Builder skipTracking(boolean skipTracking) {
             this.skipTracking = skipTracking;
             return this;
@@ -85,11 +76,6 @@ public class ChatActionImage extends ChatAction {
 
         public Builder stopFlow(boolean stopFlow) {
             this.stopFlow = stopFlow;
-            return this;
-        }
-
-        public Builder keepAction(boolean keepAction) {
-            this.keepAction = keepAction;
             return this;
         }
 
@@ -113,10 +99,8 @@ public class ChatActionImage extends ChatAction {
         this.onLoaded = builder.onLoaded;
         this.onSelected = builder.onSelected;
         this.order = builder.order;
-        this.isDefault = builder.isDefault;
         this.skipTracking = builder.skipTracking;
         this.stopFlow = builder.stopFlow;
-        this.keepAction = builder.keepAction;
     }
 
     @Override
@@ -130,18 +114,8 @@ public class ChatActionImage extends ChatAction {
     }
 
     @Override
-    public boolean isDefault() {
-        return isDefault;
-    }
-
-    @Override
     public boolean skipTracking() {
         return skipTracking;
-    }
-
-    @Override
-    public boolean keepAction() {
-        return keepAction;
     }
 
     @Override
