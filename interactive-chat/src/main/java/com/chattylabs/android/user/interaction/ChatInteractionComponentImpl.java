@@ -254,12 +254,13 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private void perform(ChatAction action) {
         currentNode = action;
         lastAction = action;
-        saveVisitedNode(action);
         if (speechComponent != null) speechComponent.stop();
         if (action.onSelected() != null) {
             action.onSelected().execute(action);
         }
         if (!action.stopFlow()) {
+            if (!action.skipTracking())
+                saveVisitedNode(action);
             selectLastVisitedAction();
             next();
         }
@@ -305,7 +306,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         sharedPreferences.edit().putStringSet(VISITED_NODES, set).apply();
     }
 
-    private Set<String> getVisitedNodes() {
+    @Override
+    public Set<String> getVisitedNodes() {
         return sharedPreferences.getStringSet(VISITED_NODES, new HashSet<>());
     }
 

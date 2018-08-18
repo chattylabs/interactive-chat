@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 import com.chattylabs.sdk.android.voice.OnComponentSetup;
 
+import java.util.Set;
+
 public interface ChatInteractionComponent {
 
     interface IBuild {
@@ -44,6 +46,8 @@ public interface ChatInteractionComponent {
     void addNode(@NonNull ChatNode node);
 
     ChatNode getNode(@NonNull String id);
+
+    Set<String> getVisitedNodes();
 
     ChatFlow create();
 
