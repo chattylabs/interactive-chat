@@ -75,8 +75,10 @@ public class MainActivity extends DaggerAppCompatActivity {
                                            @NonNull int[] grantResults) {
         if (PermissionsHelper.isPermissionRequest(requestCode) &&
             PermissionsHelper.isPermissionGranted(grantResults)) {
-            ThreadUtils.newSerialThread().addTask(() -> assistantComponent =
-                            new ChatInteractionHelper(view, voiceComponent).create());
+            ThreadUtils.newSerialThread().addTask(() -> {
+                assistantComponent = new ChatInteractionHelper(view, voiceComponent).create();
+                assistantComponent.onDone(() -> assistantComponent.reset());
+            });
         }
     }
 
@@ -92,7 +94,6 @@ public class MainActivity extends DaggerAppCompatActivity {
         UpdateManager.unregister();
         if (assistantComponent != null) {
             assistantComponent.release();
-            assistantComponent.reset();
         }
     }
 }
