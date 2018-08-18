@@ -27,7 +27,9 @@ import com.chattylabs.sdk.android.voice.SynthesizerListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,7 +39,9 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private static final long DEFAULT_MESSAGE_DELAY = 500L;
 
     @VisibleForTesting
-    static final String LAST_SAVED_NODE = BuildConfig.APPLICATION_ID + ".LAST_SAVED_NODE";
+    static final String LAST_VISITED_NODE = BuildConfig.APPLICATION_ID + ".LAST_VISITED_NODE";
+    @VisibleForTesting
+    static final String VISITED_NODES = BuildConfig.APPLICATION_ID + ".VISITED_NODES";
 
     public static final int LOADING_DISPLAY_DELAY = 1000;
     public static final int ITEM_SEPARATOR_SIZE_DIP = 4;
@@ -237,12 +241,12 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 if (!ChatAction.class.isInstance(node)) {
                     setLastVisitedNode(node);
                 } else {
-                    throw new IllegalStateException("An Action can only have " +
-                            "an edge to a Message");
+                    throw new IllegalStateException("An Action can only be " +
+                            "connected to a Message");
                 }
             } else {
                 throw new IllegalStateException("An Action cannot have multiple " +
-                        "edges in the graph");
+                        "connections in the graph");
             }
         }
     }
@@ -250,27 +254,26 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private void perform(ChatAction action) {
         currentNode = action;
         lastAction = action;
-        if (!action.keepAction()) {
-            selectLastAction();
-        }
+        saveVisitedNode(action);
         if (speechComponent != null) speechComponent.stop();
         if (action.onSelected() != null) {
             action.onSelected().execute(action);
         }
         if (!action.stopFlow()) {
+            selectLastVisitedAction();
             next();
         }
     }
 
     @Override
-    public void selectLastAction() {
+    public void selectLastVisitedAction() {
         ChatNode node = getNode();
         ChatAction action = null;
         removeLastItem();
         if (ChatAction.class.isInstance(node)) {
             action = (ChatAction) node;
         } else if (ChatActionList.class.isInstance(node)) {
-            action = ((ChatActionList) node).getDefault();
+            action = ((ChatActionList) node).getVisited(getVisitedNodes());
         }
         if (action != null) placeSelectedAction(action);
     }
@@ -293,11 +296,21 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     private void setLastVisitedNode(ChatNode node) {
-        sharedPreferences.edit().putString(LAST_SAVED_NODE, node.getId()).apply();
+        sharedPreferences.edit().putString(LAST_VISITED_NODE, node.getId()).apply();
+    }
+
+    private void saveVisitedNode(ChatNode node) {
+        Set<String> set = getVisitedNodes();
+        set.add(node.getId());
+        sharedPreferences.edit().putStringSet(VISITED_NODES, set).apply();
+    }
+
+    private Set<String> getVisitedNodes() {
+        return sharedPreferences.getStringSet(VISITED_NODES, new HashSet<>());
     }
 
     private String getLastVisitedNodeId(ChatNode node) {
-        return sharedPreferences.getString(LAST_SAVED_NODE, node.getId());
+        return sharedPreferences.getString(LAST_VISITED_NODE, node.getId());
     }
 
     private ChatNode getNode() {
@@ -326,7 +339,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
 
     @Override
     public void reset() {
-        sharedPreferences.edit().remove(LAST_SAVED_NODE).apply();
+        sharedPreferences.edit().remove(LAST_VISITED_NODE).apply();
+        sharedPreferences.edit().remove(VISITED_NODES).apply();
     }
 
     private void traverse(List<ChatNode> items, ChatNode root, ChatNode target) {
@@ -349,7 +363,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 }
             } else {
                 ChatActionList actionList = getActionList(edges);
-                ChatAction action = actionList.getDefault();
+                ChatAction action = actionList.getVisited(getVisitedNodes());
                 if (action != null) {
                     items.add(action.buildActionSelected());
                     traverse(items, action, target);

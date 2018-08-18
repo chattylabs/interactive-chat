@@ -1,12 +1,13 @@
 package com.chattylabs.android.user.interaction;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 class ChatActionList extends ArrayList<ChatAction> implements ChatNode {
 
-    public ChatAction getDefault() {
+    ChatAction getVisited(Set<String> nodes) {
         for (ChatAction action : this) {
-            if (action.isDefault()) {
+            if (nodes.contains(action.getId())) {
                 return action;
             }
         }

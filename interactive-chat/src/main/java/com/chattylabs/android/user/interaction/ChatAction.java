@@ -8,11 +8,7 @@ public abstract class ChatAction implements ChatNode, Comparable<ChatAction> {
 
     public abstract OnSelected onSelected();
 
-    public abstract boolean isDefault();
-
     public abstract boolean skipTracking();
-
-    public abstract boolean keepAction();
 
     public abstract boolean stopFlow();
 

@@ -49,7 +49,7 @@ public interface ChatInteractionComponent {
 
     void next();
 
-    void selectLastAction();
+    void selectLastVisitedAction();
 
     void enableSpeechSynthesizer(boolean enable);
 
