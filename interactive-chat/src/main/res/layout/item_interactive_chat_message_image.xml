@@ -5,17 +5,15 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <android.support.text.emoji.widget.EmojiTextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bubble_normal"
         android:layout_marginEnd="50dp"
-        android:paddingBottom="12dp"
+        android:paddingBottom="10dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
         android:paddingTop="12dp"
-        android:textColor="#455a64"
-        android:textSize="14sp"
-        android:fontFamily="@font/source_sans_pro"
-        tools:text="Hi there! Good to see you again!"/>
+        tools:src="@tools:sample/avatars"
+        tools:ignore="ContentDescription" />
 </LinearLayout>

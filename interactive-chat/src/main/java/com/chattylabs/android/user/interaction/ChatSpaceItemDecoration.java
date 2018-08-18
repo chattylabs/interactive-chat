@@ -4,11 +4,11 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
+class ChatSpaceItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int verticalSpaceHeight;
 
-    VerticalSpaceItemDecoration(int verticalSpaceHeight) {
+    ChatSpaceItemDecoration(int verticalSpaceHeight) {
         this.verticalSpaceHeight = verticalSpaceHeight;
     }
 

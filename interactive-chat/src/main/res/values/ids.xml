@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Generic ids -->
     <item type="id" name="interactive_chat_item_position" />
     <item type="id" name="interactive_chat_action_id" />
-    <item type="id" name="interactive_chat_message_item_text" />
-    <item type="id" name="interactive_chat_message_item_image" />
-    <item type="id" name="interactive_chat_actions" />
+    <!-- View Types -->
+    <item type="id" name="interactive_chat_action_list_view_type" />
+    <item type="id" name="interactive_chat_action_image_selected_view_type" />
+    <item type="id" name="interactive_chat_action_text_selected_view_type" />
+    <item type="id" name="interactive_chat_loading_view_type" />
+    <item type="id" name="interactive_chat_message_view_type" />
+    <item type="id" name="interactive_chat_message_image_view_type" />
+    <item type="id" name="interactive_chat_message_first_view_type"/>
 </resources>
