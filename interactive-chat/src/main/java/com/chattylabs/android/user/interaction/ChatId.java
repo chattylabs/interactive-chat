@@ -1,5 +1,5 @@
 package com.chattylabs.android.user.interaction;
 
-public interface Identifiable {
+public interface ChatId {
     String getId();
 }

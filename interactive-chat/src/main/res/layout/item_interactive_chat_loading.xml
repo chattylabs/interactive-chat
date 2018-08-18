@@ -6,7 +6,6 @@
     android:gravity="center_horizontal"
     android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp">
-
     <com.eyalbira.loadingdots.LoadingDots
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
@@ -16,5 +15,4 @@
         app:LoadingDots_loop_duration="1200"
         app:LoadingDots_loop_start_delay="600"
         app:LoadingDots_jump_height="4dp"/>
-
 </LinearLayout>
