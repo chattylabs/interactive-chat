@@ -18,15 +18,15 @@ public abstract class ChatAction implements ChatNode, Comparable<ChatAction> {
 
     public abstract ChatActionViewBuilder getActionViewBuilder();
 
-    public abstract ChatNode buildActionSelected();
+    public abstract ChatNode buildActionFeedback();
 
     @Override
-    public int getViewType() {
+    final public int getViewType() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ChatViewHolderBuilder getViewHolderBuilder() {
+    final public ChatViewHolderBuilder getViewHolderBuilder() {
         throw new UnsupportedOperationException();
     }
 }

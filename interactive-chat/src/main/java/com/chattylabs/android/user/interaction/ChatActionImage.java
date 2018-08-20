@@ -139,11 +139,10 @@ public class ChatActionImage extends ChatAction {
     }
 
     @Override
-    public ChatNode buildActionSelected() {
-        return new ChatActionImageSelected.Builder()
+    public ChatNode buildActionFeedback() {
+        return new ChatActionFeedbackImage.Builder()
                 .setImage(imageAfter > 0 ? imageAfter : image)
-                .setTintColor(tintColor)
-                .setOrder(order).build();
+                .setTintColor(tintColor).build();
     }
 
     @Override

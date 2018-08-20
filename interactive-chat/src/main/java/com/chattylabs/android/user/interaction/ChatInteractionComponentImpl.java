@@ -281,7 +281,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
 
     private void placeSelectedAction(ChatAction action) {
         lastAction = action;
-        addLast(action.buildActionSelected());
+        addLast(action.buildActionFeedback());
     }
 
     private void addLast(ChatNode node) {
@@ -357,7 +357,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 }
                 if (node instanceof ChatAction) {
                     ChatAction action = (ChatAction) node;
-                    items.add(action.buildActionSelected());
+                    items.add(action.buildActionFeedback());
                     traverse(items, action, target);
                 } else {
                     items.add(node);
@@ -367,7 +367,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 ChatActionList actionList = getActionList(edges);
                 ChatAction action = actionList.getVisited(getVisitedNodes());
                 if (action != null) {
-                    items.add(action.buildActionSelected());
+                    items.add(action.buildActionFeedback());
                     traverse(items, action, target);
                 }
             }

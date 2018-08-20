@@ -2,19 +2,16 @@ package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-class ChatActionImageSelected implements ChatNode, Comparable<ChatActionImageSelected> {
+class ChatActionFeedbackImage extends ChatActionFeedback {
     public final int image;
     public final int tintColor;
-    public final int order;
 
     public static class Builder {
         private int image;
         private int tintColor;
-        private int order;
 
         public Builder() {}
 
@@ -28,20 +25,14 @@ class ChatActionImageSelected implements ChatNode, Comparable<ChatActionImageSel
             return this;
         }
 
-        public Builder setOrder(int order) {
-            this.order = order;
-            return this;
-        }
-
-        public ChatActionImageSelected build() {
-            return new ChatActionImageSelected(this);
+        public ChatActionFeedbackImage build() {
+            return new ChatActionFeedbackImage(this);
         }
     }
 
-    private ChatActionImageSelected(Builder builder) {
+    private ChatActionFeedbackImage(Builder builder) {
         this.image = builder.image;
         this.tintColor = builder.tintColor;
-        this.order = builder.order;
     }
 
     @Override
@@ -51,12 +42,12 @@ class ChatActionImageSelected implements ChatNode, Comparable<ChatActionImageSel
 
     @Override
     public int getViewType() {
-        return R.id.interactive_chat_action_image_selected_view_type;
+        return R.id.interactive_chat_action_feedback_image_view_type;
     }
 
     @Override
     public ChatViewHolderBuilder getViewHolderBuilder() {
-        return ChatActionImageSelectedViewHolderBuilder.build();
+        return ChatActionFeedbackImageViewHolderBuilder.build();
     }
 
     @Override
@@ -65,15 +56,10 @@ class ChatActionImageSelected implements ChatNode, Comparable<ChatActionImageSel
     }
 
     @Override
-    public int compareTo(@NonNull ChatActionImageSelected o) {
-        return Integer.compare(this.order, o.order);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChatActionImageSelected that = (ChatActionImageSelected) o;
+        ChatActionFeedbackImage that = (ChatActionFeedbackImage) o;
         return Objects.equals(getId(), that.getId());
     }
 
