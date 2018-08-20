@@ -14,10 +14,10 @@ import android.widget.TextView;
 import com.chattylabs.sdk.android.common.DimensionUtils;
 
 
-class ChatActionTextSelectedViewHolderBuilder implements ChatViewHolderBuilder {
+class ChatActionFeedbackTextViewHolderBuilder implements ChatViewHolderBuilder {
 
     public static ChatViewHolderBuilder build() {
-        return new ChatActionTextSelectedViewHolderBuilder();
+        return new ChatActionFeedbackTextViewHolderBuilder();
     }
 
     @Override
@@ -25,7 +25,7 @@ class ChatActionTextSelectedViewHolderBuilder implements ChatViewHolderBuilder {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = inflater.inflate(R.layout.item_interactive_chat_action_text_selected,
                 viewGroup, false);
-        return new ChatActionTextSelectedViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
+        return new ChatActionFeedbackTextViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
     }
 
     static class ChatActionTextSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
@@ -44,7 +44,7 @@ class ChatActionTextSelectedViewHolderBuilder implements ChatViewHolderBuilder {
 
         @Override
         public void onBind(ChatInteractionViewAdapter adapter, int position) {
-            ChatActionTextSelected textSelected = (ChatActionTextSelected) adapter.getItems().get(position);
+            ChatActionFeedbackText textSelected = (ChatActionFeedbackText) adapter.getItems().get(position);
             if (textSelected.textSize > 0) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
             }

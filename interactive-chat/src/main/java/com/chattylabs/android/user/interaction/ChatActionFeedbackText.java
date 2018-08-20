@@ -1,21 +1,18 @@
 package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-class ChatActionTextSelected implements ChatNode, Comparable<ChatActionTextSelected> {
+class ChatActionFeedbackText  extends ChatActionFeedback {
     public final String text;
     public final float textSize;
     public final int tintColor;
-    public final int order;
 
     public static class Builder {
         private String text;
         private float textSize;
         private int tintColor;
-        private int order;
 
         public Builder() {}
 
@@ -34,21 +31,15 @@ class ChatActionTextSelected implements ChatNode, Comparable<ChatActionTextSelec
             return this;
         }
 
-        public Builder setOrder(int order) {
-            this.order = order;
-            return this;
-        }
-
-        public ChatActionTextSelected build() {
-            return new ChatActionTextSelected(this);
+        public ChatActionFeedbackText build() {
+            return new ChatActionFeedbackText(this);
         }
     }
 
-    private ChatActionTextSelected(Builder builder) {
+    private ChatActionFeedbackText(Builder builder) {
         this.text = builder.text;
         this.textSize = builder.textSize;
         this.tintColor = builder.tintColor;
-        this.order = builder.order;
     }
 
     @Override
@@ -58,12 +49,12 @@ class ChatActionTextSelected implements ChatNode, Comparable<ChatActionTextSelec
 
     @Override
     public int getViewType() {
-        return R.id.interactive_chat_action_text_selected_view_type;
+        return R.id.interactive_chat_action_feedback_text_view_type;
     }
 
     @Override
     public ChatViewHolderBuilder getViewHolderBuilder() {
-        return ChatActionTextSelectedViewHolderBuilder.build();
+        return ChatActionFeedbackTextViewHolderBuilder.build();
     }
 
     @Override
@@ -72,15 +63,10 @@ class ChatActionTextSelected implements ChatNode, Comparable<ChatActionTextSelec
     }
 
     @Override
-    public int compareTo(@NonNull ChatActionTextSelected o) {
-        return Integer.compare(this.order, o.order);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChatActionTextSelected that = (ChatActionTextSelected) o;
+        ChatActionFeedbackText that = (ChatActionFeedbackText) o;
         return Objects.equals(getId(), that.getId());
     }
 

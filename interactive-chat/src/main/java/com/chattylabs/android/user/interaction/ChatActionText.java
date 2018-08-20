@@ -155,11 +155,10 @@ public class ChatActionText extends ChatAction {
     }
 
     @Override
-    public ChatNode buildActionSelected() {
-        return new ChatActionTextSelected.Builder()
+    public ChatNode buildActionFeedback() {
+        return new ChatActionFeedbackText.Builder()
                 .setText(textAfter != null ? textAfter : text)
                 .setTintColor(tintColor)
-                .setOrder(order)
                 .setTextSize(textSize).build();
     }
 
