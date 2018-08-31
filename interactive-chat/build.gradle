@@ -48,6 +48,10 @@ dependencies {
     api 'com.chattylabs.sdk.android:conversational-flow-core:+'
     implementation 'com.chattylabs.sdk.android:common:+'
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
+
+    //Flow Layout
+    api 'org.apmem.tools:layouts:1.10@aar'
+
     // Testing
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.1'
