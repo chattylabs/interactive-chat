@@ -73,6 +73,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         // HokeyApp Events
         UpdateManager.register(this);
         FeedbackManager.register(this);
+
         FeedbackManager.setActivityForScreenshot(this);
     }
 
