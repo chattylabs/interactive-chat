@@ -1,6 +1,7 @@
 package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,98 +9,39 @@ import java.util.List;
 public class ChatMultiOptionAction extends ChatAction {
 
     private final String mId;
-    private final int mOrder;
-    private final OnSelected mOnSelected;
-    private final boolean mSkipTracking;
-    private final boolean mStopFlow;
     private final String[] mContentDescription;
     private final Runnable mOnLoaded;
     private final List<ChatOptionAction> mActions;
-
-    public static class Builder {
-
-        private String mId;
-        private OnSelected mOnSelected;
-        private boolean mSkipTracking;
-        private boolean mStopFlow;
-        private int mOrder;
-        private String[] mContentDescription;
-        private Runnable mOnLoaded;
-        private List<ChatOptionAction> mActions = new ArrayList<>();
-
-        public Builder(String id) {
-            mId = id;
-        }
-
-        public Builder addAction(ChatOptionAction action) {
-            mActions.add(action);
-            return this;
-        }
-
-        public Builder setOnSelected(OnSelected onSelected) {
-            mOnSelected = onSelected;
-            return this;
-        }
-
-        public Builder setSkipTracking(boolean skipTracking) {
-            mSkipTracking = skipTracking;
-            return this;
-        }
-
-        public Builder stopFlow(boolean stopFlow) {
-            mStopFlow = stopFlow;
-            return this;
-        }
-
-        public Builder setOrder(int order) {
-            mOrder = order;
-            return this;
-        }
-
-        public Builder setContentDescription(String[] contentDescription) {
-            mContentDescription = contentDescription;
-            return this;
-        }
-
-        public Builder setOnLoaded(Runnable loaded) {
-            mOnLoaded = loaded;
-            return this;
-        }
-
-        public ChatMultiOptionAction build() {
-            return new ChatMultiOptionAction(this);
-        }
-    }
+    private final ChatActionText mConfirmationAction;
+    private final List<ChatOptionAction> mSelectedOptions;
 
     private ChatMultiOptionAction(Builder builder) {
         this.mId = builder.mId;
-        this.mOrder = builder.mOrder;
-        this.mOnSelected = builder.mOnSelected;
-        this.mSkipTracking = builder.mSkipTracking;
-        this.mStopFlow = builder.mStopFlow;
         this.mContentDescription = builder.mContentDescription;
         this.mOnLoaded = builder.mOnLoaded;
         this.mActions = builder.mActions;
+        this.mConfirmationAction = builder.mConfirmationAction;
+        this.mSelectedOptions = new ArrayList<>();
     }
 
     @Override
     public OnSelected onSelected() {
-        return this.mOnSelected;
+        return null;
     }
 
     @Override
     public boolean skipTracking() {
-        return this.mSkipTracking;
+        return false;
     }
 
     @Override
     public boolean stopFlow() {
-        return this.mStopFlow;
+        return false;
     }
 
     @Override
     public int getOrder() {
-        return this.mOrder;
+        return 0;
     }
 
     @Override
@@ -109,12 +51,30 @@ public class ChatMultiOptionAction extends ChatAction {
 
     @Override
     public ChatActionViewBuilder getActionViewBuilder() {
-        return new ChatMultiOptionActionViewBuilder();
+        return new ChatMultiOptionActionViewBuilder(
+                (action, isSelected) -> {
+                    if (isSelected) {
+                        mSelectedOptions.add(action);
+                    } else {
+                        mSelectedOptions.remove(action);
+                    }
+                }
+        );
     }
 
     @Override
     public ChatNode buildActionFeedback() {
-        return null;
+        return new ChatActionFeedbackText.Builder()
+                .setText(getSelectedOptions())
+                .build();
+    }
+
+    private String getSelectedOptions() {
+        final List<String> selectedOptionText = new ArrayList<>();
+        for (ChatOptionAction option : mSelectedOptions) {
+            selectedOptionText.add(option.getText());
+        }
+        return TextUtils.join("  ", selectedOptionText);
     }
 
     @Override
@@ -134,5 +94,46 @@ public class ChatMultiOptionAction extends ChatAction {
 
     public List<ChatOptionAction> getActions() {
         return mActions;
+    }
+
+    public ChatAction getConfirmationAction() {
+        return mConfirmationAction;
+    }
+
+    public static class Builder {
+
+        private String mId;
+        private String[] mContentDescription;
+        private Runnable mOnLoaded;
+        private List<ChatOptionAction> mActions = new ArrayList<>();
+        private ChatActionText mConfirmationAction;
+
+        public Builder(String id) {
+            mId = id;
+        }
+
+        public Builder addAction(ChatOptionAction action) {
+            mActions.add(action);
+            return this;
+        }
+
+        public Builder setContentDescription(String[] contentDescription) {
+            mContentDescription = contentDescription;
+            return this;
+        }
+
+        public Builder setOnLoaded(Runnable loaded) {
+            mOnLoaded = loaded;
+            return this;
+        }
+
+        public Builder addConfirmationAction(ChatActionText confirmationAction) {
+            mConfirmationAction = confirmationAction;
+            return this;
+        }
+
+        public ChatMultiOptionAction build() {
+            return new ChatMultiOptionAction(this);
+        }
     }
 }

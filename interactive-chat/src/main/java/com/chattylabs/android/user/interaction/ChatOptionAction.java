@@ -7,12 +7,14 @@ public class ChatOptionAction extends ChatAction {
     private final OnSelected mOnSelected;
     private final String[] mContentDescription;
     private final String mText;
+    private final OnUnselected mOnUnselected;
 
     public static class Builder {
 
         private OnSelected mOnSelected;
         private String[] mContentDescription;
         private String mText;
+        private OnUnselected mOnUnselected;
 
         public Builder(String text) {
             mText = text;
@@ -23,7 +25,11 @@ public class ChatOptionAction extends ChatAction {
             return this;
         }
 
-        // TODO: Do we need here ?
+        public Builder setOnUnselected(OnUnselected onUnselected) {
+            mOnUnselected = onUnselected;
+            return this;
+        }
+
         public Builder setContentDescription(String[] contentDescription) {
             mContentDescription = contentDescription;
             return this;
@@ -38,11 +44,16 @@ public class ChatOptionAction extends ChatAction {
         this.mOnSelected = builder.mOnSelected;
         this.mContentDescription = builder.mContentDescription;
         this.mText = builder.mText;
+        this.mOnUnselected = builder.mOnUnselected;
     }
 
     @Override
     public OnSelected onSelected() {
         return mOnSelected;
+    }
+
+    public OnUnselected onUnselected() {
+        return mOnUnselected;
     }
 
     @Override
@@ -92,5 +103,9 @@ public class ChatOptionAction extends ChatAction {
     @Override
     public int compareTo(@NonNull ChatAction action) {
         return Integer.compare(getOrder(), action.getOrder());
+    }
+
+    interface OnUnselected {
+        void execute(ChatAction action);
     }
 }
