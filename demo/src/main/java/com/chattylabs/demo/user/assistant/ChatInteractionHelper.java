@@ -5,6 +5,7 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 
+import com.chattylabs.android.user.interaction.ChatActionImage;
 import com.chattylabs.android.user.interaction.ChatActionText;
 import com.chattylabs.android.user.interaction.ChatFlow;
 import com.chattylabs.android.user.interaction.ChatInteractionComponent;
@@ -12,10 +13,13 @@ import com.chattylabs.android.user.interaction.ChatMessageText;
 import com.chattylabs.android.user.interaction.ChatNode;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 
+import net.hockeyapp.android.FeedbackManager;
+
 
 class ChatInteractionHelper {
 
     private static final String MULTI_OPTION = "MULTI_OPTION";
+    private static final String MULTI_OPTION_OK = "MULTI_OPTION_OK";
     private static final String WELCOME_ID = "welcome";
     private static final String QUIET_PLACE_ID = "quiet_place";
     private static final String QUIET_PLACE_YES_ID = "quiet_place_yes";
@@ -88,77 +92,77 @@ class ChatInteractionHelper {
         assistant.addNode(new ChatMessageText.Builder(EXPLANATION_2_ID)
                 .setText(getString(R.string.demo_explanation_2)).build());
 
-//        assistant.addNode(new ChatActionText.Builder(OK_ID)
-//                .setText(getString(R.string.demo_ok)).build());
-//
-//        assistant.addNode(new ChatMessageText.Builder(SELECT_ICON_1_ID)
-//                .setText(getString(R.string.demo_select_icon_1)).build());
-//
-//        assistant.addNode(new ChatMessageText.Builder(SELECT_ICON_2_ID)
-//                .setText(getString(R.string.demo_select_icon_2)).build());
-//
-//        assistant.addNode(new ChatActionImage.Builder(ICON_1_ID)
-//                .setImage(R.drawable.ic_sentiment_dissatisfied_black_24dp)
-//                .setContentDescriptions(getStringArray(R.array.dissatisfied)).build());
-//        assistant.addNode(new ChatActionImage.Builder(ICON_2_ID)
-//                .setImage(R.drawable.ic_sentiment_neutral_black_24dp)
-//                .setContentDescriptions(getStringArray(R.array.neutral)).build());
-//        assistant.addNode(new ChatActionImage.Builder(ICON_3_ID)
-//                .setImage(R.drawable.ic_sentiment_satisfied_black_24dp)
-//                .setContentDescriptions(getStringArray(R.array.satisfied)).build());
-//
-//        assistant.addNode(new ChatMessageText.Builder(PART_OF_DAY_1_ID)
-//                .setText(getString(R.string.demo_part_of_day_1)).build());
-//
-//        assistant.addNode(new ChatMessageText.Builder(PART_OF_DAY_2_ID)
-//                .setText(getString(R.string.demo_part_of_day_2)).build());
-//
-//        assistant.addNode(new ChatActionText.Builder(MORNING_ID)
-//                .setText(getString(R.string.demo_morning)).build());
-//        assistant.addNode(new ChatActionText.Builder(NOON_ID)
-//                .setText(getString(R.string.demo_noon)).build());
-//        assistant.addNode(new ChatActionText.Builder(EVENING_ID)
-//                .setText(getString(R.string.demo_evening)).build());
-//
-//        assistant.addNode(new ChatMessageText.Builder(DONE_ID)
-//                .setText(getString(R.string.demo_done)).build());
-//
-//        assistant.addNode(new ChatActionText.Builder(LIKED_YES_ID)
-//                .setText(getString(R.string.demo_thumbs_up))
-//                .setContentDescriptions(getStringArray(R.array.thumbsup))
-//                .setOnSelected(action -> {
-//                    FeedbackManager.takeScreenshot(context);
-//                    FeedbackManager.showFeedbackActivity(context);
-//                })
-//                .setTextSize(24).build());
-//
-//        assistant.addNode(new ChatActionText.Builder(LIKED_NO_ID)
-//                .setText(getString(R.string.demo_thumbs_down))
-//                .setContentDescriptions(getStringArray(R.array.thumbsdown))
-//                .setOnSelected(action -> {
-//                    FeedbackManager.takeScreenshot(context);
-//                    FeedbackManager.showFeedbackActivity(context);
-//                })
-//                .setTextSize(24).build());
+        assistant.addNode(new ChatActionText.Builder(OK_ID)
+                .setText(getString(R.string.demo_ok)).build());
+
+        assistant.addNode(new ChatMessageText.Builder(SELECT_ICON_1_ID)
+                .setText(getString(R.string.demo_select_icon_1)).build());
+
+        assistant.addNode(new ChatMessageText.Builder(SELECT_ICON_2_ID)
+                .setText(getString(R.string.demo_select_icon_2)).build());
+
+        assistant.addNode(new ChatActionImage.Builder(ICON_1_ID)
+                .setImage(R.drawable.ic_sentiment_dissatisfied_black_24dp)
+                .setContentDescriptions(getStringArray(R.array.dissatisfied)).build());
+        assistant.addNode(new ChatActionImage.Builder(ICON_2_ID)
+                .setImage(R.drawable.ic_sentiment_neutral_black_24dp)
+                .setContentDescriptions(getStringArray(R.array.neutral)).build());
+        assistant.addNode(new ChatActionImage.Builder(ICON_3_ID)
+                .setImage(R.drawable.ic_sentiment_satisfied_black_24dp)
+                .setContentDescriptions(getStringArray(R.array.satisfied)).build());
+
+        assistant.addNode(new ChatMessageText.Builder(PART_OF_DAY_1_ID)
+                .setText(getString(R.string.demo_part_of_day_1)).build());
+
+        assistant.addNode(new ChatMessageText.Builder(PART_OF_DAY_2_ID)
+                .setText(getString(R.string.demo_part_of_day_2)).build());
+
+        assistant.addNode(new ChatActionText.Builder(MORNING_ID)
+                .setText(getString(R.string.demo_morning)).build());
+        assistant.addNode(new ChatActionText.Builder(NOON_ID)
+                .setText(getString(R.string.demo_noon)).build());
+        assistant.addNode(new ChatActionText.Builder(EVENING_ID)
+                .setText(getString(R.string.demo_evening)).build());
+
+        assistant.addNode(new ChatMessageText.Builder(DONE_ID)
+                .setText(getString(R.string.demo_done)).build());
+
+        assistant.addNode(new ChatActionText.Builder(LIKED_YES_ID)
+                .setText(getString(R.string.demo_thumbs_up))
+                .setContentDescriptions(getStringArray(R.array.thumbsup))
+                .setOnSelected(action -> {
+                    FeedbackManager.takeScreenshot(context);
+                    FeedbackManager.showFeedbackActivity(context);
+                })
+                .setTextSize(24).build());
+
+        assistant.addNode(new ChatActionText.Builder(LIKED_NO_ID)
+                .setText(getString(R.string.demo_thumbs_down))
+                .setContentDescriptions(getStringArray(R.array.thumbsdown))
+                .setOnSelected(action -> {
+                    FeedbackManager.takeScreenshot(context);
+                    FeedbackManager.showFeedbackActivity(context);
+                })
+                .setTextSize(24).build());
 
         flow.from(WELCOME_ID).to(QUIET_PLACE_ID);
         flow.from(QUIET_PLACE_ID).to(QUIET_PLACE_YES_ID, QUIET_PLACE_NO_ID);
         flow.from(QUIET_PLACE_NO_ID).to(COMEBACK_LATER_ID);
         flow.from(QUIET_PLACE_YES_ID).to(EXPLANATION_1_ID);
         flow.from(EXPLANATION_1_ID).to(EXPLANATION_2_ID);
-//        flow.from(EXPLANATION_2_ID).to(OK_ID);
-//        flow.from(OK_ID).to(SELECT_ICON_1_ID);
-//        flow.from(SELECT_ICON_1_ID).to(SELECT_ICON_2_ID);
-//        flow.from(SELECT_ICON_2_ID).to(ICON_1_ID, ICON_2_ID, ICON_3_ID);
-//        flow.from(ICON_1_ID).to(PART_OF_DAY_1_ID);
-//        flow.from(ICON_2_ID).to(PART_OF_DAY_1_ID);
-//        flow.from(ICON_3_ID).to(PART_OF_DAY_1_ID);
-//        flow.from(PART_OF_DAY_1_ID).to(PART_OF_DAY_2_ID);
-//        flow.from(PART_OF_DAY_2_ID).to(MORNING_ID, NOON_ID, EVENING_ID);
-//        flow.from(MORNING_ID).to(DONE_ID);
-//        flow.from(NOON_ID).to(DONE_ID);
-//        flow.from(EVENING_ID).to(DONE_ID);
-//        flow.from(DONE_ID).to(LIKED_YES_ID, LIKED_NO_ID);
+        flow.from(EXPLANATION_2_ID).to(OK_ID);
+        flow.from(OK_ID).to(SELECT_ICON_1_ID);
+        flow.from(SELECT_ICON_1_ID).to(SELECT_ICON_2_ID);
+        flow.from(SELECT_ICON_2_ID).to(ICON_1_ID, ICON_2_ID, ICON_3_ID);
+        flow.from(ICON_1_ID).to(PART_OF_DAY_1_ID);
+        flow.from(ICON_2_ID).to(PART_OF_DAY_1_ID);
+        flow.from(ICON_3_ID).to(PART_OF_DAY_1_ID);
+        flow.from(PART_OF_DAY_1_ID).to(PART_OF_DAY_2_ID);
+        flow.from(PART_OF_DAY_2_ID).to(MORNING_ID, NOON_ID, EVENING_ID);
+        flow.from(MORNING_ID).to(DONE_ID);
+        flow.from(NOON_ID).to(DONE_ID);
+        flow.from(EVENING_ID).to(DONE_ID);
+        flow.from(DONE_ID).to(LIKED_YES_ID, LIKED_NO_ID);
 
         return assistant.getNode(WELCOME_ID);
     }
