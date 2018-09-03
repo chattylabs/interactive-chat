@@ -5,7 +5,7 @@ import android.support.annotation.ColorRes;
 import java.util.Objects;
 
 class ChatActionFeedbackText  extends ChatActionFeedback {
-    public final String text;
+    protected String text;
     public final float textSize;
     public final int tintColor;
 
@@ -36,7 +36,7 @@ class ChatActionFeedbackText  extends ChatActionFeedback {
         }
     }
 
-    private ChatActionFeedbackText(Builder builder) {
+    protected ChatActionFeedbackText(Builder builder) {
         this.text = builder.text;
         this.textSize = builder.textSize;
         this.tintColor = builder.tintColor;

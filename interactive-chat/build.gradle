@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
 
     //Flow Layout
-    api 'org.apmem.tools:layouts:1.10@aar'
+    api 'com.google.android:flexbox:1.0.0'
 
     // Testing
     testImplementation 'junit:junit:4.12'
