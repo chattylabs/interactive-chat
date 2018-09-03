@@ -3,7 +3,6 @@ package com.chattylabs.android.user.interaction;
 import android.os.Build;
 import android.support.text.emoji.EmojiCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
@@ -48,14 +47,8 @@ class ChatMessageTextViewHolderBuilder implements ChatViewHolderBuilder {
             if (message.textSize > 0) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, message.textSize);
             }
-            Spanned span;
-            String textString = (String) EmojiCompat.get().process(message.text);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                span = Html.fromHtml(textString, Html.FROM_HTML_MODE_COMPACT);
-            }
-            else {
-                span = Html.fromHtml(textString);
-            }
+            CharSequence text = EmojiCompat.get().process(message.text);
+            Spanned span = ChatInteractionComponentImpl.makeText(text);
             textView.setTag(message.id);
             textView.setText(span);
         }
