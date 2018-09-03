@@ -2,31 +2,24 @@ package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.NonNull;
 
-public class ChatOptionAction extends ChatAction {
+public class ChatActionOption extends ChatAction {
 
-    private final OnSelected mOnSelected;
+    private final String mId;
     private final String[] mContentDescription;
     private final String mText;
-    private final OnUnselected mOnUnselected;
 
     public static class Builder {
 
-        private OnSelected mOnSelected;
+        private final String mId;
         private String[] mContentDescription;
         private String mText;
-        private OnUnselected mOnUnselected;
 
-        public Builder(String text) {
+        public Builder(String id) {
+            mId = id;
+        }
+
+        public Builder setText(String text) {
             mText = text;
-        }
-
-        public Builder setOnSelected(OnSelected onSelected) {
-            mOnSelected = onSelected;
-            return this;
-        }
-
-        public Builder setOnUnselected(OnUnselected onUnselected) {
-            mOnUnselected = onUnselected;
             return this;
         }
 
@@ -35,35 +28,37 @@ public class ChatOptionAction extends ChatAction {
             return this;
         }
 
-        public ChatOptionAction build() {
-            return new ChatOptionAction(this);
+        public ChatActionOption build() {
+            if (mId == null || mId.isEmpty()) {
+                throw new NullPointerException("provide \"id\" for the option.");
+            }
+            if (mText == null || mText.isEmpty()) {
+                throw new NullPointerException("option displayable text should not null");
+            }
+            return new ChatActionOption(this);
         }
     }
 
-    ChatOptionAction(Builder builder) {
-        this.mOnSelected = builder.mOnSelected;
+    ChatActionOption(Builder builder) {
+        this.mId = builder.mId;
         this.mContentDescription = builder.mContentDescription;
         this.mText = builder.mText;
-        this.mOnUnselected = builder.mOnUnselected;
     }
 
     @Override
     public OnSelected onSelected() {
-        return mOnSelected;
-    }
-
-    public OnUnselected onUnselected() {
-        return mOnUnselected;
+        throw new UnsupportedOperationException("Register OnOptionChangeListener to " +
+                "ChatActionMultiOption");
     }
 
     @Override
     public boolean skipTracking() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean stopFlow() {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -78,22 +73,22 @@ public class ChatOptionAction extends ChatAction {
 
     @Override
     public ChatActionViewBuilder getActionViewBuilder() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public ChatNode buildActionFeedback() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Runnable onLoaded() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getId() {
-        return "";
+        return mId;
     }
 
     public String getText() {
@@ -103,9 +98,5 @@ public class ChatOptionAction extends ChatAction {
     @Override
     public int compareTo(@NonNull ChatAction action) {
         return Integer.compare(getOrder(), action.getOrder());
-    }
-
-    interface OnUnselected {
-        void execute(ChatAction action);
     }
 }

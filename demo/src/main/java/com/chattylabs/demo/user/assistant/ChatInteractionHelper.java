@@ -6,6 +6,8 @@ import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 
 import com.chattylabs.android.user.interaction.ChatActionImage;
+import com.chattylabs.android.user.interaction.ChatActionMultiOption;
+import com.chattylabs.android.user.interaction.ChatActionOption;
 import com.chattylabs.android.user.interaction.ChatActionText;
 import com.chattylabs.android.user.interaction.ChatFlow;
 import com.chattylabs.android.user.interaction.ChatInteractionComponent;
