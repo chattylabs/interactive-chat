@@ -87,8 +87,10 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         }
         timer = new Timer();
         speechComponent = builder.voiceComponent;
-        speechSynthesizer = speechComponent.getSpeechSynthesizer(recyclerView.getContext());
-        speechRecognizer = speechComponent.getSpeechRecognizer(recyclerView.getContext());
+        if (speechComponent != null) {
+            speechSynthesizer = speechComponent.getSpeechSynthesizer(recyclerView.getContext());
+            speechRecognizer = speechComponent.getSpeechRecognizer(recyclerView.getContext());
+        }
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(recyclerView.getContext());
