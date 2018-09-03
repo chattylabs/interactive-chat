@@ -1,8 +1,6 @@
 package com.chattylabs.android.user.interaction;
 
-import android.os.Build;
 import android.support.text.emoji.EmojiCompat;
-import android.text.Html;
 import android.text.Spanned;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -28,14 +26,8 @@ class ChatActionTextViewBuilder implements ChatActionViewBuilder {
         if (actionText.textSize > 0) {
             button.setTextSize(TypedValue.COMPLEX_UNIT_SP, actionText.textSize);
         }
-        Spanned span;
-        String text = (String) EmojiCompat.get().process(actionText.text);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            span = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
-        }
-        else {
-            span = Html.fromHtml(text);
-        }
+        CharSequence text = EmojiCompat.get().process(actionText.text);
+        Spanned span = ChatInteractionComponentImpl.makeText(text);
         button.setText(span);
 
         button.setTag(R.id.interactive_chat_action_id, actionText.id);

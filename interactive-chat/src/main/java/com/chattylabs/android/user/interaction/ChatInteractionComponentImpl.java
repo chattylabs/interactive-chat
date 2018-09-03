@@ -3,6 +3,7 @@ package com.chattylabs.android.user.interaction;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -15,6 +16,9 @@ import android.support.v4.util.Pools;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.util.TypedValue;
 
 import com.chattylabs.sdk.android.common.DimensionUtils;
@@ -530,5 +534,19 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         }
         throw new IllegalArgumentException("Node \"" + id + "\" does not exists in the graph. " +
                 "Have you forgotten to add it with addNode(Node)?");
+    }
+
+    static Spanned makeText(CharSequence text) {
+        Spanned span;
+        if (text instanceof SpannableString) {
+            span = ((SpannableString)text);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                span = Html.fromHtml(text.toString(), Html.FROM_HTML_MODE_COMPACT);
+            } else {
+                span = Html.fromHtml(text.toString());
+            }
+        }
+        return span;
     }
 }
