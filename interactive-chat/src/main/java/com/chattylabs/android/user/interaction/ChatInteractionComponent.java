@@ -20,25 +20,33 @@ public interface ChatInteractionComponent {
     }
 
     interface IRecyclerView {
-        IVoiceComponent withViewComponent(RecyclerView recyclerView);
+        ICombine withViewComponent(RecyclerView recyclerView);
     }
+
+    interface ICombine extends IVoiceComponent, IBuild {}
 
     class Builder implements IRecyclerView {
         ConversationalFlowComponent voiceComponent;
         RecyclerView recyclerView;
 
         @Override
-        public IVoiceComponent withViewComponent(RecyclerView recyclerView) {
+        public ICombine withViewComponent(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
-            return interfaceComponent;
+            return combine;
         }
 
-        IVoiceComponent interfaceComponent = voiceComponentArgument -> {
-            this.voiceComponent = voiceComponentArgument;
-            return this.interfaceBuilder;
-        };
+        ICombine combine = new ICombine() {
+            @Override
+            public ChatInteractionComponent build() {
+                return new ChatInteractionComponentImpl(Builder.this);
+            }
 
-        IBuild interfaceBuilder = () -> new ChatInteractionComponentImpl(this);
+            @Override
+            public IBuild withVoiceComponent(ConversationalFlowComponent voiceComponent) {
+                Builder.this.voiceComponent = voiceComponent;
+                return this;
+            }
+        };
     }
 
     void init(ChatNode root);
