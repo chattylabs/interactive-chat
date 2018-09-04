@@ -43,7 +43,7 @@ public class MainActivity extends DaggerAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             default:
-                assistantComponent.reset();
+                assistantComponent.resetNodeState();
                 recreate();
                 return super.onOptionsItemSelected(item);
         }

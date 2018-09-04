@@ -69,6 +69,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private boolean synthesizerReady;
     private boolean recognizerReady;
     private boolean speechInProgress;
+    private boolean saveLastState = true;
 
     private final ChatInteractionAdapter adapter = new ChatInteractionAdapter(
             (view, action) -> perform(action));
@@ -121,6 +122,11 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     @Override
     public void enableSpeechRecognizer(boolean enable) {
         this.enableRecognizer = enable;
+    }
+
+    @Override
+    public void saveLastState(boolean enable) {
+        this.saveLastState = enable;
     }
 
     @Override
@@ -177,6 +183,17 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         if (speechComponent != null) {
             speechComponent.shutdown();
         }
+        graph.clear();
+        currentNode = null;
+        lastAction = null;
+        doneListener = null;
+        paused = false;
+        enableSynthesizer = false;
+        enableRecognizer = false;
+        synthesizerReady = false;
+        recognizerReady = false;
+        speechInProgress = false;
+        saveLastState = true;
     }
 
     private void cancel() {
@@ -241,7 +258,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             if (outgoingEdges.size() == 1) {
                 ChatNode node = outgoingEdges.get(0);
                 if (!ChatAction.class.isInstance(node)) {
-                    setLastVisitedNode(node);
+                    if (saveLastState) setLastVisitedNode(node);
                 } else {
                     throw new IllegalStateException("An Action can only be " +
                             "connected to a Message");
@@ -261,7 +278,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             action.onSelected().execute(action);
         }
         if (!action.stopFlow()) {
-            if (!action.skipTracking())
+            if (!action.skipTracking() && saveLastState)
                 saveVisitedNode(action);
             selectLastVisitedAction();
             next();
@@ -342,7 +359,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void reset() {
+    public void resetNodeState() {
         sharedPreferences.edit().remove(LAST_VISITED_NODE).apply();
         sharedPreferences.edit().remove(VISITED_NODES).apply();
     }
