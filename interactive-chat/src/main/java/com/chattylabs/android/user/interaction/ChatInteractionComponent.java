@@ -67,6 +67,8 @@ public interface ChatInteractionComponent {
 
     void enableSpeechRecognizer(boolean enable);
 
+    void saveLastState(boolean enable);
+
     void setupSpeech(Context context, OnComponentSetup onPrepared);
 
     void release();
@@ -75,7 +77,7 @@ public interface ChatInteractionComponent {
 
     void resume();
 
-    void reset();
+    void resetNodeState();
 
     void onDone(Runnable callback);
 
