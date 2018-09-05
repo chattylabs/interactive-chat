@@ -11,45 +11,50 @@ import java.util.Set;
 
 public interface ChatInteractionComponent {
 
-    interface IBuild {
+    interface IOptional {
+        IOptional withVoiceComponent(ConversationalFlowComponent voiceComponent);
+        IOptional withDoneListener(Runnable callback);
+        IOptional withLastState(boolean enable);
         ChatInteractionComponent build();
     }
 
-    interface IVoiceComponent {
-        IBuild withVoiceComponent(ConversationalFlowComponent voiceComponent);
-    }
-
-    interface IRecyclerView {
-        ICombine withViewComponent(RecyclerView recyclerView);
-    }
-
-    interface ICombine extends IVoiceComponent, IBuild {}
-
-    class Builder implements IRecyclerView {
+    class Builder {
         ConversationalFlowComponent voiceComponent;
         RecyclerView recyclerView;
+        boolean withLastState;
+        Runnable doneListener;
 
-        @Override
-        public ICombine withViewComponent(RecyclerView recyclerView) {
+        public IOptional withViewComponent(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
             return combine;
         }
 
-        ICombine combine = new ICombine() {
+        IOptional combine = new IOptional() {
+
+            @Override
+            public IOptional withVoiceComponent(ConversationalFlowComponent voiceComponent) {
+                Builder.this.voiceComponent = voiceComponent;
+                return this;
+            }
+
+            @Override
+            public IOptional withLastState(boolean enable) {
+                Builder.this.withLastState = enable;
+                return this;
+            }
+
+            @Override
+            public IOptional withDoneListener(Runnable callback) {
+                Builder.this.doneListener = callback;
+                return this;
+            }
+
             @Override
             public ChatInteractionComponent build() {
                 return new ChatInteractionComponentImpl(Builder.this);
             }
-
-            @Override
-            public IBuild withVoiceComponent(ConversationalFlowComponent voiceComponent) {
-                Builder.this.voiceComponent = voiceComponent;
-                return this;
-            }
         };
     }
-
-    void init(ChatNode root);
 
     void addNode(@NonNull ChatNode node);
 
@@ -67,8 +72,6 @@ public interface ChatInteractionComponent {
 
     void enableSpeechRecognizer(boolean enable);
 
-    void saveLastState(boolean enable);
-
     void setupSpeech(Context context, OnComponentSetup onPrepared);
 
     void release();
@@ -77,9 +80,7 @@ public interface ChatInteractionComponent {
 
     void resume();
 
-    void resetNodeState();
-
-    void onDone(Runnable callback);
+    void removeLastState();
 
     void showLoading();
 

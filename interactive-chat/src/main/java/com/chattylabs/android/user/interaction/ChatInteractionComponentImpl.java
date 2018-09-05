@@ -73,7 +73,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private boolean synthesizerReady;
     private boolean recognizerReady;
     private boolean speechInProgress;
-    private boolean saveLastState = true;
+    private boolean enableLastState;
 
     private final ChatInteractionAdapter adapter = new ChatInteractionAdapter(
             (view, action) -> perform(action));
@@ -91,7 +91,9 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             });
         }
         timer = new Timer();
+        enableLastState = builder.withLastState;
         speechComponent = builder.voiceComponent;
+        doneListener = builder.doneListener;
         if (speechComponent != null) {
             speechSynthesizer = speechComponent.getSpeechSynthesizer(recyclerView.getContext());
             speechRecognizer = speechComponent.getSpeechRecognizer(recyclerView.getContext());
@@ -108,7 +110,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void init(ChatNode root) {
+    public void start(@NonNull ChatNode root) {
         String lastSavedNodeId = getLastVisitedNodeId(root);
         ChatNode lastSavedNode = getNode(lastSavedNodeId);
         adapter.addItem(root);
@@ -126,11 +128,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     @Override
     public void enableSpeechRecognizer(boolean enable) {
         this.enableRecognizer = enable;
-    }
-
-    @Override
-    public void saveLastState(boolean enable) {
-        this.saveLastState = enable;
     }
 
     @Override
@@ -173,11 +170,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void onDone(Runnable callback) {
-        this.doneListener = callback;
-    }
-
-    @Override
     public void release() {
         cancel();
         loadingHandler.removeCallbacksAndMessages(null);
@@ -197,7 +189,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         synthesizerReady = false;
         recognizerReady = false;
         speechInProgress = false;
-        saveLastState = true;
+        enableLastState = false;
     }
 
     private void cancel() {
@@ -262,7 +254,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             if (outgoingEdges.size() == 1) {
                 ChatNode node = outgoingEdges.get(0);
                 if (!ChatAction.class.isInstance(node)) {
-                    if (saveLastState) setLastVisitedNode(node);
+                    if (enableLastState) setLastVisitedNode(node);
                 } else {
                     throw new IllegalStateException("An Action can only be " +
                             "connected to a Message");
@@ -282,7 +274,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             action.onSelected().execute(action);
         }
         if (!action.stopFlow()) {
-            if (!action.skipTracking() && saveLastState)
+            if (!action.skipTracking() && enableLastState)
                 saveVisitedNode(action);
             selectLastVisitedAction();
             next();
@@ -363,7 +355,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void resetNodeState() {
+    public void removeLastState() {
         sharedPreferences.edit().remove(LAST_VISITED_NODE).apply();
         sharedPreferences.edit().remove(VISITED_NODES).apply();
     }

@@ -22,6 +22,10 @@ public class ChatFlow implements ChatFlowSource, ChatFlowSourceId {
         return targetId;
     }
 
+    public void start(ChatNode root) {
+        edge.start(root);
+    }
+
     private ChatFlowTarget target = (node, optNodes) -> {
         edge.addEdge(node, from);
         for (ChatNode n : optNodes) edge.addEdge(n, from);
@@ -35,5 +39,6 @@ public class ChatFlow implements ChatFlowSource, ChatFlowSourceId {
     abstract static class Edge {
         abstract ChatNode getNode(@NonNull String id);
         abstract void addEdge(@NonNull ChatNode node, @NonNull ChatNode incomingEdge);
+        abstract void start(@NonNull ChatNode root);
     }
 }
