@@ -6,27 +6,29 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-public class ChatActionImage extends ChatAction {
-    public final String id;
-    public final int image;
-    public final int imageAfter;
-    public final int tintColor;
-    private final String[] contentDescriptions;
-    private final int order;
-    public final Runnable onLoaded;
-    private final ChatAction.OnSelected onSelected;
-    private boolean skipTracking;
-    private boolean stopFlow;
+public class ChatActionImage extends ChatAction implements HasId, HasContentDescriptions,
+        HasOnSelected, CanSkipTracking, CanStopFlow,
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
+    final String id;
+    final int image;
+    final int imageAfter;
+    final int tintColor;
+    final String[] contentDescriptions;
+    final int order;
+    final Runnable onLoaded;
+    final ChatAction.OnSelected onSelected;
+    boolean skipTracking;
+    boolean stopFlow;
 
     public static class Builder {
         private String id;
-        private String[] contentDescriptions;
         private int image;
         private int imageAfter;
         private int tintColor;
+        private String[] contentDescriptions;
+        private int order;
         private Runnable onLoaded;
         private OnSelected onSelected;
-        private int order;
         private boolean skipTracking;
         private boolean stopFlow;
 
@@ -44,13 +46,18 @@ public class ChatActionImage extends ChatAction {
             return this;
         }
 
+        public Builder setTintColor(@ColorRes int tintColor) {
+            this.tintColor = tintColor;
+            return this;
+        }
+
         public Builder setContentDescriptions(String[] contentDescriptions) {
             this.contentDescriptions = contentDescriptions;
             return this;
         }
 
-        public Builder setTintColor(@ColorRes int tintColor) {
-            this.tintColor = tintColor;
+        public Builder setOrder(int order) {
+            this.order = order;
             return this;
         }
 
@@ -61,11 +68,6 @@ public class ChatActionImage extends ChatAction {
 
         public Builder setOnSelected(OnSelected onSelected) {
             this.onSelected = onSelected;
-            return this;
-        }
-
-        public Builder setOrder(int order) {
-            this.order = order;
             return this;
         }
 
@@ -92,13 +94,13 @@ public class ChatActionImage extends ChatAction {
 
     private ChatActionImage(Builder builder) {
         this.id = builder.id;
-        this.contentDescriptions = builder.contentDescriptions;
         this.image = builder.image;
         this.imageAfter = builder.imageAfter;
         this.tintColor = builder.tintColor;
+        this.contentDescriptions = builder.contentDescriptions;
+        this.order = builder.order;
         this.onLoaded = builder.onLoaded;
         this.onSelected = builder.onSelected;
-        this.order = builder.order;
         this.skipTracking = builder.skipTracking;
         this.stopFlow = builder.stopFlow;
     }
@@ -106,6 +108,33 @@ public class ChatActionImage extends ChatAction {
     @Override
     public String getId() {
         return id;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public int getImageAfter() {
+        return imageAfter;
+    }
+
+    public int getTintColor() {
+        return tintColor;
+    }
+
+    @Override
+    public String[] getContentDescriptions() {
+        return contentDescriptions;
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
+    }
+
+    @Override
+    public Runnable onLoaded() {
+        return onLoaded;
     }
 
     @Override
@@ -121,21 +150,6 @@ public class ChatActionImage extends ChatAction {
     @Override
     public boolean stopFlow() {
         return stopFlow;
-    }
-
-    @Override
-    public int getOrder() {
-        return order;
-    }
-
-    @Override
-    public String[] getContentDescriptions() {
-        return contentDescriptions;
-    }
-
-    @Override
-    public Runnable onLoaded() {
-        return onLoaded;
     }
 
     @Override

@@ -1,5 +1,5 @@
 package com.chattylabs.android.user.interaction;
 
-public interface ChatNodeText {
+public interface HasText {
     String getText();
 }

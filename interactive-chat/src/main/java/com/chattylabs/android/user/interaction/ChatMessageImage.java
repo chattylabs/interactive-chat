@@ -5,11 +5,11 @@ import android.support.annotation.DrawableRes;
 
 import java.util.Objects;
 
-public class ChatMessageImage implements ChatNode {
-    public final String id;
-    public final int image;
-    public final int tintColor;
-    public final Runnable onLoaded;
+public class ChatMessageImage implements ChatNode, HasId, HasOnLoaded, HasViewType {
+    final String id;
+    final int image;
+    final int tintColor;
+    final Runnable onLoaded;
 
     public static class Builder {
         private String id;
@@ -64,6 +64,14 @@ public class ChatMessageImage implements ChatNode {
     @Override
     public String getId() {
         return id;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public int getTintColor() {
+        return tintColor;
     }
 
     @Override

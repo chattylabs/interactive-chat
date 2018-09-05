@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 /**
- * Custom LinearLayout - Container to identify multi option
+ * This Container delegates the click listener to the confirmation Button.
  */
 public class ChatActionMultiOptionContainer extends LinearLayout {
 

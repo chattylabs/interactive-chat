@@ -1,22 +1,26 @@
 package com.chattylabs.android.user.interaction;
 
 import android.content.Context;
-import android.support.text.emoji.widget.EmojiButton;
+import android.support.text.emoji.EmojiCompat;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ToggleButton;
 
 import com.google.android.flexbox.FlexboxLayout;
 
 import java.util.List;
 
-public class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
+import static com.chattylabs.android.user.interaction.ChatActionMultiOption.OnOptionChangeListener;
 
-    private final ChatActionMultiOption.OnOptionChangeListener mOnOptionChangeListener;
+class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
 
-    ChatActionMultiOptionViewBuilder(ChatActionMultiOption.OnOptionChangeListener onOptionChangeListener) {
-        mOnOptionChangeListener = onOptionChangeListener;
+    private final OnOptionChangeListener onOptionChangeListener;
+
+    ChatActionMultiOptionViewBuilder(OnOptionChangeListener onOptionChangeListener) {
+        this.onOptionChangeListener = onOptionChangeListener;
     }
 
     @Override
@@ -24,37 +28,43 @@ public class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
         final Context context = viewGroup.getContext();
         final ChatActionMultiOption multiAction = (ChatActionMultiOption) action;
         final ViewGroup multiOptionAction = (ViewGroup) LayoutInflater.from(context)
-                .inflate(R.layout.item_interactive_chat_action_multiple_option, viewGroup, false);
-        final FlexboxLayout flexboxLayout = (FlexboxLayout) multiOptionAction.getChildAt(0);
-        final EmojiButton confirmButton = (EmojiButton) multiOptionAction.getChildAt(1);
+                .inflate(R.layout.item_interactive_chat_action_multi_option, viewGroup, false);
+        final FlexboxLayout optionsLayout = (FlexboxLayout) multiOptionAction.getChildAt(0);
+        final Button confirmButton = (Button) multiOptionAction.getChildAt(1);
         final List<ChatActionOption> options = multiAction.getOptions();
 
         for (ChatActionOption option : options) {
             final FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                     FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.leftMargin = context.getResources()
-                    .getDimensionPixelSize(R.dimen.chat_action_multi_option_margin_left);
+                    .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_left);
             layoutParams.bottomMargin = context.getResources()
-                    .getDimensionPixelSize(R.dimen.chat_action_multi_option_margin_bottom);
-
-            flexboxLayout.addView(getOption(context, option, flexboxLayout), layoutParams);
+                    .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_bottom);
+            optionsLayout.addView(getOption(context, option, optionsLayout), layoutParams);
         }
 
-        confirmButton.setText(((ChatActionText) multiAction.getConfirmationAction()).text);
+        final CharSequence text = EmojiCompat.get().process(
+                multiAction.getConfirmationAction().text);
+        final Spanned span = ChatInteractionComponentImpl.makeText(text);
+        confirmButton.setText(span);
         return multiOptionAction;
     }
 
     private View getOption(Context context, ChatActionOption option, FlexboxLayout container) {
         final ToggleButton optionButton = (ToggleButton) LayoutInflater.from(context)
-                .inflate(R.layout.item_interactive_chat_multi_action_text, container, false);
-        optionButton.setText(option.getText());
-        optionButton.setTextOff(option.getText());
-        optionButton.setTextOn(option.getText());
+                .inflate(R.layout.item_interactive_chat_option_text, container, false);
+
+        final CharSequence text = EmojiCompat.get().process(option.getText());
+        final Spanned span = ChatInteractionComponentImpl.makeText(text);
+
+        optionButton.setText(span);
+        optionButton.setTextOff(span);
+        optionButton.setTextOn(span);
 
         optionButton.setOnCheckedChangeListener((compoundButton, selected) -> {
             option.setSelected(selected);
-            if (mOnOptionChangeListener != null) {
-                mOnOptionChangeListener.onChange(option, selected);
+            if (onOptionChangeListener != null) {
+                onOptionChangeListener.onChange(option, selected);
             }
         });
 

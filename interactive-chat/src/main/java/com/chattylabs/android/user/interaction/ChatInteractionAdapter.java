@@ -29,18 +29,22 @@ public class ChatInteractionAdapter extends ChatInteractionViewAdapter<RecyclerV
     }
 
     public void addItem(ChatNode item) {
-        int viewType = item.getViewType();
-        if (!viewHolders.containsKey(viewType))
-            viewHolders.put(viewType, item.getViewHolderBuilder());
+        if (item instanceof HasViewType) {
+            int viewType = ((HasViewType) item).getViewType();
+            if (!viewHolders.containsKey(viewType))
+                viewHolders.put(viewType, ((HasViewType) item).getViewHolderBuilder());
+        }
         items.add(item);
         notifyItemInserted(getItemCount() - 1);
     }
 
     public void checkViewHolders() {
         for (ChatNode item : items) {
-            int viewType = item.getViewType();
-            if (!viewHolders.containsKey(viewType))
-                viewHolders.put(viewType, item.getViewHolderBuilder());
+            if (item instanceof HasViewType) {
+                int viewType = ((HasViewType) item).getViewType();
+                if (!viewHolders.containsKey(viewType))
+                    viewHolders.put(viewType, ((HasViewType) item).getViewHolderBuilder());
+            }
         }
     }
 
@@ -68,7 +72,7 @@ public class ChatInteractionAdapter extends ChatInteractionViewAdapter<RecyclerV
     @Override
     public int getItemViewType(int position) {
         ChatNode item = items.get(position);
-        return item.getViewType();
+        return ((HasViewType) item).getViewType();
     }
 
     @NonNull

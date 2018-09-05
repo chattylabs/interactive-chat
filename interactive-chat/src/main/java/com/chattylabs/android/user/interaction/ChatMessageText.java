@@ -4,21 +4,23 @@ import android.support.annotation.ColorRes;
 
 import java.util.Objects;
 
-public class ChatMessageText implements ChatNode, ChatNodeText {
-    public final String id;
-    public final String text;
-    public final int tintColor;
-    public final boolean aloud;
-    public final Runnable onLoaded;
-    public final float textSize;
+public class ChatMessageText implements ChatNode, HasId, HasOnLoaded, HasText, HasViewType {
+    final String id;
+    final String text;
+    final float textSize;
+    final int tintColor;
+    final boolean aloud;
+    final Runnable onLoaded;
+    final boolean treatedAsFirst;
 
     public static class Builder {
         private String id;
         private String text;
+        private float textSize;
         private int tintColor;
         private boolean aloud;
         private Runnable onLoaded;
-        private float textSize;
+        private boolean treatedAsFirst;
 
         public Builder(String id) {
             this.id = id;
@@ -26,6 +28,11 @@ public class ChatMessageText implements ChatNode, ChatNodeText {
 
         public Builder setText(String text) {
             this.text = text;
+            return this;
+        }
+
+        public Builder setTextSize(float textSizeInSp) {
+            this.textSize = textSizeInSp;
             return this;
         }
 
@@ -44,8 +51,8 @@ public class ChatMessageText implements ChatNode, ChatNodeText {
             return this;
         }
 
-        public Builder setTextSize(float textSizeInSp) {
-            this.textSize = textSizeInSp;
+        public Builder setTreatedAsFirst(boolean treatedAsFirst) {
+            this.treatedAsFirst = treatedAsFirst;
             return this;
         }
 
@@ -64,11 +71,14 @@ public class ChatMessageText implements ChatNode, ChatNodeText {
         this.aloud = builder.aloud;
         this.onLoaded = builder.onLoaded;
         this.textSize = builder.textSize;
+        this.treatedAsFirst = builder.treatedAsFirst;
     }
 
     @Override
     public int getViewType() {
-        return R.id.interactive_chat_message_view_type;
+        return treatedAsFirst ?
+                R.id.interactive_chat_message_first_view_type :
+                R.id.interactive_chat_message_view_type;
     }
 
     @Override
@@ -86,9 +96,21 @@ public class ChatMessageText implements ChatNode, ChatNodeText {
         return text;
     }
 
+    public int getTintColor() {
+        return tintColor;
+    }
+
+    public boolean isAloud() {
+        return aloud;
+    }
+
     @Override
     public Runnable onLoaded() {
         return onLoaded;
+    }
+
+    public boolean isTreatedAsFirst() {
+        return treatedAsFirst;
     }
 
     @Override
