@@ -12,6 +12,7 @@ public class ChatActionMultiOption extends ChatAction {
     private final List<ChatActionOption> mOptions;
     private final ChatActionText mConfirmationAction;
     private final OnOptionChangeListener mOnOptionChangeListener;
+    private final OnSelected mOnSelected;
     private boolean mSkipTracking;
     private boolean mStopFlow;
 
@@ -23,6 +24,7 @@ public class ChatActionMultiOption extends ChatAction {
         this.mOnOptionChangeListener = builder.mOnOptionChangeListener;
         this.mSkipTracking = builder.mSkipTracking;
         this.mStopFlow = builder.mStopFlow;
+        this.mOnSelected = builder.onSelected;
     }
 
     /**
@@ -32,7 +34,7 @@ public class ChatActionMultiOption extends ChatAction {
      */
     @Override
     public OnSelected onSelected() {
-        return null;
+        return mOnSelected;
     }
 
     @Override
@@ -99,6 +101,7 @@ public class ChatActionMultiOption extends ChatAction {
         private OnOptionChangeListener mOnOptionChangeListener;
         private boolean mSkipTracking;
         private boolean mStopFlow;
+        private OnSelected onSelected;
 
         public Builder(@NonNull String id) {
             mId = id;
@@ -131,6 +134,11 @@ public class ChatActionMultiOption extends ChatAction {
 
         public Builder setOnOptionChangeListener(OnOptionChangeListener changeListener) {
             this.mOnOptionChangeListener = changeListener;
+            return this;
+        }
+
+        public Builder setOnSelected(OnSelected onSelected) {
+            this.onSelected = onSelected;
             return this;
         }
 

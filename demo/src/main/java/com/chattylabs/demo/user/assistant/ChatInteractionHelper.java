@@ -100,6 +100,10 @@ class ChatInteractionHelper {
                         .setText(context.getString(R.string.option_4)).build())
                 .addConfirmationAction(new ChatActionText.Builder(OK_ID)
                         .setText(getString(R.string.demo_ok)).build())
+                .setOnSelected(action -> {
+                    final ChatActionMultiOption multiAction = ((ChatActionMultiOption) action);
+                    // Iterate options from multiAction and check isSelected
+                })
                 .build());
 
         assistant.addNode(new ChatActionText.Builder(QUIET_PLACE_NO_ID)
