@@ -13,10 +13,10 @@ import java.util.List;
 
 public class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
 
-    private final OnOptionStateChangeListener mStateChangeListener;
+    private final ChatActionMultiOption.OnOptionChangeListener mOnOptionChangeListener;
 
-    ChatActionMultiOptionViewBuilder(OnOptionStateChangeListener stateChangeListener) {
-        mStateChangeListener = stateChangeListener;
+    ChatActionMultiOptionViewBuilder(ChatActionMultiOption.OnOptionChangeListener onOptionChangeListener) {
+        mOnOptionChangeListener = onOptionChangeListener;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
         final Context context = viewGroup.getContext();
         final ChatActionMultiOption multiAction = (ChatActionMultiOption) action;
         final ViewGroup multiOptionAction = (ViewGroup) LayoutInflater.from(context)
-                .inflate(R.layout.item_multi_option_action, viewGroup, false);
+                .inflate(R.layout.item_interactive_chat_action_multiple_option, viewGroup, false);
         final FlexboxLayout flexboxLayout = (FlexboxLayout) multiOptionAction.getChildAt(0);
         final EmojiButton confirmButton = (EmojiButton) multiOptionAction.getChildAt(1);
         final List<ChatActionOption> options = multiAction.getOptions();
@@ -34,8 +34,8 @@ public class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
                     FlexboxLayout.LayoutParams.WRAP_CONTENT, FlexboxLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.leftMargin = context.getResources()
                     .getDimensionPixelSize(R.dimen.chat_action_multi_option_margin_left);
-            layoutParams.topMargin = context.getResources()
-                    .getDimensionPixelSize(R.dimen.chat_action_multi_option_margin_top);
+            layoutParams.bottomMargin = context.getResources()
+                    .getDimensionPixelSize(R.dimen.chat_action_multi_option_margin_bottom);
 
             flexboxLayout.addView(getOption(context, option, flexboxLayout), layoutParams);
         }
@@ -51,17 +51,13 @@ public class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
         optionButton.setTextOff(option.getText());
         optionButton.setTextOn(option.getText());
 
-        optionButton.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (mStateChangeListener != null) {
-                mStateChangeListener.onStateChanged(option, b);
+        optionButton.setOnCheckedChangeListener((compoundButton, selected) -> {
+            option.setSelected(selected);
+            if (mOnOptionChangeListener != null) {
+                mOnOptionChangeListener.onChange(option, selected);
             }
         });
 
         return optionButton;
-    }
-
-    interface OnOptionStateChangeListener {
-
-        void onStateChanged(ChatActionOption option, boolean isSelected);
     }
 }

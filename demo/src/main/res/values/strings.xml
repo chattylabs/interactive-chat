@@ -34,4 +34,9 @@
     <string name="demo_explanation_1">Great! This is a demo where you can answer questions with your voice!</string>
     <string name="demo_explanation_2">Only english language is available.</string>
     <string name="demo_ok">Ok</string>
+    <string name="option_1">Black</string>
+    <string name="option_2">Red</string>
+    <string name="option_3">White</string>
+    <string name="option_4">Yellow</string>
+    <string name="options_message">Choose your favorite colors from the list.</string>
 </resources>

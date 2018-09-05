@@ -5,20 +5,22 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActionMultiOptionFeedbackText extends ChatActionFeedbackText {
+class ChatActionMultiOptionFeedbackText extends ChatActionFeedbackText {
 
-    private final List<ChatActionOption> options;
+    private final List<ChatActionOption> mOptions;
 
     private ChatActionMultiOptionFeedbackText(Builder builder) {
         super(builder);
-        this.options = builder.options;
+        this.mOptions = builder.options;
         text = getOptionsText();
     }
 
     private String getOptionsText() {
         final List<String> selectedOptionText = new ArrayList<>();
-        for (ChatActionOption option : options) {
-            selectedOptionText.add(option.getText());
+        for (ChatActionOption option : mOptions) {
+            if (option.isSelected()) {
+                selectedOptionText.add(option.getText());
+            }
         }
         return TextUtils.join("  ", selectedOptionText);
     }

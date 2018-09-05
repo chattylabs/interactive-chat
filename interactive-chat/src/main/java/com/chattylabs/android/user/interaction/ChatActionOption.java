@@ -7,6 +7,7 @@ public class ChatActionOption extends ChatAction {
     private final String mId;
     private final String[] mContentDescription;
     private final String mText;
+    private boolean mIsSelected;
 
     public static class Builder {
 
@@ -47,18 +48,18 @@ public class ChatActionOption extends ChatAction {
 
     @Override
     public OnSelected onSelected() {
-        throw new UnsupportedOperationException("Register OnOptionChangeListener to " +
+        throw new IllegalStateException("Register OnOptionChangeListener to " +
                 "ChatActionMultiOption");
     }
 
     @Override
     public boolean skipTracking() {
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException();
     }
 
     @Override
     public boolean stopFlow() {
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException();
     }
 
     @Override
@@ -73,17 +74,17 @@ public class ChatActionOption extends ChatAction {
 
     @Override
     public ChatActionViewBuilder getActionViewBuilder() {
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException();
     }
 
     @Override
     public ChatNode buildActionFeedback() {
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException();
     }
 
     @Override
     public Runnable onLoaded() {
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException();
     }
 
     @Override
@@ -93,6 +94,14 @@ public class ChatActionOption extends ChatAction {
 
     public String getText() {
         return mText;
+    }
+
+    public void setSelected(boolean selected) {
+        mIsSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return mIsSelected;
     }
 
     @Override
