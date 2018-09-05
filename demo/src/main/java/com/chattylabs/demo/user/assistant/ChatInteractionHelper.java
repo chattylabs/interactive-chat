@@ -54,14 +54,15 @@ class ChatInteractionHelper {
 
     public ChatInteractionComponent create() {
 
-        ChatNode rootNode = buildFlow();
+        ChatFlow flow = assistant.create();
+        ChatNode rootNode = buildFlow(flow);
 
-        assistant.setupSpeech(context, status -> assistant.init(rootNode));
+        assistant.setupSpeech(context, status -> flow.start(rootNode));
 
         return assistant;
     }
 
-    private ChatNode buildFlow() {
+    private ChatNode buildFlow(ChatFlow flow) {
         assistant.addNode(new ChatMessageText.Builder(WELCOME_ID)
                 .setText(getString(R.string.demo_welcome)).build());
 
@@ -141,7 +142,6 @@ class ChatInteractionHelper {
                 })
                 .setTextSize(24).build());
 
-        ChatFlow flow = assistant.create();
         flow.from(WELCOME_ID).to(QUIET_PLACE_ID);
         flow.from(QUIET_PLACE_ID).to(QUIET_PLACE_YES_ID, QUIET_PLACE_NO_ID);
         flow.from(QUIET_PLACE_NO_ID).to(COMEBACK_LATER_ID);
