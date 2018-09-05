@@ -20,33 +20,33 @@ import net.hockeyapp.android.FeedbackManager;
 
 class ChatInteractionHelper {
 
-    private static final String WELCOME_ID = "welcome";
-    private static final String QUIET_PLACE_ID = "quiet_place";
-    private static final String QUIET_PLACE_YES_ID = "quiet_place_yes";
-    private static final String QUIET_PLACE_NO_ID = "quiet_place_no";
-    private static final String COMEBACK_LATER_ID = "comeback_later";
-    private static final String SELECT_ICON_1_ID = "select_icon_1";
-    private static final String SELECT_ICON_2_ID = "select_icon_2";
-    private static final String ICON_1_ID = "icon_1";
-    private static final String ICON_2_ID = "icon_2";
-    private static final String ICON_3_ID = "icon_3";
-    private static final String DONE_ID = "done";
-    private static final String LIKED_YES_ID = "liked_yes";
-    private static final String LIKED_NO_ID = "liked_no";
-    private static final String PART_OF_DAY_1_ID = "part_of_day_1";
-    private static final String PART_OF_DAY_2_ID = "part_of_dayE_2";
-    private static final String MORNING_ID = "morning";
-    private static final String NOON_ID = "noon";
-    private static final String EVENING_ID = "evening";
-    private static final String EXPLANATION_1_ID = "explanation_1";
-    private static final String EXPLANATION_2_ID = "explanation_2";
-    private static final String OK_ID = "ok";
-    private static final String OPTIONS_MSG_ID = "OPTIONS_MSG_ID";
-    private static final String OPTIONS_ID = "OPTIONS_ID";
-    private static final String OPTION_1 = "OPTION_1";
-    private static final String OPTION_2 = "OPTION_2";
-    private static final String OPTION_3 = "OPTION_3";
-    private static final String OPTION_OK = "OPTION_OK";
+    private static final String WELCOME_ID = "WELCOME_ID";
+    private static final String QUIET_PLACE_ID = "QUIET_PLACE_ID";
+    private static final String QUIET_PLACE_YES_ID = "QUIET_PLACE_YES_ID";
+    private static final String QUIET_PLACE_NO_ID = "QUIET_PLACE_NO_ID";
+    private static final String COMEBACK_LATER_ID = "COMEBACK_LATER_ID";
+    private static final String SELECT_ICON_1_ID = "SELECT_ICON_1_ID";
+    private static final String SELECT_ICON_2_ID = "SELECT_ICON_2_ID";
+    private static final String ICON_1_ID = "ICON_1_ID";
+    private static final String ICON_2_ID = "ICON_2_ID";
+    private static final String ICON_3_ID = "ICON_3_ID";
+    private static final String DONE_ID = "DONE_ID";
+    private static final String LIKED_YES_ID = "LIKED_YES_ID";
+    private static final String LIKED_NO_ID = "LIKED_NO_ID";
+    private static final String PART_OF_DAY_1_ID = "PART_OF_DAY_1_ID";
+    private static final String PART_OF_DAY_2_ID = "PART_OF_DAY_2_ID";
+    private static final String MORNING_ID = "MORNING_ID";
+    private static final String NOON_ID = "NOON_ID";
+    private static final String EVENING_ID = "EVENING_ID";
+    private static final String EXPLANATION_1_ID = "EXPLANATION_1_ID";
+    private static final String EXPLANATION_2_ID = "EXPLANATION_2_ID";
+    private static final String OK_ID = "OK_ID";
+    private static final String MULTI_OPTIONS_MSG_ID = "MULTI_OPTIONS_MSG_ID";
+    private static final String MULTI_OPTIONS_ID = "MULTI_OPTIONS_ID";
+    private static final String OPTION_1_ID = "OPTION_1_ID";
+    private static final String OPTION_2_ID = "OPTION_2_ID";
+    private static final String OPTION_3_ID = "OPTION_3_ID";
+    private static final String OPTION_OK_ID = "OPTION_OK_ID";
 
     private Context context;
     private ChatInteractionComponent assistant;
@@ -86,26 +86,6 @@ class ChatInteractionHelper {
                 })
                 .build());
 
-        assistant.addNode(new ChatMessageText.Builder(OPTIONS_MSG_ID)
-                .setText(getString(R.string.options_message)).build());
-
-        assistant.addNode(new ChatActionMultiOption.Builder(OPTIONS_ID)
-                .addOption(new ChatActionOption.Builder(OPTION_1)
-                        .setText(context.getString(R.string.option_1)).build())
-                .addOption(new ChatActionOption.Builder(OPTION_2)
-                        .setText(context.getString(R.string.option_2)).build())
-                .addOption(new ChatActionOption.Builder(OPTION_3)
-                        .setText(context.getString(R.string.option_3)).build())
-                .addOption(new ChatActionOption.Builder(OPTION_OK)
-                        .setText(context.getString(R.string.option_4)).build())
-                .addConfirmationAction(new ChatActionText.Builder(OK_ID)
-                        .setText(getString(R.string.demo_ok)).build())
-                .setOnSelected(action -> {
-                    final ChatActionMultiOption multiAction = ((ChatActionMultiOption) action);
-                    // Iterate options from multiAction and check isSelected
-                })
-                .build());
-
         assistant.addNode(new ChatActionText.Builder(QUIET_PLACE_NO_ID)
                 .setText(getString(R.string.demo_no)).skipTracking(true).build());
 
@@ -120,6 +100,27 @@ class ChatInteractionHelper {
 
         assistant.addNode(new ChatActionText.Builder(OK_ID)
                 .setText(getString(R.string.demo_ok)).build());
+
+        assistant.addNode(new ChatMessageText.Builder(MULTI_OPTIONS_MSG_ID)
+                .setText(getString(R.string.demo_options_message)).build());
+
+        assistant.addNode(new ChatActionMultiOption.Builder(MULTI_OPTIONS_ID)
+                .addOption(new ChatActionOption.Builder(OPTION_1_ID)
+                        .setText(context.getString(R.string.demo_option_1)).build())
+                .addOption(new ChatActionOption.Builder(OPTION_2_ID)
+                        .setText(context.getString(R.string.demo_option_2)).build())
+                .addOption(new ChatActionOption.Builder(OPTION_3_ID)
+                        .setText(context.getString(R.string.demo_option_3)).build())
+                .addOption(new ChatActionOption.Builder(OPTION_OK_ID)
+                        .setText(context.getString(R.string.demo_option_4)).build())
+                .setConfirmationAction(new ChatActionText.Builder(OK_ID)
+                        .setText(getString(R.string.demo_ok))
+                        .setOnSelected(action -> {
+                            final ChatActionMultiOption multiAction = ((ChatActionMultiOption) action);
+                            // Iterate options from multiAction and check isSelected
+                        })
+                        .build())
+                .build());
 
         assistant.addNode(new ChatMessageText.Builder(SELECT_ICON_1_ID)
                 .setText(getString(R.string.demo_select_icon_1)).build());
@@ -177,9 +178,9 @@ class ChatInteractionHelper {
         flow.from(QUIET_PLACE_YES_ID).to(EXPLANATION_1_ID);
         flow.from(EXPLANATION_1_ID).to(EXPLANATION_2_ID);
         flow.from(EXPLANATION_2_ID).to(OK_ID);
-        flow.from(OK_ID).to(OPTIONS_MSG_ID);
-        flow.from(OPTIONS_MSG_ID).to(OPTIONS_ID);
-        flow.from(OPTIONS_ID).to(SELECT_ICON_1_ID);
+        flow.from(OK_ID).to(MULTI_OPTIONS_MSG_ID);
+        flow.from(MULTI_OPTIONS_MSG_ID).to(MULTI_OPTIONS_ID);
+        flow.from(MULTI_OPTIONS_ID).to(SELECT_ICON_1_ID);
         flow.from(SELECT_ICON_1_ID).to(SELECT_ICON_2_ID);
         flow.from(SELECT_ICON_2_ID).to(ICON_1_ID, ICON_2_ID, ICON_3_ID);
         flow.from(ICON_1_ID).to(PART_OF_DAY_1_ID);

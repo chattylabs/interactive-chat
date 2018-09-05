@@ -5,46 +5,40 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatActionMultiOption extends ChatAction {
-
-    private final String mId;
-    private final Runnable mOnLoaded;
-    private final List<ChatActionOption> mOptions;
-    private final ChatActionText mConfirmationAction;
-    private final OnOptionChangeListener mOnOptionChangeListener;
-    private final OnSelected mOnSelected;
-    private boolean mSkipTracking;
-    private boolean mStopFlow;
+public class ChatActionMultiOption extends ChatAction implements HasId,
+        HasOnSelected, CanSkipTracking, CanStopFlow,
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
+    final String id;
+    final Runnable onLoaded;
+    final List<ChatActionOption> options;
+    final ChatActionText confirmationAction;
+    final OnOptionChangeListener onOptionChangeListener;
+    final boolean skipTracking;
+    final boolean stopFlow;
 
     private ChatActionMultiOption(Builder builder) {
-        this.mId = builder.mId;
-        this.mOnLoaded = builder.mOnLoaded;
-        this.mOptions = builder.mOptions;
-        this.mConfirmationAction = builder.mConfirmationAction;
-        this.mOnOptionChangeListener = builder.mOnOptionChangeListener;
-        this.mSkipTracking = builder.mSkipTracking;
-        this.mStopFlow = builder.mStopFlow;
-        this.mOnSelected = builder.onSelected;
+        this.id = builder.id;
+        this.onLoaded = builder.onLoaded;
+        this.options = builder.options;
+        this.confirmationAction = builder.confirmationAction;
+        this.onOptionChangeListener = builder.onOptionChangeListener;
+        this.skipTracking = builder.skipTracking;
+        this.stopFlow = builder.stopFlow;
     }
 
-    /**
-     * This method is not applicable for {@link ChatActionMultiOption}
-     *
-     * @return {@code null}
-     */
     @Override
     public OnSelected onSelected() {
-        return mOnSelected;
+        return confirmationAction.onSelected();
     }
 
     @Override
     public boolean skipTracking() {
-        return mSkipTracking;
+        return skipTracking;
     }
 
     @Override
     public boolean stopFlow() {
-        return mStopFlow;
+        return stopFlow;
     }
 
     @Override
@@ -53,30 +47,23 @@ public class ChatActionMultiOption extends ChatAction {
     }
 
     @Override
-    public String[] getContentDescriptions() {
-        return new String[]{};
-    }
-
-    @Override
     public ChatActionViewBuilder getActionViewBuilder() {
-        return new ChatActionMultiOptionViewBuilder(mOnOptionChangeListener);
+        return new ChatActionMultiOptionViewBuilder(onOptionChangeListener);
     }
 
     @Override
     public ChatNode buildActionFeedback() {
-        return new ChatActionMultiOptionFeedbackText.Builder()
-                .setOptions(mOptions)
-                .build();
+        return new ChatActionMultiOptionFeedbackText.Builder().setOptions(options).build();
     }
 
     @Override
     public Runnable onLoaded() {
-        return this.mOnLoaded;
+        return this.onLoaded;
     }
 
     @Override
     public String getId() {
-        return this.mId;
+        return this.id;
     }
 
     @Override
@@ -85,73 +72,66 @@ public class ChatActionMultiOption extends ChatAction {
     }
 
     public List<ChatActionOption> getOptions() {
-        return mOptions;
+        return options;
     }
 
-    public ChatAction getConfirmationAction() {
-        return mConfirmationAction;
+    public ChatActionText getConfirmationAction() {
+        return confirmationAction;
     }
 
     public static class Builder {
-
-        private String mId;
-        private Runnable mOnLoaded;
-        private List<ChatActionOption> mOptions = new ArrayList<>();
-        private ChatActionText mConfirmationAction;
-        private OnOptionChangeListener mOnOptionChangeListener;
-        private boolean mSkipTracking;
-        private boolean mStopFlow;
-        private OnSelected onSelected;
+        private String id;
+        private Runnable onLoaded;
+        private List<ChatActionOption> options = new ArrayList<>();
+        private ChatActionText confirmationAction;
+        private OnOptionChangeListener onOptionChangeListener;
+        private boolean skipTracking;
+        private boolean stopFlow;
 
         public Builder(@NonNull String id) {
-            mId = id;
+            this.id = id;
         }
 
         public Builder addOption(ChatActionOption option) {
-            mOptions.add(option);
+            options.add(option);
             return this;
         }
 
         public Builder setSkipTracking(boolean skipTracking) {
-            mSkipTracking = skipTracking;
+            this.skipTracking = skipTracking;
             return this;
         }
 
         public Builder setStopFlow(boolean stopFlow) {
-            mStopFlow = stopFlow;
+            this.stopFlow = stopFlow;
             return this;
         }
 
         public Builder setOnLoaded(Runnable loaded) {
-            mOnLoaded = loaded;
+            onLoaded = loaded;
             return this;
         }
 
-        public Builder addConfirmationAction(ChatActionText confirmationAction) {
-            mConfirmationAction = confirmationAction;
+        public Builder setConfirmationAction(ChatActionText confirmationAction) {
+            this.confirmationAction = confirmationAction;
             return this;
         }
 
         public Builder setOnOptionChangeListener(OnOptionChangeListener changeListener) {
-            this.mOnOptionChangeListener = changeListener;
-            return this;
-        }
-
-        public Builder setOnSelected(OnSelected onSelected) {
-            this.onSelected = onSelected;
+            this.onOptionChangeListener = changeListener;
             return this;
         }
 
         public ChatActionMultiOption build() {
-            if (mId == null || mId.isEmpty()) {
+            if (id == null || id.isEmpty()) {
                 throw new NullPointerException("Property \"id\" is required");
             }
 
-            if (mOptions == null || mOptions.size() < 2) {
-                throw new IllegalArgumentException("More than one \"option\" should be present");
+            if (options.size() == 0) {
+                throw new IllegalArgumentException("Property  \"option\" is empty");
             }
 
-            if (mConfirmationAction == null) {
+            if (confirmationAction == null) {
                 throw new NullPointerException("Forgot to set \"confirmationAction\"?");
             }
 
@@ -160,7 +140,6 @@ public class ChatActionMultiOption extends ChatAction {
     }
 
     public interface OnOptionChangeListener {
-
         void onChange(ChatActionOption option, boolean selected);
     }
 }

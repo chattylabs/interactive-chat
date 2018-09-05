@@ -3,11 +3,9 @@ package com.chattylabs.android.user.interaction;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
-import java.util.Objects;
-
-class ChatActionFeedbackImage extends ChatActionFeedback {
-    public final int image;
-    public final int tintColor;
+class ChatActionFeedbackImage extends ChatActionFeedback implements HasViewType {
+    final int image;
+    final int tintColor;
 
     public static class Builder {
         private int image;
@@ -35,9 +33,12 @@ class ChatActionFeedbackImage extends ChatActionFeedback {
         this.tintColor = builder.tintColor;
     }
 
-    @Override
-    public String getId() {
-        return "";
+    public int getImage() {
+        return image;
+    }
+
+    public int getTintColor() {
+        return tintColor;
     }
 
     @Override
@@ -48,23 +49,5 @@ class ChatActionFeedbackImage extends ChatActionFeedback {
     @Override
     public ChatViewHolderBuilder getViewHolderBuilder() {
         return ChatActionFeedbackImageViewHolderBuilder.build();
-    }
-
-    @Override
-    public Runnable onLoaded() {
-        return null;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatActionFeedbackImage that = (ChatActionFeedbackImage) o;
-        return Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
     }
 }

@@ -3,11 +3,11 @@ package com.chattylabs.android.user.interaction;
 import java.util.ArrayList;
 import java.util.Set;
 
-class ChatActionList extends ArrayList<ChatAction> implements ChatNode {
+class ChatActionList extends ArrayList<ChatAction> implements ChatNode, HasViewType {
 
     ChatAction getVisited(Set<String> nodes) {
         for (ChatAction action : this) {
-            if (nodes.contains(action.getId())) {
+            if (nodes.contains(((HasId) action).getId())) {
                 return action;
             }
         }
@@ -22,15 +22,5 @@ class ChatActionList extends ArrayList<ChatAction> implements ChatNode {
     @Override
     public ChatViewHolderBuilder getViewHolderBuilder() {
         return ChatActionListViewHolderBuilder.build();
-    }
-
-    @Override
-    public Runnable onLoaded() {
-        return null;
-    }
-
-    @Override
-    public String getId() {
-        return "";
     }
 }

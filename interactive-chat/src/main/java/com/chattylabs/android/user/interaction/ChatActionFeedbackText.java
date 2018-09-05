@@ -2,12 +2,10 @@ package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 
-import java.util.Objects;
-
-class ChatActionFeedbackText  extends ChatActionFeedback {
-    protected String text;
-    public final float textSize;
-    public final int tintColor;
+class ChatActionFeedbackText  extends ChatActionFeedback implements HasViewType, HasOnLoaded {
+    String text;
+    final float textSize;
+    final int tintColor;
 
     public static class Builder {
         private String text;
@@ -36,15 +34,22 @@ class ChatActionFeedbackText  extends ChatActionFeedback {
         }
     }
 
-    protected ChatActionFeedbackText(Builder builder) {
+    ChatActionFeedbackText(Builder builder) {
         this.text = builder.text;
         this.textSize = builder.textSize;
         this.tintColor = builder.tintColor;
     }
 
-    @Override
-    public String getId() {
-        return "";
+    public String getText() {
+        return text;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    public int getTintColor() {
+        return tintColor;
     }
 
     @Override
@@ -57,21 +62,8 @@ class ChatActionFeedbackText  extends ChatActionFeedback {
         return ChatActionFeedbackTextViewHolderBuilder.build();
     }
 
-    @Override
+    @Override @Deprecated
     public Runnable onLoaded() {
-        return null;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatActionFeedbackText that = (ChatActionFeedbackText) o;
-        return Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
+        throw new IllegalAccessError();
     }
 }

@@ -5,26 +5,28 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-public class ChatActionText extends ChatAction {
-    public final String id;
-    public final String text;
-    public final String textAfter;
-    public final int tintColor;
-    public final float textSize;
-    private final String[] contentDescriptions;
-    private final int order;
-    public final Runnable onLoaded;
-    private final OnSelected onSelected;
-    private boolean skipTracking;
-    private boolean stopFlow;
+public class ChatActionText extends ChatAction implements HasId, HasContentDescriptions,
+        HasOnSelected, CanSkipTracking, CanStopFlow,
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
+    final String id;
+    final String text;
+    final String textAfter;
+    final int tintColor;
+    final float textSize;
+    final String[] contentDescriptions;
+    final int order;
+    final Runnable onLoaded;
+    final OnSelected onSelected;
+    boolean skipTracking;
+    boolean stopFlow;
 
     public static class Builder {
         private String id;
         private String text;
         private String textAfter;
+        private int tintColor;
         private float textSize;
         private String[] contentDescriptions;
-        private int tintColor;
         private int order;
         private Runnable onLoaded;
         private OnSelected onSelected;
@@ -45,6 +47,11 @@ public class ChatActionText extends ChatAction {
             return this;
         }
 
+        public Builder setTintColor(@ColorRes int tintColor) {
+            this.tintColor = tintColor;
+            return this;
+        }
+
         public Builder setTextSize(float textSizeInSp) {
             this.textSize = textSizeInSp;
             return this;
@@ -55,8 +62,8 @@ public class ChatActionText extends ChatAction {
             return this;
         }
 
-        public Builder setTintColor(@ColorRes int tintColor) {
-            this.tintColor = tintColor;
+        public Builder setOrder(int order) {
+            this.order = order;
             return this;
         }
 
@@ -67,11 +74,6 @@ public class ChatActionText extends ChatAction {
 
         public Builder setOnSelected(OnSelected onSelected) {
             this.onSelected = onSelected;
-            return this;
-        }
-
-        public Builder setOrder(int order) {
-            this.order = order;
             return this;
         }
 
@@ -96,16 +98,16 @@ public class ChatActionText extends ChatAction {
         }
     }
 
-    private ChatActionText(Builder builder) {
+    ChatActionText(Builder builder) {
         this.id = builder.id;
         this.text = builder.text;
         this.textAfter = builder.textAfter;
-        this.contentDescriptions = builder.contentDescriptions;
         this.tintColor = builder.tintColor;
+        this.textSize = builder.textSize;
+        this.contentDescriptions = builder.contentDescriptions;
+        this.order = builder.order;
         this.onLoaded = builder.onLoaded;
         this.onSelected = builder.onSelected;
-        this.textSize = builder.textSize;
-        this.order = builder.order;
         this.skipTracking = builder.skipTracking;
         this.stopFlow = builder.stopFlow;
     }
@@ -113,6 +115,41 @@ public class ChatActionText extends ChatAction {
     @Override
     public String getId() {
         return id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getTextAfter() {
+        return textAfter;
+    }
+
+    public int getTintColor() {
+        return tintColor;
+    }
+
+    public float getTextSize() {
+        return textSize;
+    }
+
+    @Override
+    public String[] getContentDescriptions() {
+        if (contentDescriptions != null)
+            return contentDescriptions;
+        else if (text != null)
+            return new String[]{text};
+        return new String[]{textAfter};
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
+    }
+
+    @Override
+    public Runnable onLoaded() {
+        return onLoaded;
     }
 
     @Override
@@ -128,25 +165,6 @@ public class ChatActionText extends ChatAction {
     @Override
     public boolean stopFlow() {
         return stopFlow;
-    }
-
-    @Override
-    public int getOrder() {
-        return order;
-    }
-
-    @Override
-    public String[] getContentDescriptions() {
-        if (contentDescriptions != null)
-            return contentDescriptions;
-        else if (text != null)
-            return new String[]{text};
-        return new String[]{textAfter};
-    }
-
-    @Override
-    public Runnable onLoaded() {
-        return onLoaded;
     }
 
     @Override
