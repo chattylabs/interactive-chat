@@ -11,6 +11,7 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
     final String id;
     final Runnable onLoaded;
     final List<ChatActionOption> options;
+    final float textSize;
     final ChatActionText confirmationAction;
     final OnOptionChangeListener onOptionChangeListener;
     final boolean skipTracking;
@@ -20,10 +21,29 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
         this.id = builder.id;
         this.onLoaded = builder.onLoaded;
         this.options = builder.options;
+        this.textSize = builder.textSize;
         this.confirmationAction = builder.confirmationAction;
         this.onOptionChangeListener = builder.onOptionChangeListener;
         this.skipTracking = builder.skipTracking;
         this.stopFlow = builder.stopFlow;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public Runnable onLoaded() {
+        return this.onLoaded;
+    }
+
+    public List<ChatActionOption> getOptions() {
+        return options;
+    }
+
+    public float getTextSize() {
+        return textSize;
     }
 
     @Override
@@ -53,26 +73,13 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
 
     @Override
     public ChatNode buildActionFeedback() {
-        return new ChatActionMultiOptionFeedbackText.Builder().setOptions(options).build();
-    }
-
-    @Override
-    public Runnable onLoaded() {
-        return this.onLoaded;
-    }
-
-    @Override
-    public String getId() {
-        return this.id;
+        return new ChatActionMultiOptionFeedbackText.Builder()
+                .setOptions(options).setTextSize(textSize).build();
     }
 
     @Override
     public int compareTo(@NonNull ChatAction chatAction) {
         return Integer.compare(getOrder(), chatAction.getOrder());
-    }
-
-    public List<ChatActionOption> getOptions() {
-        return options;
     }
 
     public ChatActionText getConfirmationAction() {
@@ -83,6 +90,7 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
         private String id;
         private Runnable onLoaded;
         private List<ChatActionOption> options = new ArrayList<>();
+        private float textSize;
         private ChatActionText confirmationAction;
         private OnOptionChangeListener onOptionChangeListener;
         private boolean skipTracking;
@@ -94,6 +102,11 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
 
         public Builder addOption(ChatActionOption option) {
             options.add(option);
+            return this;
+        }
+
+        public Builder setTextSize(float textSize) {
+            this.textSize = textSize;
             return this;
         }
 
@@ -128,11 +141,11 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
             }
 
             if (options.size() == 0) {
-                throw new IllegalArgumentException("Property  \"option\" is empty");
+                throw new IllegalArgumentException("Property \"options\" is empty");
             }
 
             if (confirmationAction == null) {
-                throw new NullPointerException("Forgot to set \"confirmationAction\"?");
+                throw new NullPointerException("Forgot to set \"confirmationAction\" property?");
             }
 
             return new ChatActionMultiOption(this);

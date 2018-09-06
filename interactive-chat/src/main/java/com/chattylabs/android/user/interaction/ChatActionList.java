@@ -7,6 +7,7 @@ class ChatActionList extends ArrayList<ChatAction> implements ChatNode, HasViewT
 
     ChatAction getVisited(Set<String> nodes) {
         for (ChatAction action : this) {
+            // All actions must have an ID, otherwise Exception
             if (nodes.contains(((HasId) action).getId())) {
                 return action;
             }

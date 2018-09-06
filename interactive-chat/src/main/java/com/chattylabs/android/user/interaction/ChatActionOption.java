@@ -1,17 +1,14 @@
 package com.chattylabs.android.user.interaction;
 
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
 public class ChatActionOption extends ChatAction implements HasId,
-        HasContentDescriptions, HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded  {
+        HasContentDescriptions, HasOnLoaded  {
     final String id;
     final String text;
     final String textAfter;
-    final int tintColor;
-    final float textSize;
     final String[] contentDescriptions;
     final int order;
     final Runnable onLoaded;
@@ -21,8 +18,6 @@ public class ChatActionOption extends ChatAction implements HasId,
         private String id;
         private String text;
         private String textAfter;
-        private int tintColor;
-        private float textSize;
         private String[] contentDescriptions;
         private int order;
         private Runnable onLoaded;
@@ -38,16 +33,6 @@ public class ChatActionOption extends ChatAction implements HasId,
 
         public Builder setTextAfter(String textAfter) {
             this.textAfter = textAfter;
-            return this;
-        }
-
-        public Builder setTintColor(@ColorRes int tintColor) {
-            this.tintColor = tintColor;
-            return this;
-        }
-
-        public Builder setTextSize(float textSizeInSp) {
-            this.textSize = textSizeInSp;
             return this;
         }
 
@@ -81,8 +66,6 @@ public class ChatActionOption extends ChatAction implements HasId,
         this.id = builder.id;
         this.text = builder.text;
         this.textAfter = builder.textAfter;
-        this.tintColor = builder.tintColor;
-        this.textSize = builder.textSize;
         this.contentDescriptions = builder.contentDescriptions;
         this.order = builder.order;
         this.onLoaded = builder.onLoaded;
@@ -99,14 +82,6 @@ public class ChatActionOption extends ChatAction implements HasId,
 
     public String getTextAfter() {
         return textAfter;
-    }
-
-    public int getTintColor() {
-        return tintColor;
-    }
-
-    public float getTextSize() {
-        return textSize;
     }
 
     @Override
@@ -136,17 +111,9 @@ public class ChatActionOption extends ChatAction implements HasId,
         return isSelected;
     }
 
-    @Override
-    public ChatActionViewBuilder getActionViewBuilder() {
-        return ChatActionTextViewBuilder.build();
-    }
-
-    @Override
+    @Override @Deprecated
     public ChatNode buildActionFeedback() {
-        return new ChatActionFeedbackText.Builder()
-                .setText(textAfter != null ? textAfter : text)
-                .setTintColor(tintColor)
-                .setTextSize(textSize).build();
+        throw new IllegalAccessError();
     }
 
     @Override
