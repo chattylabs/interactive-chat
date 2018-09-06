@@ -29,6 +29,7 @@ class ChatMessageTextViewHolderBuilder implements ChatViewHolderBuilder {
 
     static class ChatMessageViewHolder extends RecyclerView.ViewHolder implements Binder {
         TextView textView;
+        float defaultTextSize;
 
         ChatMessageViewHolder(View v) {
             super(v);
@@ -44,8 +45,11 @@ class ChatMessageTextViewHolderBuilder implements ChatViewHolderBuilder {
         @Override
         public void onBind(ChatInteractionViewAdapter adapter, int position) {
             ChatMessageText message = (ChatMessageText) adapter.getItems().get(position);
+            if (defaultTextSize == 0) defaultTextSize = textView.getTextSize();
             if (message.textSize > 0) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, message.textSize);
+            } else {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
             CharSequence text = EmojiCompat.get().process(message.text);
             Spanned span = ChatInteractionComponentImpl.makeText(text);

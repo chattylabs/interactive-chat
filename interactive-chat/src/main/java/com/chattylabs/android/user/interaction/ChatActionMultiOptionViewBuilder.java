@@ -19,6 +19,7 @@ import static com.chattylabs.android.user.interaction.ChatActionMultiOption.OnOp
 class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
 
     private final OnOptionChangeListener onOptionChangeListener;
+    private float defaultTextSize;
 
     ChatActionMultiOptionViewBuilder(OnOptionChangeListener onOptionChangeListener) {
         this.onOptionChangeListener = onOptionChangeListener;
@@ -62,8 +63,11 @@ class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
         optionButton.setTextOff(span);
         optionButton.setTextOn(span);
 
-        if (option.getTextSize() > 0) {
-            optionButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, option.getTextSize());
+        if (defaultTextSize == 0) defaultTextSize = optionButton.getTextSize();
+        if (option.textSize > 0) {
+            optionButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, option.textSize);
+        } else {
+            optionButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
         }
 
         optionButton.setOnCheckedChangeListener((compoundButton, selected) -> {

@@ -10,6 +10,7 @@ import android.widget.Button;
 
 class ChatActionTextViewBuilder implements ChatActionViewBuilder {
     private static ChatActionTextViewBuilder instance;
+    private float defaultTextSize;
 
     public static ChatActionViewBuilder build() {
         return instance == null ? instance = new ChatActionTextViewBuilder() : instance;
@@ -23,8 +24,11 @@ class ChatActionTextViewBuilder implements ChatActionViewBuilder {
                 viewGroup, false);
 
         ChatActionText actionText = (ChatActionText) action;
+        if (defaultTextSize == 0) defaultTextSize = button.getTextSize();
         if (actionText.textSize > 0) {
             button.setTextSize(TypedValue.COMPLEX_UNIT_SP, actionText.textSize);
+        } else {
+            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
         }
         CharSequence text = EmojiCompat.get().process(actionText.text);
         Spanned span = ChatInteractionComponentImpl.makeText(text);

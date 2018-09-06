@@ -21,6 +21,5 @@
         android:paddingStart="16dp"
         android:paddingTop="8dp"
         android:textColor="@color/background_opaque"
-        android:textSize="14sp"
         tools:text="Done" />
 </LinearLayout>

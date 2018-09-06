@@ -30,6 +30,7 @@ class ChatActionFeedbackTextViewHolderBuilder implements ChatViewHolderBuilder {
     static class ChatActionTextSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
 
         TextView textView;
+        float defaultTextSize;
 
         ChatActionTextSelectedViewHolder(View v) {
             super(v);
@@ -44,8 +45,11 @@ class ChatActionFeedbackTextViewHolderBuilder implements ChatViewHolderBuilder {
         @Override
         public void onBind(ChatInteractionViewAdapter adapter, int position) {
             ChatActionFeedbackText textSelected = (ChatActionFeedbackText) adapter.getItems().get(position);
+            if (defaultTextSize == 0) defaultTextSize = textView.getTextSize();
             if (textSelected.textSize > 0) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
+            } else {
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
             CharSequence text = EmojiCompat.get().process(textSelected.text);
             Spanned span = ChatInteractionComponentImpl.makeText(text);

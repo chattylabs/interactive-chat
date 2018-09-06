@@ -36,7 +36,7 @@ class ChatMessageImageViewHolderBuilder implements ChatViewHolderBuilder {
             imageView.setImageResource(message.image);
             if (message.tintColor > 0) {
                 imageView.setImageTintList(ColorStateList.valueOf(message.tintColor));
-            }
+            } // TODO reset tintColor
         }
     }
 }

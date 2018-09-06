@@ -37,7 +37,7 @@ class ChatActionFeedbackImageViewHolderBuilder implements ChatViewHolderBuilder 
             image.setImageResource(imageSelected.image);
             if (imageSelected.tintColor > 0) {
                 image.setImageTintList(ColorStateList.valueOf(imageSelected.tintColor));
-            }
+            } // TODO reset tintColor
         }
     }
 }
