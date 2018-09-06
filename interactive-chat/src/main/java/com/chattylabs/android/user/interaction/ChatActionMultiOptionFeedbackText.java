@@ -25,7 +25,7 @@ class ChatActionMultiOptionFeedbackText extends ChatActionFeedback implements Ha
 
     @Override
     public ChatViewHolderBuilder getViewHolderBuilder() {
-        return ChatActionFeedbackTextViewHolderBuilder.build();
+        return ChatActionMultiOptionFeedbackTextViewHolderBuilder.build();
     }
 
     private String getOptionsText(List<ChatActionOption> options) {
