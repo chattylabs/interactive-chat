@@ -3,6 +3,7 @@ package com.chattylabs.android.user.interaction;
 import android.content.Context;
 import android.support.text.emoji.EmojiCompat;
 import android.text.Spanned;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
                     .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_left);
             layoutParams.bottomMargin = context.getResources()
                     .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_bottom);
-            optionsLayout.addView(getOption(context, option, optionsLayout), layoutParams);
+            optionsLayout.addView(getOption(context, multiAction, option, optionsLayout), layoutParams);
         }
 
         final CharSequence text = EmojiCompat.get().process(
@@ -50,7 +51,8 @@ class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
         return multiOptionAction;
     }
 
-    private View getOption(Context context, ChatActionOption option, FlexboxLayout container) {
+    private View getOption(Context context, ChatActionMultiOption multiAction,
+                           ChatActionOption option, FlexboxLayout container) {
         final ToggleButton optionButton = (ToggleButton) LayoutInflater.from(context)
                 .inflate(R.layout.item_interactive_chat_option_text, container, false);
 
@@ -60,6 +62,10 @@ class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
         optionButton.setText(span);
         optionButton.setTextOff(span);
         optionButton.setTextOn(span);
+
+        if (multiAction.getTextSize() > 0) {
+            optionButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, multiAction.getTextSize());
+        }
 
         optionButton.setOnCheckedChangeListener((compoundButton, selected) -> {
             option.setSelected(selected);
