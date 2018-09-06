@@ -7,6 +7,7 @@
     <item type="id" name="interactive_chat_action_list_view_type" />
     <item type="id" name="interactive_chat_action_feedback_image_view_type" />
     <item type="id" name="interactive_chat_action_feedback_text_view_type" />
+    <item type="id" name="interactive_chat_multi_option_feedback_text_view_type" />
     <item type="id" name="interactive_chat_loading_view_type" />
     <item type="id" name="interactive_chat_message_view_type" />
     <item type="id" name="interactive_chat_message_image_view_type" />

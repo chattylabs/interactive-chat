@@ -9,6 +9,7 @@ public class ChatActionOption extends ChatAction implements HasId,
     final String id;
     final String text;
     final String textAfter;
+    final float textSize;
     final String[] contentDescriptions;
     final int order;
     final Runnable onLoaded;
@@ -18,6 +19,7 @@ public class ChatActionOption extends ChatAction implements HasId,
         private String id;
         private String text;
         private String textAfter;
+        private float textSize;
         private String[] contentDescriptions;
         private int order;
         private Runnable onLoaded;
@@ -33,6 +35,11 @@ public class ChatActionOption extends ChatAction implements HasId,
 
         public Builder setTextAfter(String textAfter) {
             this.textAfter = textAfter;
+            return this;
+        }
+
+        public Builder setTextSize(float textSize) {
+            this.textSize = textSize;
             return this;
         }
 
@@ -66,6 +73,7 @@ public class ChatActionOption extends ChatAction implements HasId,
         this.id = builder.id;
         this.text = builder.text;
         this.textAfter = builder.textAfter;
+        this.textSize = builder.textSize;
         this.contentDescriptions = builder.contentDescriptions;
         this.order = builder.order;
         this.onLoaded = builder.onLoaded;
@@ -82,6 +90,10 @@ public class ChatActionOption extends ChatAction implements HasId,
 
     public String getTextAfter() {
         return textAfter;
+    }
+
+    public float getTextSize() {
+        return textSize;
     }
 
     @Override

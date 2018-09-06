@@ -7,20 +7,14 @@ import java.util.List;
 
 class ChatActionMultiOptionFeedbackText extends ChatActionFeedback implements HasViewType {
     String text;
-    final float textSize;
 
     private ChatActionMultiOptionFeedbackText(Builder builder) {
-        this.textSize = builder.textSize;
         this.text = getOptionsText(builder.options);
-    }
-
-    public float getTextSize() {
-        return textSize;
     }
 
     @Override
     public int getViewType() {
-        return R.id.interactive_chat_action_feedback_text_view_type;
+        return R.id.interactive_chat_multi_option_feedback_text_view_type;
     }
 
     @Override
@@ -36,21 +30,15 @@ class ChatActionMultiOptionFeedbackText extends ChatActionFeedback implements Ha
                         option.getTextAfter() : option.getText());
             }
         }
-        return TextUtils.join(", ", selectedOptionText);
+        return TextUtils.join(" + ", selectedOptionText);
     }
 
     public static class Builder {
 
         private List<ChatActionOption> options;
-        private float textSize;
 
         public Builder setOptions(List<ChatActionOption> options) {
             this.options = options;
-            return this;
-        }
-
-        public Builder setTextSize(float textSize) {
-            this.textSize = textSize;
             return this;
         }
 

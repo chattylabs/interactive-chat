@@ -11,7 +11,6 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
     final String id;
     final Runnable onLoaded;
     final List<ChatActionOption> options;
-    final float textSize;
     final ChatActionText confirmationAction;
     final OnOptionChangeListener onOptionChangeListener;
     final boolean skipTracking;
@@ -21,7 +20,6 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
         this.id = builder.id;
         this.onLoaded = builder.onLoaded;
         this.options = builder.options;
-        this.textSize = builder.textSize;
         this.confirmationAction = builder.confirmationAction;
         this.onOptionChangeListener = builder.onOptionChangeListener;
         this.skipTracking = builder.skipTracking;
@@ -40,10 +38,6 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
 
     public List<ChatActionOption> getOptions() {
         return options;
-    }
-
-    public float getTextSize() {
-        return textSize;
     }
 
     @Override
@@ -74,7 +68,7 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
     @Override
     public ChatNode buildActionFeedback() {
         return new ChatActionMultiOptionFeedbackText.Builder()
-                .setOptions(options).setTextSize(textSize).build();
+                .setOptions(options).build();
     }
 
     @Override
@@ -90,7 +84,6 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
         private String id;
         private Runnable onLoaded;
         private List<ChatActionOption> options = new ArrayList<>();
-        private float textSize;
         private ChatActionText confirmationAction;
         private OnOptionChangeListener onOptionChangeListener;
         private boolean skipTracking;
@@ -102,11 +95,6 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
 
         public Builder addOption(ChatActionOption option) {
             options.add(option);
-            return this;
-        }
-
-        public Builder setTextSize(float textSize) {
-            this.textSize = textSize;
             return this;
         }
 

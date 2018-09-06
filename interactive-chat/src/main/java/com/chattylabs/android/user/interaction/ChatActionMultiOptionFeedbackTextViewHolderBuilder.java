@@ -44,9 +44,9 @@ class ChatActionMultiOptionFeedbackTextViewHolderBuilder implements ChatViewHold
         @Override
         public void onBind(ChatInteractionViewAdapter adapter, int position) {
             ChatActionMultiOptionFeedbackText textSelected = (ChatActionMultiOptionFeedbackText) adapter.getItems().get(position);
-            if (textSelected.textSize > 0) {
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
-            }
+//            if (textSelected.textSize > 0) {
+//                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
+//            }
             CharSequence text = EmojiCompat.get().process(textSelected.text);
             Spanned span = ChatInteractionComponentImpl.makeText(text);
             textView.setText(span);
