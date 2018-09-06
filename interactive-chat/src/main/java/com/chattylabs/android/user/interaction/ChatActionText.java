@@ -11,7 +11,6 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
     final String id;
     final String text;
     final String textAfter;
-    final int tintColor;
     final float textSize;
     final String[] contentDescriptions;
     final int order;
@@ -24,7 +23,6 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
         private String id;
         private String text;
         private String textAfter;
-        private int tintColor;
         private float textSize;
         private String[] contentDescriptions;
         private int order;
@@ -44,11 +42,6 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
 
         public Builder setTextAfter(String textAfter) {
             this.textAfter = textAfter;
-            return this;
-        }
-
-        public Builder setTintColor(@ColorRes int tintColor) {
-            this.tintColor = tintColor;
             return this;
         }
 
@@ -102,7 +95,6 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
         this.id = builder.id;
         this.text = builder.text;
         this.textAfter = builder.textAfter;
-        this.tintColor = builder.tintColor;
         this.textSize = builder.textSize;
         this.contentDescriptions = builder.contentDescriptions;
         this.order = builder.order;
@@ -123,10 +115,6 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
 
     public String getTextAfter() {
         return textAfter;
-    }
-
-    public int getTintColor() {
-        return tintColor;
     }
 
     public float getTextSize() {
@@ -176,7 +164,6 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
     public ChatNode buildActionFeedback() {
         return new ChatActionFeedbackText.Builder()
                 .setText(textAfter != null ? textAfter : text)
-                .setTintColor(tintColor)
                 .setTextSize(textSize).build();
     }
 
