@@ -1,7 +1,9 @@
 package com.chattylabs.android.user.interaction;
 
+import android.Manifest;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.support.v7.widget.RecyclerView;
 
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
@@ -68,9 +70,10 @@ public interface ChatInteractionComponent {
 
     void selectLastVisitedAction();
 
-    void enableSpeechSynthesizer(boolean enable);
+    void enableSpeechSynthesizer(Context context, boolean enable);
 
-    void enableSpeechRecognizer(boolean enable);
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    void enableSpeechRecognizer(Context context, boolean enable);
 
     void setupSpeech(Context context, OnComponentSetup onPrepared);
 

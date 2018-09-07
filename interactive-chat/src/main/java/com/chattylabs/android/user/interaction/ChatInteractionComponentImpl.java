@@ -1,5 +1,6 @@
 package com.chattylabs.android.user.interaction;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.VisibleForTesting;
 import android.support.text.emoji.EmojiCompat;
 import android.support.text.emoji.bundled.BundledEmojiCompatConfig;
@@ -94,10 +96,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         enableLastState = builder.withLastState;
         speechComponent = builder.voiceComponent;
         doneListener = builder.doneListener;
-        if (speechComponent != null) {
-            speechSynthesizer = speechComponent.getSpeechSynthesizer(recyclerView.getContext());
-            speechRecognizer = speechComponent.getSpeechRecognizer(recyclerView.getContext());
-        }
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(recyclerView.getContext());
@@ -121,13 +119,17 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void enableSpeechSynthesizer(boolean enable) {
+    public void enableSpeechSynthesizer(Context context, boolean enable) {
         this.enableSynthesizer = enable;
+        if (speechComponent != null && synthesizerReady)
+            speechSynthesizer = speechComponent.getSpeechSynthesizer(context);
     }
 
-    @Override
-    public void enableSpeechRecognizer(boolean enable) {
+    @Override @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    public void enableSpeechRecognizer(Context context, boolean enable) {
         this.enableRecognizer = enable;
+        if (speechComponent != null && recognizerReady)
+            speechRecognizer = speechComponent.getSpeechRecognizer(context);
     }
 
     @Override
@@ -150,7 +152,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         show(getNext(), DEFAULT_MESSAGE_DELAY);
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void setupSpeech(Context context, OnComponentSetup onSetup) {
         speechInProgress = true;
@@ -160,6 +161,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                     SynthesizerListener.Status.AVAILABLE;
             recognizerReady = status.getRecognizerStatus() ==
                     RecognizerListener.Status.AVAILABLE;
+
             // FIXME: Probably a Dagger issue
             // Second time it exists the App seems like the TTS is still alive, so triedTtsData
             // value is TRUE, causing checkAvailability never to be called.
