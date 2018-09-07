@@ -12,15 +12,11 @@ import android.view.MenuItem;
 import com.chattylabs.android.user.interaction.ChatInteractionComponent;
 import com.chattylabs.sdk.android.common.PermissionsHelper;
 import com.chattylabs.sdk.android.common.ThreadUtils;
-import com.chattylabs.sdk.android.voice.AndroidSpeechRecognizer;
-import com.chattylabs.sdk.android.voice.AndroidSpeechSynthesizer;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
-
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -55,13 +51,6 @@ public class MainActivity extends DaggerAppCompatActivity {
 
         setContentView(R.layout.activity_main);
         view = findViewById(R.id.interactive_chat);
-
-        voiceComponent.updateConfiguration(builder -> {
-            builder.setSynthesizerServiceType(() -> AndroidSpeechSynthesizer.class);
-            builder.setRecognizerServiceType(() -> AndroidSpeechRecognizer.class);
-            builder.setSpeechLanguage(() -> Locale.ENGLISH);
-            return builder.build();
-        });
 
         String[] perms = voiceComponent.requiredPermissions();
         PermissionsHelper.check(this,

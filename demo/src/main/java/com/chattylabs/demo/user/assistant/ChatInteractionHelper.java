@@ -1,5 +1,6 @@
 package com.chattylabs.demo.user.assistant;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
@@ -53,7 +54,7 @@ class ChatInteractionHelper {
 
     ChatInteractionHelper(RecyclerView recyclerView,
                           ConversationalFlowComponent voiceComponent) {
-        this.context = recyclerView.getContext();
+        context = recyclerView.getContext();
         assistant = new ChatInteractionComponent.Builder()
                 .withViewComponent(recyclerView)
                 .withVoiceComponent(voiceComponent)
@@ -70,6 +71,7 @@ class ChatInteractionHelper {
         return assistant;
     }
 
+    @SuppressLint("MissingPermission")
     private ChatNode buildFlow(ChatFlow flow) {
 
         assistant.addNode(new ChatMessageText.Builder(WELCOME_ID)
@@ -81,8 +83,8 @@ class ChatInteractionHelper {
         assistant.addNode(new ChatActionText.Builder(QUIET_PLACE_YES_ID)
                 .setText(getString(R.string.demo_yes))
                 .setOnSelected(action -> {
-                    assistant.enableSpeechSynthesizer(true);
-                    assistant.enableSpeechRecognizer(true);
+                    assistant.enableSpeechSynthesizer(context, true);
+                    assistant.enableSpeechRecognizer(context, true);
                 })
                 .build());
 
