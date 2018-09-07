@@ -62,7 +62,7 @@ class ChatInteractionHelper {
 
     public ChatInteractionComponent create() {
 
-        ChatFlow flow = assistant.create();
+        ChatFlow flow = assistant.prepare();
         ChatNode rootNode = buildFlow(flow);
 
         assistant.setupSpeech(context, status -> flow.start(rootNode));

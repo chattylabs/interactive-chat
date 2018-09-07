@@ -110,7 +110,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public void start(@NonNull ChatNode root) {
+    void start(@NonNull ChatNode root) {
         String lastSavedNodeId = getLastVisitedNodeId((HasId) root);
         ChatNode lastSavedNode = getNode(lastSavedNodeId);
         adapter.addItem(root);
@@ -138,7 +138,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
-    public ChatFlow create() {
+    public ChatFlow prepare() {
         return new ChatFlow(this);
     }
 

@@ -62,7 +62,7 @@ public interface ChatInteractionComponent {
 
     Set<String> getVisitedNodes();
 
-    ChatFlow create();
+    ChatFlow prepare();
 
     void next();
 
