@@ -1,10 +1,10 @@
 package com.chattylabs.android.user.interaction;
 
-public abstract class ChatAction implements ChatNode, MustBuildActionFeedback, Comparable<ChatAction> {
+public interface ChatAction extends ChatNode, Comparable<ChatAction> {
 
-    public interface OnSelected {
+    interface OnSelected {
         void execute(ChatAction action);
     }
 
-    public abstract int getOrder();
+    int getOrder();
 }

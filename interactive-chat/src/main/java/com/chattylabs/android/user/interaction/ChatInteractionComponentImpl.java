@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
@@ -93,12 +92,13 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             });
         }
         timer = new Timer();
-        enableLastState = builder.withLastState;
+        enableLastState = builder.withLastStateEnabled;
         speechComponent = builder.voiceComponent;
         doneListener = builder.doneListener;
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         layoutManager.setSmoothScrollbarEnabled(false);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(recyclerView.getContext());
+        sharedPreferences = recyclerView.getContext().getSharedPreferences(
+                "interactive_chat", Context.MODE_PRIVATE);
         uiThreadHandler.post(() -> {
             recyclerView.setItemAnimator(null);
             recyclerView.setAdapter(adapter);
@@ -301,6 +301,9 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
 
     private void placeSelectedAction(ChatAction action) {
         lastAction = action;
+        if (action instanceof CanHandleState) {
+            ((CanHandleState) action).restoreSavedState(sharedPreferences);
+        }
         addLast(((MustBuildActionFeedback) action).buildActionFeedback());
     }
 
@@ -325,6 +328,9 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         Set<String> set = getVisitedNodes();
         set.add(node.getId());
         sharedPreferences.edit().putStringSet(VISITED_NODES, set).apply();
+        if (node instanceof CanHandleState) {
+            ((CanHandleState) node).saveState(sharedPreferences);
+        }
     }
 
     @Override
@@ -378,7 +384,12 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 }
                 if (node instanceof ChatAction) {
                     ChatAction action = (ChatAction) node;
-                    items.add(action.buildActionFeedback());
+                    if (action instanceof CanHandleState) {
+                        ((CanHandleState) action).restoreSavedState(sharedPreferences);
+                    }
+                    if (action instanceof MustBuildActionFeedback) {
+                        items.add(((MustBuildActionFeedback) action).buildActionFeedback());
+                    }
                     traverse(items, action, target);
                 } else {
                     items.add(node);
@@ -388,7 +399,12 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 ChatActionList actionList = getActionList(edges);
                 ChatAction action = actionList.getVisited(getVisitedNodes());
                 if (action != null) {
-                    items.add(action.buildActionFeedback());
+                    if (action instanceof CanHandleState) {
+                        ((CanHandleState) action).restoreSavedState(sharedPreferences);
+                    }
+                    if (action instanceof MustBuildActionFeedback) {
+                        items.add(((MustBuildActionFeedback) action).buildActionFeedback());
+                    }
                     traverse(items, action, target);
                 }
             }

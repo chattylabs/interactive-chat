@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-public class ChatActionImage extends ChatAction implements HasId, HasContentDescriptions,
+public class ChatActionImage implements HasId, HasContentDescriptions,
         HasOnSelected, CanSkipTracking, CanStopFlow,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, ChatAction {
     final String id;
     final int image;
     final int imageAfter;

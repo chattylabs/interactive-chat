@@ -15,15 +15,15 @@ public interface ChatInteractionComponent {
 
     interface IOptional {
         IOptional withVoiceComponent(ConversationalFlowComponent voiceComponent);
-        IOptional withDoneListener(Runnable callback);
-        IOptional withLastState(boolean enable);
+        IOptional withOnDoneListener(Runnable callback);
+        IOptional withLastStateEnabled(boolean enable);
         ChatInteractionComponent build();
     }
 
     class Builder {
         ConversationalFlowComponent voiceComponent;
         RecyclerView recyclerView;
-        boolean withLastState;
+        boolean withLastStateEnabled;
         Runnable doneListener;
 
         public IOptional withViewComponent(RecyclerView recyclerView) {
@@ -40,13 +40,13 @@ public interface ChatInteractionComponent {
             }
 
             @Override
-            public IOptional withLastState(boolean enable) {
-                Builder.this.withLastState = enable;
+            public IOptional withLastStateEnabled(boolean enable) {
+                Builder.this.withLastStateEnabled = enable;
                 return this;
             }
 
             @Override
-            public IOptional withDoneListener(Runnable callback) {
+            public IOptional withOnDoneListener(Runnable callback) {
                 Builder.this.doneListener = callback;
                 return this;
             }
