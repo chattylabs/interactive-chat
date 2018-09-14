@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -69,11 +70,13 @@ public class ChatActionMultiOption implements HasId,
 
     @Override
     public ChatActionViewBuilder getActionViewBuilder() {
+        Collections.sort(options);
         return new ChatActionMultiOptionViewBuilder(onOptionChangeListener);
     }
 
     @Override
     public ChatNode buildActionFeedback() {
+        Collections.sort(options);
         return new ChatActionMultiOptionFeedbackText.Builder()
                 .setOptions(options).build();
     }
