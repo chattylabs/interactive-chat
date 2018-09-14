@@ -5,7 +5,10 @@ import com.chattylabs.sdk.android.voice.SynthesizerListener;
 
 public interface CanSynthesize {
 
-    boolean isSynthesizerConsumed(HasText item,
-                                  SpeechSynthesizerComponent component,
-                                  SynthesizerListener.OnDone onDone);
+    interface OnSynthesized {
+        void execute();
+    }
+
+    void consumeSynthesizer(SpeechSynthesizerComponent component,
+                            OnSynthesized onSynthesized);
 }

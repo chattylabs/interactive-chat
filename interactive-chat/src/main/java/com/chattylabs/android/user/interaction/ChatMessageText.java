@@ -8,7 +8,7 @@ import com.chattylabs.sdk.android.voice.SynthesizerListener;
 import java.util.Objects;
 
 public class ChatMessageText implements ChatNode, HasId, HasOnLoaded, HasText, HasViewType,
-    CanSynthesize {
+        CanSynthesize {
 
     final String id;
     final String text;
@@ -19,11 +19,10 @@ public class ChatMessageText implements ChatNode, HasId, HasOnLoaded, HasText, H
     final boolean treatedAsFirst;
 
     @Override
-    public boolean isSynthesizerConsumed(HasText item,
-                                         SpeechSynthesizerComponent component,
-                                         SynthesizerListener.OnDone onDone) {
-        component.playText(item.getText(), onDone);
-        return true;
+    public void consumeSynthesizer(SpeechSynthesizerComponent component,
+                                   OnSynthesized onSynthesized) {
+        component.playText(this.getText(),
+                (SynthesizerListener.OnDone) utteranceId -> onSynthesized.execute());
     }
 
     public static class Builder {

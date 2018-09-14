@@ -3,10 +3,14 @@ package com.chattylabs.android.user.interaction;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 
+import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
+import com.chattylabs.sdk.android.voice.RecognizerListener;
+import com.chattylabs.sdk.android.voice.SpeechRecognizerComponent;
+
 import java.util.Objects;
 
 public class ChatActionText extends ChatAction implements HasId, HasContentDescriptions,
-        HasOnSelected, CanSkipTracking, CanStopFlow,
+        HasOnSelected, CanSkipTracking, CanStopFlow, CanCheckContentDescriptions,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
     final String id;
     final String text;
@@ -18,6 +22,20 @@ public class ChatActionText extends ChatAction implements HasId, HasContentDescr
     final OnSelected onSelected;
     boolean skipTracking;
     boolean stopFlow;
+
+    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
+        for (String pattern : patterns) {
+            if (pattern != null && ConversationalFlowComponent.matches(text, pattern)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int matches(String result) {
+        String[] expected = this.getContentDescriptions();
+        return (expected != null && expected.length > 0 && checkWord(expected, result))
+                ? MATCHED : NOT_MATCHED;
+    }
 
     public static class Builder {
         private String id;

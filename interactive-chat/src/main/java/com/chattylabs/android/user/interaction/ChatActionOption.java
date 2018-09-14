@@ -1,6 +1,7 @@
 package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.NonNull;
+import android.widget.ToggleButton;
 
 import java.util.Objects;
 
@@ -14,6 +15,11 @@ public class ChatActionOption extends ChatAction implements HasId,
     final int order;
     final Runnable onLoaded;
     boolean isSelected;
+    ToggleButton toggleButton;
+
+    void attach(ToggleButton toggleButton) {
+        this.toggleButton = toggleButton;
+    }
 
     public static class Builder {
         private String id;
