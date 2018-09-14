@@ -47,7 +47,7 @@ class ChatInteractionHelper {
     private static final String OPTION_1_ID = "OPTION_1_ID";
     private static final String OPTION_2_ID = "OPTION_2_ID";
     private static final String OPTION_3_ID = "OPTION_3_ID";
-    private static final String OPTION_OK_ID = "OPTION_OK_ID";
+    private static final String OPTION_4_ID = "OPTION_4_ID";
 
     private Context context;
     private ChatInteractionComponent assistant;
@@ -58,7 +58,7 @@ class ChatInteractionHelper {
         assistant = new ChatInteractionComponent.Builder()
                 .withViewComponent(recyclerView)
                 .withVoiceComponent(voiceComponent)
-                .withLastStateEnabled(true)
+                .withLastStateEnabled(false)
                 .build();
     }
 
@@ -109,13 +109,17 @@ class ChatInteractionHelper {
 
         assistant.addNode(new ChatActionMultiOption.Builder(MULTI_OPTIONS_ID)
                 .addOption(new ChatActionOption.Builder(OPTION_1_ID)
-                        .setText(context.getString(R.string.demo_option_1)).build())
+                        .setText(context.getString(R.string.demo_option_1))
+                        .setOrder(2).build())
                 .addOption(new ChatActionOption.Builder(OPTION_2_ID)
-                        .setText(context.getString(R.string.demo_option_2)).build())
+                        .setText(context.getString(R.string.demo_option_2))
+                        .setOrder(3).build())
                 .addOption(new ChatActionOption.Builder(OPTION_3_ID)
-                        .setText(context.getString(R.string.demo_option_3)).build())
-                .addOption(new ChatActionOption.Builder(OPTION_OK_ID)
-                        .setText(context.getString(R.string.demo_option_4)).build())
+                        .setText(context.getString(R.string.demo_option_3))
+                        .setOrder(1).build())
+                .addOption(new ChatActionOption.Builder(OPTION_4_ID)
+                        .setText(context.getString(R.string.demo_option_4))
+                        .setOrder(4).build())
                 .setConfirmationAction(new ChatActionText.Builder(OK_ID)
                         .setText(getString(R.string.demo_ok))
                         .setOnSelected(action -> {
