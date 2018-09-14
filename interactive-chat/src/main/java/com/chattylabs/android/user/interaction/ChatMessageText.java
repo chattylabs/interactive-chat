@@ -2,9 +2,14 @@ package com.chattylabs.android.user.interaction;
 
 import android.support.annotation.ColorRes;
 
+import com.chattylabs.sdk.android.voice.SpeechSynthesizerComponent;
+import com.chattylabs.sdk.android.voice.SynthesizerListener;
+
 import java.util.Objects;
 
-public class ChatMessageText implements ChatNode, HasId, HasOnLoaded, HasText, HasViewType {
+public class ChatMessageText implements ChatNode, HasId, HasOnLoaded, HasText, HasViewType,
+        CanSynthesize {
+
     final String id;
     final String text;
     final float textSize;
@@ -12,6 +17,13 @@ public class ChatMessageText implements ChatNode, HasId, HasOnLoaded, HasText, H
     final boolean aloud;
     final Runnable onLoaded;
     final boolean treatedAsFirst;
+
+    @Override
+    public void consumeSynthesizer(SpeechSynthesizerComponent component,
+                                   OnSynthesized onSynthesized) {
+        component.playText(this.getText(),
+                (SynthesizerListener.OnDone) utteranceId -> onSynthesized.execute());
+    }
 
     public static class Builder {
         private String id;

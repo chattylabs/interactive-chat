@@ -4,13 +4,15 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 public class ChatActionMultiOption implements HasId,
-        HasOnSelected, CanSkipTracking, CanStopFlow, CanHandleState,
+        HasOnSelected, CanSkipTracking, CanStopFlow, CanHandleState, CanCheckContentDescriptions,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, ChatAction {
 
     @VisibleForTesting
@@ -110,6 +112,38 @@ public class ChatActionMultiOption implements HasId,
                 option.setSelected(selectedOptions.contains(option.getId()));
             }
         }
+    }
+
+    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
+        for (String pattern : patterns) {
+            if (pattern != null && ConversationalFlowComponent.matches(text, pattern)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int matches(String result) {
+        boolean atLeastOneOptionWasSelected = false;
+
+        List<ChatActionOption> currentOptions = this.getOptions();
+
+        for(ChatActionOption option: currentOptions) {
+            String[] expected = option.getContentDescriptions();
+            if (expected != null && expected.length > 0 && checkWord(expected, result)) {
+                option.toggleButton.setChecked(true);
+                atLeastOneOptionWasSelected = true;
+            }
+        }
+
+        ChatActionText actionText = this.getConfirmationAction();
+
+        String[] expected = actionText.getContentDescriptions();
+        if (expected != null && expected.length > 0 && checkWord(expected, result)) {
+            return MATCHED;
+        } else if (atLeastOneOptionWasSelected) {
+            return REPEAT;
+        }
+        return NOT_MATCHED;
     }
 
     public static class Builder {

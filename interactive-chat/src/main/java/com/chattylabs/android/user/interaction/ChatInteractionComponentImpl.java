@@ -125,7 +125,8 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             speechSynthesizer = speechComponent.getSpeechSynthesizer(context);
     }
 
-    @Override @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    @Override
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public void enableSpeechRecognizer(Context context, boolean enable) {
         this.enableRecognizer = enable;
         if (speechComponent != null && recognizerReady)
@@ -441,46 +442,14 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                 scheduleHandler.post(() -> {
                     hideLoading();
                     addLast(item);
-                    if (item instanceof ChatMessageText) {
+                    if (!ChatAction.class.isInstance(item) &&
+                            !ChatActionList.class.isInstance(item)) {
                         currentNode = item;
-                        if (((HasOnLoaded) item).onLoaded() != null) {
-                            ((HasOnLoaded) item).onLoaded().run();
-                        }
-                        if (enableSynthesizer && synthesizerReady) {
-                            if (HasText.class.isInstance(item)) {
-                                showLoading();
-                                speechSynthesizer.playText(((HasText) item).getText(),
-                                        (SynthesizerListener.OnDone) s ->
-                                                speechHandler.post(() -> next()));
-                            } else {
-                                next();
-                            }
-                        } else if (enableSynthesizer && !speechInProgress) {
-                            throw new IllegalStateException("Have you called #setupSpeech()?");
-                        } else next();
+                        handleNotActionNode(item);
                     } else {
-                        if (enableRecognizer && recognizerReady) {
-                            // show mic icon?
-                            speechRecognizer.listen((RecognizerListener.OnMostConfidentResult) result -> {
-                                ChatActionList actionList = (ChatActionList) getNext();
-                                currentNode = item;
-                                if (actionList != null) for (ChatAction action : actionList) {
-                                    if (action instanceof HasContentDescriptions) {
-                                        String[] expected = ((HasContentDescriptions) action)
-                                                .getContentDescriptions();
-                                        if (checkWord(expected, result)) {
-                                            perform(action);
-                                            break;
-                                        }
-                                    }
-                                }
-                            });
-                        } else if (enableRecognizer && !speechInProgress) {
-                            throw new IllegalStateException("Have you called #setupSpeech()?");
-                        } else {
-                            currentNode = item;
-                        }
+                        handleActionNode(item);
                         // Never show next node automatically for actions
+                        // Let the developer to choose when to do next()
                     }
                 });
             }
@@ -488,11 +457,47 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         timer.schedule(task, timeout);
     }
 
-    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
-        for (String pattern : patterns) {
-            if (pattern != null && ConversationalFlowComponent.matches(text, pattern)) return true;
+    private void handleActionNode(ChatNode item) {
+        if (enableRecognizer && recognizerReady) {
+            // show mic icon?
+
+            ChatActionList actionList = (ChatActionList) getNext();
+            if (actionList != null && CanRecognize.class.isInstance(actionList)) {
+                ((CanRecognize) actionList).consumeRecognizer(speechRecognizer, this::perform);
+            } else {
+                currentNode = item;
+            }
+
+        } else if (enableRecognizer && !speechInProgress) {
+            throw new IllegalStateException("Have you called #setupSpeech()?");
+        } else {
+            currentNode = item;
         }
-        return false;
+    }
+
+    private void handleNotActionNode(ChatNode item) {
+        if (((HasOnLoaded) item).onLoaded() != null) {
+            ((HasOnLoaded) item).onLoaded().run();
+        }
+        if (enableSynthesizer && synthesizerReady) {
+            if (HasText.class.isInstance(item)) {
+                showLoading();
+                if (CanSynthesize.class.isInstance(item)) {
+                    ((CanSynthesize) item).consumeSynthesizer(speechSynthesizer,
+                            () -> speechHandler.post(() -> {
+                                hideLoading();
+                                next();
+                            }));
+                } else {
+                    hideLoading();
+                    next();
+                }
+            } else {
+                next();
+            }
+        } else if (enableSynthesizer && !speechInProgress) {
+            throw new IllegalStateException("Have you called #setupSpeech()?");
+        } else next();
     }
 
     @NonNull
@@ -556,7 +561,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     static Spanned makeText(CharSequence text) {
         Spanned span;
         if (text instanceof SpannableString) {
-            span = ((SpannableString)text);
+            span = ((SpannableString) text);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 span = Html.fromHtml(text.toString(), Html.FROM_HTML_MODE_COMPACT);
