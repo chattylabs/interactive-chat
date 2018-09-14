@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-public class ChatActionOption extends ChatAction implements HasId,
-        HasContentDescriptions, HasOnLoaded  {
+public class ChatActionOption implements HasId,
+        HasContentDescriptions, HasOnLoaded, ChatAction {
     final String id;
     final String text;
     final String textAfter;
@@ -121,11 +121,6 @@ public class ChatActionOption extends ChatAction implements HasId,
 
     public boolean isSelected() {
         return isSelected;
-    }
-
-    @Override @Deprecated
-    public ChatNode buildActionFeedback() {
-        throw new IllegalAccessError();
     }
 
     @Override

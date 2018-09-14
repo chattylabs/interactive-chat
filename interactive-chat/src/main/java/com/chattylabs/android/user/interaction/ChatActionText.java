@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
-public class ChatActionText extends ChatAction implements HasId, HasContentDescriptions,
+public class ChatActionText implements HasId, HasContentDescriptions,
         HasOnSelected, CanSkipTracking, CanStopFlow,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, ChatAction {
     final String id;
     final String text;
     final String textAfter;

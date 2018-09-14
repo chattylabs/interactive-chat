@@ -1,13 +1,20 @@
 package com.chattylabs.android.user.interaction;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-public class ChatActionMultiOption extends ChatAction implements HasId,
-        HasOnSelected, CanSkipTracking, CanStopFlow,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded {
+public class ChatActionMultiOption implements HasId,
+        HasOnSelected, CanSkipTracking, CanStopFlow, CanHandleState,
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, ChatAction {
+
+    @VisibleForTesting
+    static final String SELECTED_OPTIONS = BuildConfig.APPLICATION_ID + ".MULTI_OPTION_SELECTED_OPTIONS";
+
     final String id;
     final Runnable onLoaded;
     final List<ChatActionOption> options;
@@ -80,6 +87,28 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
         return confirmationAction;
     }
 
+    @Override
+    public void saveState(SharedPreferences sharedPreferences) {
+        HashSet<String> selectedOptions = new HashSet<>();
+        for (ChatActionOption option: options) {
+            if (option.isSelected) selectedOptions.add(option.id);
+        }
+        if (!selectedOptions.isEmpty())
+            sharedPreferences.edit().putStringSet(
+                    SELECTED_OPTIONS, selectedOptions).apply();
+    }
+
+    @Override
+    public void restoreSavedState(SharedPreferences sharedPreferences) {
+        HashSet<String> selectedOptions =
+                (HashSet<String>) sharedPreferences.getStringSet(SELECTED_OPTIONS, new HashSet<>());
+        if (!selectedOptions.isEmpty()) {
+            for (ChatActionOption option: options) {
+                option.setSelected(selectedOptions.contains(option.getId()));
+            }
+        }
+    }
+
     public static class Builder {
         private String id;
         private Runnable onLoaded;
@@ -128,7 +157,7 @@ public class ChatActionMultiOption extends ChatAction implements HasId,
                 throw new NullPointerException("Property \"id\" is required");
             }
 
-            if (options.size() == 0) {
+            if (options.isEmpty()) {
                 throw new IllegalArgumentException("Property \"options\" is empty");
             }
 
