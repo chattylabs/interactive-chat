@@ -443,7 +443,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                     hideLoading();
                     addLast(item);
                     if (!ChatAction.class.isInstance(item) &&
-                        !ChatActionList.class.isInstance(item)) {
+                            !ChatActionList.class.isInstance(item)) {
                         currentNode = item;
                         handleNotActionNode(item);
                     } else {
@@ -460,20 +460,14 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     private void handleActionNode(ChatNode item) {
         if (enableRecognizer && recognizerReady) {
             // show mic icon?
-            speechRecognizer.listen((RecognizerListener.OnMostConfidentResult) result -> {
-                ChatActionList actionList = (ChatActionList) getNext();
+
+            ChatActionList actionList = (ChatActionList) getNext();
+            if (actionList != null && CanRecognize.class.isInstance(actionList)) {
+                ((CanRecognize) actionList).consumeRecognizer(speechRecognizer, this::perform);
+            } else {
                 currentNode = item;
-                if (actionList != null) for (ChatAction action : actionList) {
-                    if (action instanceof HasContentDescriptions) {
-                        String[] expected = ((HasContentDescriptions) action)
-                                .getContentDescriptions();
-                        if (checkWord(expected, result)) {
-                            perform(action);
-                            break;
-                        }
-                    }
-                }
-            });
+            }
+
         } else if (enableRecognizer && !speechInProgress) {
             throw new IllegalStateException("Have you called #setupSpeech()?");
         } else {
@@ -489,14 +483,11 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
             if (HasText.class.isInstance(item)) {
                 showLoading();
                 if (CanSynthesize.class.isInstance(item)) {
-                    if (!((CanSynthesize) item).isSynthesizerConsumed(
-                            ((HasText) item), speechSynthesizer, s -> speechHandler.post(() -> {
+                    ((CanSynthesize) item).consumeSynthesizer(speechSynthesizer,
+                            () -> speechHandler.post(() -> {
                                 hideLoading();
                                 next();
-                            }))) {
-                        hideLoading();
-                        next();
-                    }
+                            }));
                 } else {
                     hideLoading();
                     next();
@@ -507,13 +498,6 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         } else if (enableSynthesizer && !speechInProgress) {
             throw new IllegalStateException("Have you called #setupSpeech()?");
         } else next();
-    }
-
-    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
-        for (String pattern : patterns) {
-            if (pattern != null && ConversationalFlowComponent.matches(text, pattern)) return true;
-        }
-        return false;
     }
 
     @NonNull

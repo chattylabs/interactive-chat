@@ -79,6 +79,8 @@ class ChatActionMultiOptionViewBuilder implements ChatActionViewBuilder {
 
         optionButton.setSelected(option.isSelected());
 
+        option.attach(optionButton);
+
         return optionButton;
     }
 }
