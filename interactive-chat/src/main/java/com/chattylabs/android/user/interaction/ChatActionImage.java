@@ -5,8 +5,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
-import com.chattylabs.sdk.android.voice.RecognizerListener;
-import com.chattylabs.sdk.android.voice.SpeechRecognizerComponent;
 
 import java.util.Objects;
 
