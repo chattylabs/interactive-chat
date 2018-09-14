@@ -58,6 +58,7 @@ class ChatInteractionHelper {
         assistant = new ChatInteractionComponent.Builder()
                 .withViewComponent(recyclerView)
                 .withVoiceComponent(voiceComponent)
+                .withLastStateEnabled(true)
                 .build();
     }
 
