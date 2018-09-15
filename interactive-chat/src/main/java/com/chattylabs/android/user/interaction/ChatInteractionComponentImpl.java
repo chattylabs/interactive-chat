@@ -443,7 +443,7 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
                     hideLoading();
                     addLast(item);
                     if (!ChatAction.class.isInstance(item) &&
-                            !ChatActionList.class.isInstance(item)) {
+                        !ChatActionList.class.isInstance(item)) {
                         currentNode = item;
                         handleNotActionNode(item);
                     } else {
@@ -481,15 +481,11 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         }
         if (enableSynthesizer && synthesizerReady) {
             if (HasText.class.isInstance(item)) {
-                showLoading();
                 if (CanSynthesize.class.isInstance(item)) {
+                    showLoading();
                     ((CanSynthesize) item).consumeSynthesizer(speechSynthesizer,
-                            () -> speechHandler.post(() -> {
-                                hideLoading();
-                                next();
-                            }));
+                            () -> speechHandler.post(this::next));
                 } else {
-                    hideLoading();
                     next();
                 }
             } else {
