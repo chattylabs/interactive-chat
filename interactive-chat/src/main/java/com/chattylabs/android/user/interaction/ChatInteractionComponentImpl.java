@@ -141,6 +141,16 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
     }
 
     @Override
+    public boolean isSpeechSynthesizerEnabled() {
+        return enableSynthesizer;
+    }
+
+    @Override
+    public boolean isSpeechRecognizerEnabled() {
+        return enableRecognizer;
+    }
+
+    @Override
     public ChatFlow prepare() {
         return new ChatFlow(this);
     }

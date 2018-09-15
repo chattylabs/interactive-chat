@@ -75,6 +75,10 @@ public interface ChatInteractionComponent {
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     void enableSpeechRecognizer(Context context, boolean enable);
 
+    boolean isSpeechSynthesizerEnabled();
+
+    boolean isSpeechRecognizerEnabled();
+
     void setupSpeech(Context context, OnComponentSetup onPrepared);
 
     void release();
