@@ -439,8 +439,10 @@ final class ChatInteractionComponentImpl extends ChatFlow.Edge implements ChatIn
         if (node != null) {
             schedule(node, delay);
         } else {
-            hideLoading(); // Otherwise there is no more nodes
-            if (doneListener != null) doneListener.run();
+            if (!ChatActionList.class.isInstance(currentNode)) {
+                hideLoading(); // Otherwise there is no more nodes
+                if (doneListener != null) doneListener.run();
+            }
         }
     }
 
