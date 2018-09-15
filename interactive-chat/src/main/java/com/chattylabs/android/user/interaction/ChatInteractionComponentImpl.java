@@ -22,7 +22,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.TypedValue;
 
-import com.chattylabs.sdk.android.common.DimensionUtils;
+import com.chattylabs.android.commons.DimensionUtils;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 import com.chattylabs.sdk.android.voice.OnComponentSetup;
 import com.chattylabs.sdk.android.voice.RecognizerListener;

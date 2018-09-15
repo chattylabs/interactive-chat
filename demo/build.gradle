@@ -63,9 +63,9 @@ dependencies {
 
     // SDK
     implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
-    implementation "com.chattylabs.sdk.android:common:0.4.18"
-    implementation 'com.chattylabs.sdk.android:conversational-flow-core:0.15.2'
-    implementation 'com.chattylabs.sdk.android:addon-android-speech:0.7.22'
+    implementation "com.chattylabs:android-commons:$android_commons"
+    implementation "com.chattylabs.sdk.android:conversational-flow-core:$conversational_flow"
+    implementation 'com.chattylabs.sdk.android:addon-android-speech:0.7.23'
     implementation project(':interactive-chat')
 
     // Test dependencies

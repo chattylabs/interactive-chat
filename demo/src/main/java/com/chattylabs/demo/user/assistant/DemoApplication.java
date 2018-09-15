@@ -1,7 +1,7 @@
 package com.chattylabs.demo.user.assistant;
 
-import com.chattylabs.sdk.android.common.internal.ILogger;
-import com.chattylabs.sdk.android.common.internal.ILoggerImpl;
+import com.chattylabs.android.commons.internal.ILogger;
+import com.chattylabs.android.commons.internal.ILoggerImpl;
 import com.chattylabs.sdk.android.voice.AndroidSpeechRecognizer;
 import com.chattylabs.sdk.android.voice.AndroidSpeechSynthesizer;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;

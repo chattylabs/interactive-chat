@@ -9,9 +9,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.chattylabs.android.commons.PermissionsHelper;
+import com.chattylabs.android.commons.ThreadUtils;
 import com.chattylabs.android.user.interaction.ChatInteractionComponent;
-import com.chattylabs.sdk.android.common.PermissionsHelper;
-import com.chattylabs.sdk.android.common.ThreadUtils;
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 
 import net.hockeyapp.android.CrashManager;
@@ -56,8 +56,8 @@ public class MainActivity extends DaggerAppCompatActivity {
         PermissionsHelper.check(this,
                 perms,
                 () -> onRequestPermissionsResult(
-                        PermissionsHelper.REQUEST_CODE, perms,
-                        new int[] {PackageManager.PERMISSION_GRANTED}));
+                        202, perms,
+                        new int[] {PackageManager.PERMISSION_GRANTED}), 202);
 
         // HokeyApp Events
         UpdateManager.register(this);
@@ -83,8 +83,7 @@ public class MainActivity extends DaggerAppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (PermissionsHelper.isPermissionRequest(requestCode) &&
-            PermissionsHelper.isPermissionGranted(grantResults)) {
+        if (202 == requestCode && PermissionsHelper.allGranted(grantResults)) {
             ThreadUtils.newSerialThread().addTask(() -> {
                 assistantComponent = new ChatInteractionHelper(view, voiceComponent).create();
             });

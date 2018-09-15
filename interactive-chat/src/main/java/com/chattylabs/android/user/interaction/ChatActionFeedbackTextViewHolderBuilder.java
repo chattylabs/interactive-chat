@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.chattylabs.sdk.android.common.DimensionUtils;
+import com.chattylabs.android.commons.DimensionUtils;
 
 
 class ChatActionFeedbackTextViewHolderBuilder implements ChatViewHolderBuilder {

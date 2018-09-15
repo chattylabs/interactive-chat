@@ -1,5 +1,7 @@
 buildscript {
     ext.kotlin_version = '1.2.61'
+    ext.android_commons = '0.5.2'
+    ext.conversational_flow = '0.15.3'
     repositories {
         mavenLocal()
         google()
