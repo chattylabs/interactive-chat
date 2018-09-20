@@ -25,7 +25,7 @@ versioning {
 
 android {
     defaultConfig {
-        applicationId "com.chattylabs.demo.user.assistant"
+        applicationId "com.chattylabs.demo.interactive.chat"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         versionCode versioning.code()

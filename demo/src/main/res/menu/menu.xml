@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/clear"
-        android:title="Clear"
+        android:title="Clear current state"
         android:icon="@drawable/ic_clear_all_black_24dp"
         app:showAsAction="always"/>
 </menu>

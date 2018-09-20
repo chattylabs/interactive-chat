@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF"
-    tools:context="MainActivity">
+    tools:context=".AssistantActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/interactive_chat"

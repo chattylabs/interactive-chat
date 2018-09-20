@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.chattylabs.demo.user.assistant">
+    package="com.chattylabs.demo.interactive.chat">
 
     <application
         android:allowBackup="false"
@@ -9,9 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".DemoApplication">
+        android:name=".Demo">
         <meta-data android:name="net.hockeyapp.android.appIdentifier" android:value="${HOCKEYAPP_APP_ID}" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.chattylabs.demo.interactive.chat.AssistantActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
