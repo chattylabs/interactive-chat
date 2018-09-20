@@ -15,7 +15,7 @@ apply from: '../buildsystem/android.gradle'
 
 versioning {
 
-    tagPrefix "demo-version/"
+    tagPrefix "demo/"
 
     keywords {
         minor "[demo-feature]"
