@@ -10,7 +10,7 @@ Check: [VUI SDK](https://github.com/chattylabs/voice-user-interaction)
 
 A component to create a conversational flow interface for mobile apps that supports interactions in both UI and Voice.
 
-<img src="art/poster.png" width="100%"/>
+<p align="center"><img src="art/poster.png" /></p>
 
 ## Why choosing this library?
 
@@ -75,7 +75,7 @@ with(component) {
 
 ## Personalize the experience
 
-<img src="art/personalize.png" width="100%"/>
+<p align="center"><img src="art/personalize.png" /></p>
 
 
 ## Wiki
