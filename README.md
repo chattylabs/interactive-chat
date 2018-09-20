@@ -87,7 +87,7 @@ Check the wiki to see how you can create your own custom [Node Components](https
 [v0]: https://img.shields.io/badge/demo-unplished-lightgrey.svg
 [v1]: https://api.bintray.com/packages/chattylabs/maven/interactive-chat/images/download.svg?label=Latest%20version
 
-[s0]: https://app.bitrise.io/app/a780643ab1b390a6/status.svg?token=ZLtAIlkDr-NVmpKkpt1OUw&branch=master
+[s0]: https://app.bitrise.io/app/18f21f902fad63f1/status.svg?token=uNjhQ14-UcNWXRUfrfdXAw&branch=master
 [s1]: https://app.bitrise.io/app/a780643ab1b390a6/status.svg?token=ZLtAIlkDr-NVmpKkpt1OUw&branch=master
 
 [c0]: https://coveralls.io/repos/chattylabs/unknown/badge.svg?branch=master&service=github

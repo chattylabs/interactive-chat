@@ -56,6 +56,6 @@ public class Demo extends DaggerApplication {
 
     @Override
     protected AndroidInjector<Demo> applicationInjector() {
-        return DaggerDemoApplication_Component.builder().create(this);
+        return DaggerDemo_Component.builder().create(this);
     }
 }
