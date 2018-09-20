@@ -19,11 +19,11 @@ apply from: '../buildsystem/android.gradle'
 
 versioning {
 
-    tagPrefix "lib-version/"
+    tagPrefix "version/"
 
     keywords {
-        minor "[lib-feature]"
-        patch "[lib-bug]", "[lib-patch]"
+        minor "[feature]"
+        patch "[bug]", "[patch]"
     }
 }
 
