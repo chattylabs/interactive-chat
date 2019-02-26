@@ -83,12 +83,11 @@ final class InteractiveChatComponentImpl extends InteractiveChatFlow.Edge implem
     InteractiveChatComponentImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
         if (recyclerView.getItemDecorationCount() == 0) {
-            int space = DimensionUtils.getDimension(
-                    recyclerView.getContext(),
+            int s = DimensionUtils.getDimension(recyclerView.getContext(),
                     TypedValue.COMPLEX_UNIT_DIP, ITEM_SEPARATOR_SIZE_DIP);
-            SpaceItemDecoration spaceItemDecoration = new SpaceItemDecoration(space);
+            SeparatorItemDecoration separatorItemDecoration = new SeparatorItemDecoration(s);
             uiThreadHandler.post(() -> {
-                recyclerView.addItemDecoration(spaceItemDecoration);
+                recyclerView.addItemDecoration(separatorItemDecoration);
             });
         }
         timer = new Timer();
@@ -96,11 +95,11 @@ final class InteractiveChatComponentImpl extends InteractiveChatFlow.Edge implem
         speechComponent = builder.voiceComponent;
         doneListener = builder.doneListener;
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
-        layoutManager.setSmoothScrollbarEnabled(false);
+        //layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = recyclerView.getContext().getSharedPreferences(
                 "interactive_chat", Context.MODE_PRIVATE);
         uiThreadHandler.post(() -> {
-            recyclerView.setItemAnimator(null);
+            //recyclerView.setItemAnimator(null);
             recyclerView.setAdapter(adapter);
             EmojiCompat.Config config = new BundledEmojiCompatConfig(recyclerView.getContext());
             EmojiCompat.init(config);
