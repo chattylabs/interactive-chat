@@ -3,7 +3,7 @@ package com.chattylabs.android.interactive.chat;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 
-class FeedbackImage extends Feedback implements HasViewType {
+class ImageFeedback extends Feedback implements HasViewType {
     final int image;
     final int tintColor;
 
@@ -23,12 +23,12 @@ class FeedbackImage extends Feedback implements HasViewType {
             return this;
         }
 
-        public FeedbackImage build() {
-            return new FeedbackImage(this);
+        public ImageFeedback build() {
+            return new ImageFeedback(this);
         }
     }
 
-    private FeedbackImage(Builder builder) {
+    private ImageFeedback(Builder builder) {
         this.image = builder.image;
         this.tintColor = builder.tintColor;
     }
@@ -48,6 +48,6 @@ class FeedbackImage extends Feedback implements HasViewType {
 
     @Override
     public ViewHolderBuilder getViewHolderBuilder() {
-        return FeedbackImageViewHolderBuilder.build();
+        return ImageFeedbackViewHolderBuilder.build();
     }
 }

@@ -5,7 +5,7 @@ import android.widget.ToggleButton;
 
 import java.util.Objects;
 
-public class Option implements HasId,
+public class Choice implements HasId,
         HasContentDescriptions, HasOnLoaded, Action {
     final String id;
     final String text;
@@ -64,18 +64,18 @@ public class Option implements HasId,
             return this;
         }
 
-        public Option build() {
+        public Choice build() {
             if (id == null || id.length() == 0) {
                 throw new NullPointerException("Property \"id\" is required");
             }
             if (text == null || text.length() == 0) {
                 throw new NullPointerException("Property \"text\" is required");
             }
-            return new Option(this);
+            return new Choice(this);
         }
     }
 
-    Option(Builder builder) {
+    Choice(Builder builder) {
         this.id = builder.id;
         this.text = builder.text;
         this.textAfter = builder.textAfter;
@@ -138,7 +138,7 @@ public class Option implements HasId,
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ActionText that = (ActionText) o;
+        TextAction that = (TextAction) o;
         return Objects.equals(getId(), that.getId());
     }
 

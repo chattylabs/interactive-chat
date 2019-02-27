@@ -13,10 +13,10 @@ import android.widget.TextView;
 import com.chattylabs.android.commons.DimensionUtils;
 
 
-class MultiOptionFeedbackTextViewHolderBuilder implements ViewHolderBuilder {
+class MultiChoiceTextFeedbackViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
-        return new MultiOptionFeedbackTextViewHolderBuilder();
+        return new MultiChoiceTextFeedbackViewHolderBuilder();
     }
 
     @Override
@@ -43,12 +43,12 @@ class MultiOptionFeedbackTextViewHolderBuilder implements ViewHolderBuilder {
 
         @Override
         public void onBind(InteractiveChatViewAdapter adapter, int position) {
-            MultiOptionFeedbackText textSelected = (MultiOptionFeedbackText) adapter.getItems().get(position);
+            MultiChoiceTextFeedback textSelected = (MultiChoiceTextFeedback) adapter.getItems().get(position);
 //            if (textSelected.textSize > 0) {
 //                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
 //            }
             CharSequence text = EmojiCompat.get().process(textSelected.text);
-            Spanned span = InteractiveChatComponentImpl.makeText(text);
+            Spanned span = InteractiveChatComponent.makeText(text);
             textView.setText(span);
         }
     }

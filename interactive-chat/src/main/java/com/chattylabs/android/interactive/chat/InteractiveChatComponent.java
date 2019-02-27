@@ -2,9 +2,13 @@ package com.chattylabs.android.interactive.chat;
 
 import android.Manifest;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 import com.chattylabs.sdk.android.voice.OnComponentSetup;
@@ -12,6 +16,20 @@ import com.chattylabs.sdk.android.voice.OnComponentSetup;
 import java.util.Set;
 
 public interface InteractiveChatComponent {
+
+    static Spanned makeText(CharSequence text) {
+        Spanned span;
+        if (text instanceof SpannableString) {
+            span = ((SpannableString) text);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                span = Html.fromHtml(text.toString(), Html.FROM_HTML_MODE_COMPACT);
+            } else {
+                span = Html.fromHtml(text.toString());
+            }
+        }
+        return span;
+    }
 
     interface IOptional {
         IOptional withVoiceComponent(ConversationalFlowComponent voiceComponent);

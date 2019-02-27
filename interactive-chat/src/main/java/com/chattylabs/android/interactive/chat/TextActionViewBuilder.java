@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-class ActionTextViewBuilder implements ActionViewBuilder {
-    private static ActionTextViewBuilder instance;
+class TextActionViewBuilder implements ActionViewBuilder {
+    private static TextActionViewBuilder instance;
     private float defaultTextSize;
 
     public static ActionViewBuilder build() {
-        return instance == null ? instance = new ActionTextViewBuilder() : instance;
+        return instance == null ? instance = new TextActionViewBuilder() : instance;
     }
 
     @Override
@@ -23,18 +23,18 @@ class ActionTextViewBuilder implements ActionViewBuilder {
                 R.layout.item_interactive_chat_action_text,
                 viewGroup, false);
 
-        ActionText actionText = (ActionText) action;
+        TextAction textAction = (TextAction) action;
         if (defaultTextSize == 0) defaultTextSize = button.getTextSize();
-        if (actionText.textSize > 0) {
-            button.setTextSize(TypedValue.COMPLEX_UNIT_SP, actionText.textSize);
+        if (textAction.textSize > 0) {
+            button.setTextSize(TypedValue.COMPLEX_UNIT_SP, textAction.textSize);
         } else {
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
         }
-        CharSequence text = EmojiCompat.get().process(actionText.text);
-        Spanned span = InteractiveChatComponentImpl.makeText(text);
+        CharSequence text = EmojiCompat.get().process(textAction.text);
+        Spanned span = InteractiveChatComponent.makeText(text);
         button.setText(span);
 
-        button.setTag(R.id.interactive_chat_action_id, actionText.id);
+        button.setTag(R.id.interactive_chat_action_id, textAction.id);
 
         return button;
     }

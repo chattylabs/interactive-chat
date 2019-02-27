@@ -13,10 +13,10 @@ import android.widget.TextView;
 import com.chattylabs.android.commons.DimensionUtils;
 
 
-class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
+class TextFeedbackViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
-        return new FeedbackTextViewHolderBuilder();
+        return new TextFeedbackViewHolderBuilder();
     }
 
     @Override
@@ -24,7 +24,7 @@ class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = inflater.inflate(R.layout.item_interactive_chat_action_text_selected,
                 viewGroup, false);
-        return new FeedbackTextViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
+        return new TextFeedbackViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
     }
 
     static class ChatActionTextSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
@@ -44,7 +44,7 @@ class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
 
         @Override
         public void onBind(InteractiveChatViewAdapter adapter, int position) {
-            FeedbackText textSelected = (FeedbackText) adapter.getItems().get(position);
+            TextFeedback textSelected = (TextFeedback) adapter.getItems().get(position);
             if (defaultTextSize == 0) defaultTextSize = textView.getTextSize();
             if (textSelected.textSize > 0) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
@@ -52,7 +52,7 @@ class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
             CharSequence text = EmojiCompat.get().process(textSelected.text);
-            Spanned span = InteractiveChatComponentImpl.makeText(text);
+            Spanned span = InteractiveChatComponent.makeText(text);
             textView.setText(span);
         }
     }

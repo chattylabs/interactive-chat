@@ -22,7 +22,7 @@ versioning {
     tagPrefix "version/"
 
     keywords {
-        minor "[feature]"
+        minor "[feature]", "[design]"
         patch "[bug]", "[patch]"
     }
 }

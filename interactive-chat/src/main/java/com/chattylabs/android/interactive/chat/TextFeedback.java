@@ -1,6 +1,6 @@
 package com.chattylabs.android.interactive.chat;
 
-class FeedbackText extends Feedback implements HasViewType {
+class TextFeedback extends Feedback implements HasViewType {
     String text;
     final float textSize;
 
@@ -20,12 +20,12 @@ class FeedbackText extends Feedback implements HasViewType {
             return this;
         }
 
-        public FeedbackText build() {
-            return new FeedbackText(this);
+        public TextFeedback build() {
+            return new TextFeedback(this);
         }
     }
 
-    FeedbackText(Builder builder) {
+    TextFeedback(Builder builder) {
         this.text = builder.text;
         this.textSize = builder.textSize;
     }
@@ -45,6 +45,6 @@ class FeedbackText extends Feedback implements HasViewType {
 
     @Override
     public ViewHolderBuilder getViewHolderBuilder() {
-        return FeedbackTextViewHolderBuilder.build();
+        return TextFeedbackViewHolderBuilder.build();
     }
 }

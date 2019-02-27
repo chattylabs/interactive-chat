@@ -1,22 +1,24 @@
 package com.chattylabs.android.interactive.chat;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
 
 import java.util.Objects;
 
-public class ActionText implements HasId, HasContentDescriptions,
+public class ImageAction implements HasId, HasContentDescriptions,
         HasOnSelected, CanSkipTracking, CanStopFlow, CanCheckContentDescriptions,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
     final String id;
-    final String text;
-    final String textAfter;
-    final float textSize;
+    final int image;
+    final int imageAfter;
+    final int tintColor;
     final String[] contentDescriptions;
     final int order;
     final Runnable onLoaded;
-    final OnSelected onSelected;
+    final Action.OnSelected onSelected;
     boolean skipTracking;
     boolean stopFlow;
 
@@ -36,9 +38,9 @@ public class ActionText implements HasId, HasContentDescriptions,
 
     public static class Builder {
         private String id;
-        private String text;
-        private String textAfter;
-        private float textSize;
+        private int image;
+        private int imageAfter;
+        private int tintColor;
         private String[] contentDescriptions;
         private int order;
         private Runnable onLoaded;
@@ -50,18 +52,18 @@ public class ActionText implements HasId, HasContentDescriptions,
             this.id = id;
         }
 
-        public Builder setText(String text) {
-            this.text = text;
+        public Builder setImage(@DrawableRes int image) {
+            this.image = image;
             return this;
         }
 
-        public Builder setTextAfter(String textAfter) {
-            this.textAfter = textAfter;
+        public Builder setImageAfter(@DrawableRes int imageAfter) {
+            this.imageAfter = imageAfter;
             return this;
         }
 
-        public Builder setTextSize(float textSizeInSp) {
-            this.textSize = textSizeInSp;
+        public Builder setTintColor(@ColorRes int tintColor) {
+            this.tintColor = tintColor;
             return this;
         }
 
@@ -95,22 +97,22 @@ public class ActionText implements HasId, HasContentDescriptions,
             return this;
         }
 
-        public ActionText build() {
+        public ImageAction build() {
             if (id == null || id.length() == 0) {
                 throw new NullPointerException("Property \"id\" is required");
             }
-            if (text == null || text.length() == 0) {
-                throw new NullPointerException("Property \"text\" is required");
+            if (image <= 0) {
+                throw new NullPointerException("Property \"image\" is required");
             }
-            return new ActionText(this);
+            return new ImageAction(this);
         }
     }
 
-    ActionText(Builder builder) {
+    private ImageAction(Builder builder) {
         this.id = builder.id;
-        this.text = builder.text;
-        this.textAfter = builder.textAfter;
-        this.textSize = builder.textSize;
+        this.image = builder.image;
+        this.imageAfter = builder.imageAfter;
+        this.tintColor = builder.tintColor;
         this.contentDescriptions = builder.contentDescriptions;
         this.order = builder.order;
         this.onLoaded = builder.onLoaded;
@@ -124,25 +126,21 @@ public class ActionText implements HasId, HasContentDescriptions,
         return id;
     }
 
-    public String getText() {
-        return text;
+    public int getImage() {
+        return image;
     }
 
-    public String getTextAfter() {
-        return textAfter;
+    public int getImageAfter() {
+        return imageAfter;
     }
 
-    public float getTextSize() {
-        return textSize;
+    public int getTintColor() {
+        return tintColor;
     }
 
     @Override
     public String[] getContentDescriptions() {
-        if (contentDescriptions != null)
-            return contentDescriptions;
-        else if (text != null)
-            return new String[]{text};
-        return new String[]{textAfter};
+        return contentDescriptions;
     }
 
     @Override
@@ -171,15 +169,15 @@ public class ActionText implements HasId, HasContentDescriptions,
     }
 
     @Override
-    public ActionViewBuilder getActionViewBuilder() {
-        return ActionTextViewBuilder.build();
+    public InteractiveChatNode buildActionFeedback() {
+        return new ImageFeedback.Builder()
+                .setImage(imageAfter > 0 ? imageAfter : image)
+                .setTintColor(tintColor).build();
     }
 
     @Override
-    public InteractiveChatNode buildActionFeedback() {
-        return new FeedbackText.Builder()
-                .setText(textAfter != null ? textAfter : text)
-                .setTextSize(textSize).build();
+    public ActionViewBuilder getActionViewBuilder() {
+        return ImageActionViewBuilder.build();
     }
 
     @Override
@@ -191,7 +189,7 @@ public class ActionText implements HasId, HasContentDescriptions,
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ActionText that = (ActionText) o;
+        ImageAction that = (ImageAction) o;
         return Objects.equals(getId(), that.getId());
     }
 

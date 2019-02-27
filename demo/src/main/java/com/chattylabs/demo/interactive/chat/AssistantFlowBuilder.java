@@ -6,10 +6,10 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 
-import com.chattylabs.android.interactive.chat.ActionImage;
-import com.chattylabs.android.interactive.chat.ActionMultiOption;
-import com.chattylabs.android.interactive.chat.Option;
-import com.chattylabs.android.interactive.chat.ActionText;
+import com.chattylabs.android.interactive.chat.Choice;
+import com.chattylabs.android.interactive.chat.ImageAction;
+import com.chattylabs.android.interactive.chat.MultiChoiceAction;
+import com.chattylabs.android.interactive.chat.TextAction;
 import com.chattylabs.android.interactive.chat.InteractiveChatFlow;
 import com.chattylabs.android.interactive.chat.InteractiveChatComponent;
 import com.chattylabs.android.interactive.chat.TextMessage;
@@ -98,7 +98,7 @@ class AssistantFlowBuilder {
         component.addNode(new TextMessage.Builder(QUIET_PLACE_ID)
                 .setText(getString(R.string.demo_ask_for_quiet_place)).build());
 
-        component.addNode(new ActionText.Builder(QUIET_PLACE_YES_ID)
+        component.addNode(new TextAction.Builder(QUIET_PLACE_YES_ID)
                 .setText(getString(R.string.demo_yes))
                 .setOnSelected(action -> {
                     component.enableSpeechSynthesizer(context, true);
@@ -106,7 +106,7 @@ class AssistantFlowBuilder {
                 })
                 .build());
 
-        component.addNode(new ActionText.Builder(QUIET_PLACE_NO_ID)
+        component.addNode(new TextAction.Builder(QUIET_PLACE_NO_ID)
                 .setText(getString(R.string.demo_no)).skipTracking(true).build());
 
         component.addNode(new TextMessage.Builder(COMEBACK_LATER_ID)
@@ -118,29 +118,29 @@ class AssistantFlowBuilder {
         component.addNode(new TextMessage.Builder(EXPLANATION_2_ID)
                 .setText(getString(R.string.demo_explanation_2)).build());
 
-        component.addNode(new ActionText.Builder(OK_ID)
+        component.addNode(new TextAction.Builder(OK_ID)
                 .setText(getString(R.string.demo_ok)).build());
 
         component.addNode(new TextMessage.Builder(MULTI_OPTIONS_MSG_ID)
                 .setText(getString(R.string.demo_options_message)).build());
 
-        component.addNode(new ActionMultiOption.Builder(MULTI_OPTIONS_ID)
-                .addOption(new Option.Builder(OPTION_1_ID)
+        component.addNode(new MultiChoiceAction.Builder(MULTI_OPTIONS_ID)
+                .addOption(new Choice.Builder(OPTION_1_ID)
                         .setText(context.getString(R.string.demo_option_1))
                         .setOrder(2).build())
-                .addOption(new Option.Builder(OPTION_2_ID)
+                .addOption(new Choice.Builder(OPTION_2_ID)
                         .setText(context.getString(R.string.demo_option_2))
                         .setOrder(3).build())
-                .addOption(new Option.Builder(OPTION_3_ID)
+                .addOption(new Choice.Builder(OPTION_3_ID)
                         .setText(context.getString(R.string.demo_option_3))
                         .setOrder(1).build())
-                .addOption(new Option.Builder(OPTION_4_ID)
+                .addOption(new Choice.Builder(OPTION_4_ID)
                         .setText(context.getString(R.string.demo_option_4))
                         .setOrder(4).build())
-                .setConfirmationAction(new ActionText.Builder(OK_ID)
+                .setConfirmationAction(new TextAction.Builder(OK_ID)
                         .setText(getString(R.string.demo_ok))
                         .setOnSelected(action -> {
-                            final ActionMultiOption multiAction = ((ActionMultiOption) action);
+                            final MultiChoiceAction multiAction = ((MultiChoiceAction) action);
                             // Iterate options from multiAction and check isSelected
                         })
                         .build())
@@ -152,13 +152,13 @@ class AssistantFlowBuilder {
         component.addNode(new TextMessage.Builder(SELECT_ICON_2_ID)
                 .setText(getString(R.string.demo_select_icon_2)).build());
 
-        component.addNode(new ActionImage.Builder(ICON_1_ID)
+        component.addNode(new ImageAction.Builder(ICON_1_ID)
                 .setImage(R.drawable.ic_sentiment_dissatisfied_black_24dp)
                 .setContentDescriptions(getStringArray(R.array.dissatisfied)).build());
-        component.addNode(new ActionImage.Builder(ICON_2_ID)
+        component.addNode(new ImageAction.Builder(ICON_2_ID)
                 .setImage(R.drawable.ic_sentiment_neutral_black_24dp)
                 .setContentDescriptions(getStringArray(R.array.neutral)).build());
-        component.addNode(new ActionImage.Builder(ICON_3_ID)
+        component.addNode(new ImageAction.Builder(ICON_3_ID)
                 .setImage(R.drawable.ic_sentiment_satisfied_black_24dp)
                 .setContentDescriptions(getStringArray(R.array.satisfied)).build());
 
@@ -168,17 +168,17 @@ class AssistantFlowBuilder {
         component.addNode(new TextMessage.Builder(PART_OF_DAY_2_ID)
                 .setText(getString(R.string.demo_part_of_day_2)).build());
 
-        component.addNode(new ActionText.Builder(MORNING_ID)
+        component.addNode(new TextAction.Builder(MORNING_ID)
                 .setText(getString(R.string.demo_morning)).build());
-        component.addNode(new ActionText.Builder(NOON_ID)
+        component.addNode(new TextAction.Builder(NOON_ID)
                 .setText(getString(R.string.demo_noon)).build());
-        component.addNode(new ActionText.Builder(EVENING_ID)
+        component.addNode(new TextAction.Builder(EVENING_ID)
                 .setText(getString(R.string.demo_evening)).build());
 
         component.addNode(new TextMessage.Builder(DONE_ID)
                 .setText(getString(R.string.demo_done)).build());
 
-        component.addNode(new ActionText.Builder(LIKED_YES_ID)
+        component.addNode(new TextAction.Builder(LIKED_YES_ID)
                 .setText(getString(R.string.demo_thumbs_up))
                 .setContentDescriptions(getStringArray(R.array.thumbsup))
                 .setOnSelected(action -> {
@@ -187,7 +187,7 @@ class AssistantFlowBuilder {
                 })
                 .setTextSize(24).build());
 
-        component.addNode(new ActionText.Builder(LIKED_NO_ID)
+        component.addNode(new TextAction.Builder(LIKED_NO_ID)
                 .setText(getString(R.string.demo_thumbs_down))
                 .setContentDescriptions(getStringArray(R.array.thumbsdown))
                 .setOnSelected(action -> {

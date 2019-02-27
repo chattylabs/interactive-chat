@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 
-class FeedbackImageViewHolderBuilder implements ViewHolderBuilder {
+class ImageFeedbackViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
-        return new FeedbackImageViewHolderBuilder();
+        return new ImageFeedbackViewHolderBuilder();
     }
 
     @Override
@@ -19,7 +19,7 @@ class FeedbackImageViewHolderBuilder implements ViewHolderBuilder {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = inflater.inflate(R.layout.item_interactive_chat_action_image_selected,
                 viewGroup, false);
-        return new FeedbackImageViewHolderBuilder.ChatActionImageSelectedViewHolder(view);
+        return new ImageFeedbackViewHolderBuilder.ChatActionImageSelectedViewHolder(view);
     }
 
     static class ChatActionImageSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
@@ -33,7 +33,7 @@ class FeedbackImageViewHolderBuilder implements ViewHolderBuilder {
 
         @Override
         public void onBind(InteractiveChatViewAdapter adapter, int position) {
-            FeedbackImage imageSelected = (FeedbackImage) adapter.getItems().get(position);
+            ImageFeedback imageSelected = (ImageFeedback) adapter.getItems().get(position);
             image.setImageResource(imageSelected.image);
             if (imageSelected.tintColor > 0) {
                 image.setImageTintList(ColorStateList.valueOf(imageSelected.tintColor));

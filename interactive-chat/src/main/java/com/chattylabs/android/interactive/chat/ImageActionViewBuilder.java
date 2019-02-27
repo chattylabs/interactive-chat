@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-class ActionImageViewBuilder implements ActionViewBuilder {
-    private static ActionImageViewBuilder instance;
+class ImageActionViewBuilder implements ActionViewBuilder {
+    private static ImageActionViewBuilder instance;
 
     public static ActionViewBuilder build() {
-        return instance == null ? instance = new ActionImageViewBuilder() : instance;
+        return instance == null ? instance = new ImageActionViewBuilder() : instance;
     }
 
     @Override
@@ -20,12 +20,12 @@ class ActionImageViewBuilder implements ActionViewBuilder {
                 R.layout.item_interactive_chat_action_image,
                 viewGroup, false);
 
-        ActionImage actionImage = (ActionImage) action;
-        button.setImageResource(actionImage.image);
-        if (actionImage.tintColor > 0) {
-            button.setImageTintList(ColorStateList.valueOf(actionImage.tintColor));
+        ImageAction imageAction = (ImageAction) action;
+        button.setImageResource(imageAction.image);
+        if (imageAction.tintColor > 0) {
+            button.setImageTintList(ColorStateList.valueOf(imageAction.tintColor));
         }
-        button.setTag(R.id.interactive_chat_action_id, actionImage.id);
+        button.setTag(R.id.interactive_chat_action_id, imageAction.id);
 
         return button;
     }

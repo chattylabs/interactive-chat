@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-public class ActionMultiOption implements HasId,
+public class MultiChoiceAction implements HasId,
         HasOnSelected, CanSkipTracking, CanStopFlow, CanHandleState, CanCheckContentDescriptions,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
 
@@ -20,16 +20,16 @@ public class ActionMultiOption implements HasId,
 
     final String id;
     final Runnable onLoaded;
-    final List<Option> options;
-    final ActionText confirmationAction;
+    final List<Choice> choices;
+    final TextAction confirmationAction;
     final OnOptionChangeListener onOptionChangeListener;
     final boolean skipTracking;
     final boolean stopFlow;
 
-    private ActionMultiOption(Builder builder) {
+    private MultiChoiceAction(Builder builder) {
         this.id = builder.id;
         this.onLoaded = builder.onLoaded;
-        this.options = builder.options;
+        this.choices = builder.choices;
         this.confirmationAction = builder.confirmationAction;
         this.onOptionChangeListener = builder.onOptionChangeListener;
         this.skipTracking = builder.skipTracking;
@@ -46,8 +46,8 @@ public class ActionMultiOption implements HasId,
         return this.onLoaded;
     }
 
-    public List<Option> getOptions() {
-        return options;
+    public List<Choice> getChoices() {
+        return choices;
     }
 
     @Override
@@ -72,15 +72,15 @@ public class ActionMultiOption implements HasId,
 
     @Override
     public ActionViewBuilder getActionViewBuilder() {
-        Collections.sort(options);
-        return new ActionMultiOptionViewBuilder(onOptionChangeListener);
+        Collections.sort(choices);
+        return new MultiChoiceActionViewBuilder(onOptionChangeListener);
     }
 
     @Override
     public InteractiveChatNode buildActionFeedback() {
-        Collections.sort(options);
-        return new MultiOptionFeedbackText.Builder()
-                .setOptions(options).build();
+        Collections.sort(choices);
+        return new MultiChoiceTextFeedback.Builder()
+                .setChoices(choices).build();
     }
 
     @Override
@@ -88,15 +88,15 @@ public class ActionMultiOption implements HasId,
         return Integer.compare(getOrder(), action.getOrder());
     }
 
-    public ActionText getConfirmationAction() {
+    public TextAction getConfirmationAction() {
         return confirmationAction;
     }
 
     @Override
     public void saveState(SharedPreferences sharedPreferences) {
         HashSet<String> selectedOptions = new HashSet<>();
-        for (Option option: options) {
-            if (option.isSelected) selectedOptions.add(option.id);
+        for (Choice choice : choices) {
+            if (choice.isSelected) selectedOptions.add(choice.id);
         }
         if (!selectedOptions.isEmpty())
             sharedPreferences.edit().putStringSet(
@@ -108,8 +108,8 @@ public class ActionMultiOption implements HasId,
         HashSet<String> selectedOptions =
                 (HashSet<String>) sharedPreferences.getStringSet(SELECTED_OPTIONS, new HashSet<>());
         if (!selectedOptions.isEmpty()) {
-            for (Option option: options) {
-                option.setSelected(selectedOptions.contains(option.getId()));
+            for (Choice choice : choices) {
+                choice.setSelected(selectedOptions.contains(choice.getId()));
             }
         }
     }
@@ -125,19 +125,19 @@ public class ActionMultiOption implements HasId,
     public int matches(String result) {
         boolean atLeastOneOptionWasSelected = false;
 
-        List<Option> currentOptions = this.getOptions();
+        List<Choice> currentChoices = this.getChoices();
 
-        for(Option option: currentOptions) {
-            String[] expected = option.getContentDescriptions();
+        for(Choice choice : currentChoices) {
+            String[] expected = choice.getContentDescriptions();
             if (expected != null && expected.length > 0 && checkWord(expected, result)) {
-                option.toggleButton.setChecked(true);
+                choice.toggleButton.setChecked(true);
                 atLeastOneOptionWasSelected = true;
             }
         }
 
-        ActionText actionText = this.getConfirmationAction();
+        TextAction textAction = this.getConfirmationAction();
 
-        String[] expected = actionText.getContentDescriptions();
+        String[] expected = textAction.getContentDescriptions();
         if (expected != null && expected.length > 0 && checkWord(expected, result)) {
             return MATCHED;
         } else if (atLeastOneOptionWasSelected) {
@@ -149,8 +149,8 @@ public class ActionMultiOption implements HasId,
     public static class Builder {
         private String id;
         private Runnable onLoaded;
-        private List<Option> options = new ArrayList<>();
-        private ActionText confirmationAction;
+        private List<Choice> choices = new ArrayList<>();
+        private TextAction confirmationAction;
         private OnOptionChangeListener onOptionChangeListener;
         private boolean skipTracking;
         private boolean stopFlow;
@@ -159,8 +159,8 @@ public class ActionMultiOption implements HasId,
             this.id = id;
         }
 
-        public Builder addOption(Option option) {
-            options.add(option);
+        public Builder addOption(Choice choice) {
+            choices.add(choice);
             return this;
         }
 
@@ -179,7 +179,7 @@ public class ActionMultiOption implements HasId,
             return this;
         }
 
-        public Builder setConfirmationAction(ActionText confirmationAction) {
+        public Builder setConfirmationAction(TextAction confirmationAction) {
             this.confirmationAction = confirmationAction;
             return this;
         }
@@ -189,24 +189,24 @@ public class ActionMultiOption implements HasId,
             return this;
         }
 
-        public ActionMultiOption build() {
+        public MultiChoiceAction build() {
             if (id == null || id.isEmpty()) {
                 throw new NullPointerException("Property \"id\" is required");
             }
 
-            if (options.isEmpty()) {
-                throw new IllegalArgumentException("Property \"options\" is empty");
+            if (choices.isEmpty()) {
+                throw new IllegalArgumentException("Property \"choices\" is empty");
             }
 
             if (confirmationAction == null) {
                 throw new NullPointerException("Forgot to set \"confirmationAction\" property?");
             }
 
-            return new ActionMultiOption(this);
+            return new MultiChoiceAction(this);
         }
     }
 
     public interface OnOptionChangeListener {
-        void onChange(Option option, boolean selected);
+        void onChange(Choice choice, boolean selected);
     }
 }

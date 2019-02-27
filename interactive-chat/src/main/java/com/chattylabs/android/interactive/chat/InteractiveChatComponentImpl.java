@@ -565,17 +565,4 @@ final class InteractiveChatComponentImpl extends InteractiveChatFlow.Edge implem
                 "Have you forgotten to add it with addNode(Node)?");
     }
 
-    static Spanned makeText(CharSequence text) {
-        Spanned span;
-        if (text instanceof SpannableString) {
-            span = ((SpannableString) text);
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                span = Html.fromHtml(text.toString(), Html.FROM_HTML_MODE_COMPACT);
-            } else {
-                span = Html.fromHtml(text.toString());
-            }
-        }
-        return span;
-    }
 }

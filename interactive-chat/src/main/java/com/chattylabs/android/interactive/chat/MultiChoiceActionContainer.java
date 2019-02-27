@@ -8,21 +8,21 @@ import android.widget.LinearLayout;
 /**
  * This Container delegates the click listener to the confirmation Button.
  */
-public class ActionMultiOptionContainer extends LinearLayout {
+public class MultiChoiceActionContainer extends LinearLayout {
 
-    public ActionMultiOptionContainer(Context context) {
+    public MultiChoiceActionContainer(Context context) {
         super(context);
     }
 
-    public ActionMultiOptionContainer(Context context, @Nullable AttributeSet attrs) {
+    public MultiChoiceActionContainer(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ActionMultiOptionContainer(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MultiChoiceActionContainer(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ActionMultiOptionContainer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MultiChoiceActionContainer(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

@@ -53,7 +53,7 @@ class TextMessageViewHolderBuilder implements ViewHolderBuilder {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
             CharSequence text = EmojiCompat.get().process(message.text);
-            Spanned span = InteractiveChatComponentImpl.makeText(text);
+            Spanned span = InteractiveChatComponent.makeText(text);
             textView.setTag(message.id);
             textView.setText(span);
         }
