@@ -11,7 +11,7 @@ public class TextMessage implements InteractiveChatNode, HasId, HasOnLoaded, Has
         CanSynthesizeSpeech {
 
     final String id;
-    final String text;
+    String text;
     final float textSize;
     final int tintColor;
     final boolean aloud;
@@ -106,6 +106,10 @@ public class TextMessage implements InteractiveChatNode, HasId, HasOnLoaded, Has
     @Override
     public String getText() {
         return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public int getTintColor() {
