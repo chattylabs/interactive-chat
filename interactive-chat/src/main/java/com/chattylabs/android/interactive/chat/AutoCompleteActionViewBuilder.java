@@ -45,7 +45,7 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
             button.setText(span);
             final LinearLayout buttonLayout = (LinearLayout) widget.getChildAt(1);
             button.setOnClickListener(v -> {
-                buttonLayout.callOnClick();
+                widget.callOnClick();
                 item.onSelected().execute(item);
             });
             buttonLayout.addView(button, layoutParams);
