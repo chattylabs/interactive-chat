@@ -42,7 +42,7 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
             final CharSequence text = EmojiCompat.get().process(item.getText());
             final Spanned span = InteractiveChatComponent.makeText(text);
             button.setText(span);
-            button.setOnClickListener(v -> item.onSelected());
+            button.setOnClickListener(v -> item.onSelected().execute(item));
             ((LinearLayout) widget.getChildAt(1)).addView(button, layoutParams);
         }
 
