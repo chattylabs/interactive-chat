@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="chat_action_multi_option_margin_top">10dp</dimen>
+    <dimen name="item_interactive_chat_margin_top">10dp</dimen>
     <dimen name="item_interactive_chat_margin_left">10dp</dimen>
 </resources>

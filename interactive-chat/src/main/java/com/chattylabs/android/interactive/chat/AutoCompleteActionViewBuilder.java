@@ -37,6 +37,8 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.leftMargin = widget.getContext().getResources()
                     .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_left);
+            layoutParams.topMargin = widget.getContext().getResources()
+                    .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_top);
             final CharSequence text = EmojiCompat.get().process(item.getText());
             final Spanned span = InteractiveChatComponent.makeText(text);
             button.setText(span);
