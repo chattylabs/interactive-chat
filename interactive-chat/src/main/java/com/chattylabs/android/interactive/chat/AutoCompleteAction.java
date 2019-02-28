@@ -2,17 +2,17 @@ package com.chattylabs.android.interactive.chat;
 
 import android.support.annotation.NonNull;
 import android.widget.AutoCompleteTextView;
-import android.widget.ToggleButton;
 
-import com.chattylabs.sdk.android.voice.ConversationalFlowComponent;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
+public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
 
     final String id;
     final float textSize;
+    final List<TextAction> actions;
     final int order;
     final Runnable onLoaded;
     boolean skipTracking;
@@ -22,6 +22,7 @@ public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
     public static class Builder {
         private String id;
         private float textSize;
+        private List<TextAction> actions;
         private int order;
         private Runnable onLoaded;
         private boolean skipTracking;
@@ -29,10 +30,16 @@ public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
 
         public Builder(String id) {
             this.id = id;
+            actions = new ArrayList<>();
         }
 
         public Builder setTextSize(float textSizeInSp) {
             this.textSize = textSizeInSp;
+            return this;
+        }
+
+        public Builder addAction(TextAction action) {
+            this.actions.add(action);
             return this;
         }
 
@@ -56,17 +63,18 @@ public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
             return this;
         }
 
-        public AutoTextFieldAction build() {
+        public AutoCompleteAction build() {
             if (id == null || id.length() == 0) {
                 throw new NullPointerException("Property \"id\" is required");
             }
-            return new AutoTextFieldAction(this);
+            return new AutoCompleteAction(this);
         }
     }
 
-    AutoTextFieldAction(Builder builder) {
+    AutoCompleteAction(Builder builder) {
         this.id = builder.id;
         this.textSize = builder.textSize;
+        this.actions = builder.actions;
         this.order = builder.order;
         this.onLoaded = builder.onLoaded;
         this.skipTracking = builder.skipTracking;
@@ -84,6 +92,10 @@ public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
 
     public String getText() {
         return widget.getText().toString();
+    }
+
+    public List<TextAction> getActions() {
+        return actions;
     }
 
     public float getTextSize() {
@@ -112,7 +124,7 @@ public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
 
     @Override
     public ActionViewBuilder getActionViewBuilder() {
-        return AutoTextFieldActionViewBuilder.build();
+        return AutoCompleteActionViewBuilder.build();
     }
 
     @Override
@@ -131,7 +143,7 @@ public class AutoTextFieldAction implements HasId, CanSkipTracking, CanStopFlow,
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AutoTextFieldAction that = (AutoTextFieldAction) o;
+        AutoCompleteAction that = (AutoCompleteAction) o;
         return Objects.equals(getId(), that.getId());
     }
 

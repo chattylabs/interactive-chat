@@ -164,12 +164,12 @@ public class MultiChoiceAction implements HasId,
             return this;
         }
 
-        public Builder setSkipTracking(boolean skipTracking) {
+        public Builder skipTracking(boolean skipTracking) {
             this.skipTracking = skipTracking;
             return this;
         }
 
-        public Builder setStopFlow(boolean stopFlow) {
+        public Builder stopFlow(boolean stopFlow) {
             this.stopFlow = stopFlow;
             return this;
         }
