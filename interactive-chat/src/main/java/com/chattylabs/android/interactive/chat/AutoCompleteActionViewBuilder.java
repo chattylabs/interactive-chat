@@ -31,7 +31,8 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
         List<TextAction> actions = autoCompleteAction.getActions();
 
         for (TextAction item : actions) {
-            Button button = (Button) inflater.inflate(R.layout.item_interactive_chat_action_text,
+            final Button button =
+                    (Button) inflater.inflate(R.layout.item_interactive_chat_action_text,
                     viewGroup, false);
             final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -42,8 +43,12 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
             final CharSequence text = EmojiCompat.get().process(item.getText());
             final Spanned span = InteractiveChatComponent.makeText(text);
             button.setText(span);
-            button.setOnClickListener(v -> item.onSelected().execute(item));
-            ((LinearLayout) widget.getChildAt(1)).addView(button, layoutParams);
+            final LinearLayout buttonLayout = (LinearLayout) widget.getChildAt(1);
+            button.setOnClickListener(v -> {
+                buttonLayout.callOnClick();
+                item.onSelected().execute(item);
+            });
+            buttonLayout.addView(button, layoutParams);
         }
 
         // TODO: Add adapter, etc..
