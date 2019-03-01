@@ -12,6 +12,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
 
     final String id;
     final float textSize;
+    final List<String> hints;
     final List<TextAction> actions;
     final int order;
     final Runnable onLoaded;
@@ -22,6 +23,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     public static class Builder {
         private String id;
         private float textSize;
+        private List<String> hints;
         private List<TextAction> actions;
         private int order;
         private Runnable onLoaded;
@@ -30,11 +32,17 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
 
         public Builder(String id) {
             this.id = id;
+            hints = new ArrayList<>();
             actions = new ArrayList<>();
         }
 
         public Builder setTextSize(float textSizeInSp) {
             this.textSize = textSizeInSp;
+            return this;
+        }
+
+        public Builder addHints(List<String> hints) {
+            this.hints.addAll(hints);
             return this;
         }
 
@@ -74,6 +82,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     AutoCompleteAction(Builder builder) {
         this.id = builder.id;
         this.textSize = builder.textSize;
+        this.hints = builder.hints;
         this.actions = builder.actions;
         this.order = builder.order;
         this.onLoaded = builder.onLoaded;
@@ -92,6 +101,10 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
 
     public String getText() {
         return widget.getText().toString();
+    }
+
+    public List<String> getHints() {
+        return hints;
     }
 
     public List<TextAction> getActions() {

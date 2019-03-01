@@ -1,15 +1,18 @@
 package com.chattylabs.android.interactive.chat;
 
+import android.content.Context;
 import android.support.text.emoji.EmojiCompat;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import java.util.List;
+import java.util.Random;
 
 class AutoCompleteActionViewBuilder implements ActionViewBuilder {
     private static AutoCompleteActionViewBuilder instance;
@@ -55,7 +58,18 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
 
         widget.setTag(R.id.interactive_chat_action_id, autoCompleteAction.id);
 
-        autoCompleteAction.attach((AutoCompleteTextView) widget.getChildAt(0));
+        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) widget.getChildAt(0);
+        autoCompleteTextView.setOnFocusChangeListener((v, hasFocus) -> {
+            if(v == autoCompleteTextView && !hasFocus) {
+                InputMethodManager imm =
+                        (InputMethodManager) widget.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        });
+        List<String> hints = autoCompleteAction.getHints();
+        autoCompleteTextView.setHint(hints.get(new Random().nextInt(hints.size())));
+
+        autoCompleteAction.attach(autoCompleteTextView);
 
         return widget;
     }
