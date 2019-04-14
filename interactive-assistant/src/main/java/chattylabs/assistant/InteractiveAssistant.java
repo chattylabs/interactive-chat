@@ -98,6 +98,8 @@ public interface InteractiveAssistant {
 
     boolean isSpeechRecognizerEnabled();
 
+    void next(@NonNull Node node);
+
     void setupSpeech(Context context, OnSpeechStatusChecked listener);
 
     void setupSpeech(Context context, RecognizerListener.OnStatusChecked listener);

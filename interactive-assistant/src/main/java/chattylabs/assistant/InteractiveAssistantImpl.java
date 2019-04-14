@@ -158,6 +158,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
+    public void next(@NonNull Node node) {
+        show(node, DEFAULT_MESSAGE_DELAY);
+    }
+
+    @Override
     public void setupSpeech(Context context, OnSpeechStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
@@ -490,17 +495,18 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     private void handleActionNode(Node item) {
         if (enableRecognizer && recognizerReady) {
-            // show mic icon?
+            // TODO: show mic icon?
 
             ActionList actionList = (ActionList) getNext();
-            if (actionList != null && actionList instanceof CanRecognizeSpeech) {
-                ((CanRecognizeSpeech) actionList).consumeRecognizer(speechRecognizer, this::perform);
+            if (actionList != null) {
+                ((CanRecognizeSpeech) actionList)
+                        .consumeRecognizer(speechRecognizer, this::perform);
             } else {
                 currentNode = item;
             }
 
         } else if (enableRecognizer && !speechSetupInProgress) {
-            throw new IllegalStateException("Have you called #setupSpeech()?");
+            throw new IllegalStateException("Have you checked #setupSpeech()?");
         } else {
             currentNode = item;
         }
