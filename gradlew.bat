@@ -13,7 +13,7 @@ if "%DIRNAME%" == "" set DIRNAME=.
 set APP_BASE_NAME=%~n0
 set APP_HOME=%DIRNAME%
 
-@rem Add default JVM choices here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM choices to this script.
+@rem Add default JVM choiceItems here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM choiceItems to this script.
 set DEFAULT_JVM_OPTS=
 
 @rem Find java.exe

@@ -1,0 +1,48 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.chattylabs.versioning'
+apply from: '../buildsystem/android.gradle'
+
+versioning {
+
+    tagPrefix "version/"
+
+    keywords {
+        minor "[feature]", "[design]"
+        patch "[bug]", "[patch]"
+    }
+}
+
+description = 'Android Interactive Assistant'
+
+android {
+    defaultConfig {
+        versionCode versioning.code()
+        versionName versioning.name()
+    }
+    testOptions {
+        //unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    // Android
+    implementation "androidx.appcompat:appcompat:$support_version"
+    implementation "com.google.android.material:material:$support_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation "androidx.emoji:emoji-bundled:$support_version"
+
+    // Dependencies
+    implementation 'com.google.android:flexbox:1.0.0'
+    implementation "com.chattylabs:android-commons:$android_commons"
+    implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
+    compileOnly "chattylabs:conversations-core:$conversational_flow"
+
+    // Testing
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.19.1'
+    testImplementation 'org.robolectric:robolectric:3.8'
+}
+
+apply from: '../publish.gradle'
