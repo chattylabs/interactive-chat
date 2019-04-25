@@ -3,7 +3,7 @@ buildscript {
     ext.support_version = "1.0.0"
     ext.constraintlayout_version = "2.0.0-alpha3"
     ext.android_commons = '0.5.2'
-    ext.conversational_flow = '0.16.0'
+    ext.conversational_flow = '0.17.0'
     repositories {
         mavenLocal()
         google()

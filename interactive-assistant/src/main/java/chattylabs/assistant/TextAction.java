@@ -10,7 +10,7 @@ public class TextAction implements HasId, HasContentDescriptions,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
     final String id;
     final String text;
-    String textAfter;
+    public String textAfter;
     final float textSize;
     final String[] contentDescriptions;
     final int order;

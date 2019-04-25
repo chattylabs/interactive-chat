@@ -28,6 +28,7 @@ import androidx.annotation.RequiresPermission;
 import androidx.annotation.VisibleForTesting;
 import androidx.collection.SimpleArrayMap;
 import androidx.core.util.Pools;
+import chattylabs.conversations.BuildConfig;
 import chattylabs.conversations.ConversationalFlow;
 import chattylabs.conversations.RecognizerListener;
 import chattylabs.conversations.SpeechRecognizer;
@@ -219,6 +220,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         if (speechComponent != null) {
             speechComponent.shutdown();
         }
+        sharedPreferences.edit().clear().apply();
         graph.clear();
         currentNode = null;
         lastAction = null;
