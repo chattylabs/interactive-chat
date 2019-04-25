@@ -42,7 +42,7 @@ dependencies {
     implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
     implementation "com.chattylabs:android-commons:$android_commons"
     implementation "chattylabs:conversations-core:$conversational_flow"
-    implementation 'chattylabs:addon-android-speech:0.8.0'
+    implementation 'chattylabs:addon-android-speech:0.9.0'
     implementation project(':interactive-assistant')
 
     // Test dependencies
