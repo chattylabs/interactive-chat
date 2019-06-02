@@ -51,7 +51,7 @@ class TextFeedbackViewHolderBuilder implements ViewHolderBuilder {
             } else {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
-            CharSequence text = EmojiCompat.get().process(textSelected.text);
+            CharSequence text = InteractiveAssistant.processEmoji(textSelected.text);
             Spanned span = InteractiveAssistant.makeText(text);
             textView.setText(span);
         }

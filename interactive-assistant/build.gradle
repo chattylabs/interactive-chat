@@ -31,7 +31,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$support_version"
     implementation "com.google.android.material:material:$support_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-    implementation "androidx.emoji:emoji-bundled:$support_version"
+    implementation "androidx.emoji:emoji:$support_version"
 
     // Dependencies
     implementation 'com.google.android:flexbox:1.0.0'

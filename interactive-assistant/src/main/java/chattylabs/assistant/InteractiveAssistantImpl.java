@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.core.provider.FontRequest;
 import androidx.emoji.text.EmojiCompat;
-import androidx.emoji.bundled.BundledEmojiCompatConfig;
+import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.TypedValue;
 
 import com.chattylabs.android.commons.DimensionUtils;
@@ -65,6 +68,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private Node currentNode;
     private Action lastAction;
     private Runnable doneListener;
+    private boolean initialized;
+    private boolean started;
     private boolean paused;
     private boolean enableSynthesizer;
     private boolean enableRecognizer;
@@ -96,21 +101,52 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 "interactive_chat", Context.MODE_PRIVATE);
         uiThreadHandler.post(() -> {
             //recyclerView.setItemAnimator(null);
+            EmojiCompat.Config config = null;
             recyclerView.setAdapter(adapter);
-            EmojiCompat.Config config = new BundledEmojiCompatConfig(recyclerView.getContext());
+            if (builder.fontRequest != null) {
+                config = new FontRequestEmojiCompatConfig(
+                        recyclerView.getContext(), builder.fontRequest
+                );
+            } else {
+                FontRequest fontRequest = new FontRequest(
+                        "com.google.android.gms.fonts",
+                        "com.google.android.gms",
+                        "Source Sans Pro",
+                        R.array.com_google_android_gms_fonts_certs
+                );
+                config = new FontRequestEmojiCompatConfig(
+                        recyclerView.getContext(), fontRequest
+                );
+            }
+            config.registerInitCallback(new EmojiCompat.InitCallback() {
+                @Override
+                public void onInitialized() {
+                    initialized = true;
+                    if (started) next();
+                }
+
+                @Override
+                public void onFailed(@Nullable Throwable throwable) {
+                    initialized = true;
+                    if (started) next();
+                }
+            });
             EmojiCompat.init(config);
         });
     }
 
     @Override
-    void start(@NonNull Node root) {
+    synchronized void start(@NonNull Node root) {
         String lastSavedNodeId = getLastVisitedNodeId((HasId) root);
         Node lastSavedNode = getNode(lastSavedNodeId);
         adapter.addItem(root);
         traverse(adapter.getItems(), root, lastSavedNode);
         adapter.checkViewHolders();
         currentNode = lastSavedNode;
-        next();
+        started = true;
+        if (initialized) {
+            next();
+        }
     }
 
     @Override
@@ -151,7 +187,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
-    public void next() {
+    synchronized public void next() {
         boolean canTrack = !(lastAction instanceof CanSkipTracking) ||
                 !((CanSkipTracking) lastAction).skipTracking();
         if (lastAction != null && canTrack) trackLastNode();

@@ -10,5 +10,5 @@
     android:paddingTop="8dp"
     android:layout_marginStart="20dp"
     style="@style/LibTheme.Button.BubbleChat"
-    android:minHeight="50dp"
+    android:minHeight="40dp"
     tools:text="@tools:sample/first_names"/>

@@ -45,7 +45,7 @@ class MultiChoiceActionViewBuilder implements ActionViewBuilder {
             optionsLayout.addView(getOption(context, choiceItem, optionsLayout), layoutParams);
         }
 
-        final CharSequence text = EmojiCompat.get().process(
+        final CharSequence text = InteractiveAssistant.processEmoji(
                 multiAction.getConfirmationAction().text);
         final Spanned span = InteractiveAssistant.makeText(text);
         confirmButton.setText(span);
@@ -56,7 +56,7 @@ class MultiChoiceActionViewBuilder implements ActionViewBuilder {
         final ToggleButton optionButton = (ToggleButton) LayoutInflater.from(context)
                 .inflate(R.layout.item_interactive_assistant_toggle_button, container, false);
 
-        final CharSequence text = EmojiCompat.get().process(choiceItem.getText());
+        final CharSequence text = InteractiveAssistant.processEmoji(choiceItem.getText());
         final Spanned span = InteractiveAssistant.makeText(text);
 
         optionButton.setText(span);

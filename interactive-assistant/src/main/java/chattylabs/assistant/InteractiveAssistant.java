@@ -3,6 +3,9 @@ package chattylabs.assistant;
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
+
+import androidx.core.provider.FontRequest;
+import androidx.emoji.text.EmojiCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
@@ -32,8 +35,17 @@ public interface InteractiveAssistant {
         return span;
     }
 
+    static CharSequence processEmoji(CharSequence text) {
+        try {
+            return EmojiCompat.get().process(text);
+        } catch (Exception ignored){
+            return text;
+        }
+    }
+
     interface IOptional {
         IOptional withVoiceComponent(ConversationalFlow voiceComponent);
+        IOptional withFontRequest(FontRequest fontRequest);
         IOptional withOnDoneListener(Runnable callback);
         IOptional withLastStateEnabled(boolean enable);
         InteractiveAssistant build();
@@ -42,6 +54,7 @@ public interface InteractiveAssistant {
     class Builder {
         ConversationalFlow voiceComponent;
         RecyclerView recyclerView;
+        FontRequest fontRequest;
         boolean withLastStateEnabled;
         Runnable doneListener;
 
@@ -56,6 +69,12 @@ public interface InteractiveAssistant {
             public IOptional withVoiceComponent(ConversationalFlow voiceComponent) {
                 Builder.this.voiceComponent = voiceComponent;
                 return this;
+            }
+
+            @Override
+            public IOptional withFontRequest(FontRequest fontRequest) {
+                Builder.this.fontRequest = fontRequest;
+                return null;
             }
 
             @Override

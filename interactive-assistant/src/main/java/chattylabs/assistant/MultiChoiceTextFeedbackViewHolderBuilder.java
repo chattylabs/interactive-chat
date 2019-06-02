@@ -47,7 +47,7 @@ class MultiChoiceTextFeedbackViewHolderBuilder implements ViewHolderBuilder {
 //            if (textSelected.textSize > 0) {
 //                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);
 //            }
-            CharSequence text = EmojiCompat.get().process(textSelected.text);
+            CharSequence text = InteractiveAssistant.processEmoji(textSelected.text);
             Spanned span = InteractiveAssistant.makeText(text);
             textView.setText(span);
         }

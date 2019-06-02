@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.StringRes;
+import androidx.core.provider.FontRequest;
 import androidx.recyclerview.widget.RecyclerView;
 
 import chattylabs.assistant.ChoiceItem;
@@ -68,11 +69,11 @@ class AssistantFlowBuilder {
                 // This is the only required element.
                 .withViewComponent(recyclerView)
                 // The following is an optional element.
-                // It is required to be provided, because you might choose to configure
+                // You might choose to configure
                 // the speech component using a specific addon.
                 .withVoiceComponent(voiceComponent)
                 // As we have provided an option in the menu to clear the assistant state
-                // we can keep the state enabled, and demonstrate how it keep track of the nodes.
+                // we can keep the state enabled, and demonstrate how it keeps track of the nodes.
                 .withLastStateEnabled(true)
                 .build();
     }

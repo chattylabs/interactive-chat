@@ -11,6 +11,6 @@
     android:layout_marginStart="20dp"
     android:gravity="center"
     style="@style/LibTheme.Button.BubbleChat"
-    android:minHeight="50dp"
+    android:minHeight="40dp"
     tools:src="@tools:sample/avatars"
     tools:ignore="ContentDescription" />

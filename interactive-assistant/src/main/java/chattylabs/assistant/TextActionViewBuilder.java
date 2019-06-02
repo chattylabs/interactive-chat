@@ -30,7 +30,7 @@ class TextActionViewBuilder implements ActionViewBuilder {
         } else {
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
         }
-        CharSequence text = EmojiCompat.get().process(textAction.text);
+        CharSequence text = InteractiveAssistant.processEmoji(textAction.text);
         Spanned span = InteractiveAssistant.makeText(text);
         button.setText(span);
 
