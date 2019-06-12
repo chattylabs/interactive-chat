@@ -131,7 +131,13 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                     if (started) next();
                 }
             });
-            EmojiCompat.init(config);
+            try {
+                EmojiCompat.get();
+                initialized = true;
+                if (started) next();
+            } catch (Exception ignored) {
+                EmojiCompat.init(config);
+            }
         });
     }
 
