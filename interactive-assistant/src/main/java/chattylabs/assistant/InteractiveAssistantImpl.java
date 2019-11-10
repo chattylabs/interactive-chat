@@ -425,6 +425,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         return currentNode;
     }
 
+    @Override
+    public void setCurrentNode(Node node) {
+        currentNode = node;
+    }
+
     @Nullable
     private Node getNext() {
         ArrayList<Node> outgoingEdges = getOutgoingEdges(currentNode);
@@ -546,6 +551,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             }
         } else if (item instanceof Action) {
             if (((HasOnLoaded) item).onLoaded() != null) {
+                currentNode = item;
                 ((HasOnLoaded) item).onLoaded().run();
             }
         }

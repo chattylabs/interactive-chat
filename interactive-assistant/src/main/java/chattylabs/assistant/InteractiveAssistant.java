@@ -131,6 +131,8 @@ public interface InteractiveAssistant {
 
     void resume();
 
+    void setCurrentNode(Node node);
+
     void removeLastState();
 
     void showLoading();
