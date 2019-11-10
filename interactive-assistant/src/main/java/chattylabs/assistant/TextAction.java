@@ -10,7 +10,7 @@ public class TextAction implements HasId, HasContentDescriptions,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
     final String id;
     final String text;
-    public String textAfter;
+    final LazyTextAfter textAfter;
     final float textSize;
     final String[] contentDescriptions;
     final int order;
@@ -18,6 +18,10 @@ public class TextAction implements HasId, HasContentDescriptions,
     final OnSelected onSelected;
     boolean skipTracking;
     boolean stopFlow;
+
+    public interface LazyTextAfter {
+        String get();
+    }
 
     private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
         for (String pattern : patterns) {
@@ -36,7 +40,7 @@ public class TextAction implements HasId, HasContentDescriptions,
     public static class Builder {
         private String id;
         private String text;
-        private String textAfter;
+        private LazyTextAfter textAfter;
         private float textSize;
         private String[] contentDescriptions;
         private int order;
@@ -54,7 +58,7 @@ public class TextAction implements HasId, HasContentDescriptions,
             return this;
         }
 
-        public Builder setTextAfter(String textAfter) {
+        public Builder setTextAfter(LazyTextAfter textAfter) {
             this.textAfter = textAfter;
             return this;
         }
@@ -127,7 +131,7 @@ public class TextAction implements HasId, HasContentDescriptions,
         return text;
     }
 
-    public String getTextAfter() {
+    public LazyTextAfter getTextAfter() {
         return textAfter;
     }
 
@@ -140,8 +144,8 @@ public class TextAction implements HasId, HasContentDescriptions,
         if (contentDescriptions != null)
             return contentDescriptions;
         else if (text != null)
-            return new String[]{text};
-        return new String[]{textAfter};
+            return new String[]{getText()};
+        return new String[]{getTextAfter().get()};
     }
 
     @Override
@@ -177,7 +181,7 @@ public class TextAction implements HasId, HasContentDescriptions,
     @Override
     public Node buildActionFeedback() {
         return new TextFeedback.Builder()
-                .setText(textAfter != null ? textAfter : text)
+                .setText(textAfter != null ? getTextAfter().get() : text)
                 .setTextSize(textSize).build();
     }
 
