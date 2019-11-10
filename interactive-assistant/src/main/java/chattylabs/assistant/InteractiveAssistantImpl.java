@@ -522,6 +522,9 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 scheduleHandler.post(() -> {
                     hideLoading();
                     addLast(item);
+                    if (((HasOnLoaded) item).onLoaded() != null) {
+                        ((HasOnLoaded) item).onLoaded().run();
+                    }
                     if (!(item instanceof Action) &&
                         !(item instanceof ActionList)) {
                         currentNode = item;
@@ -557,9 +560,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     private void handleNotActionNode(Node item) {
-        if (((HasOnLoaded) item).onLoaded() != null) {
-            ((HasOnLoaded) item).onLoaded().run();
-        }
         if (enableSynthesizer && synthesizerReady) {
             if (item instanceof HasText) {
                 if (item instanceof CanSynthesizeSpeech) {
