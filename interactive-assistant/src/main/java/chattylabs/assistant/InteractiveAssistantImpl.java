@@ -538,17 +538,21 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     private void handleActionNode(Node item) {
-        ActionList actionList = (ActionList) getNext();
-        if (actionList != null) {
-            for (Action action : actionList) {
+        if (item instanceof ActionList) {
+            for (Action action : (ActionList)  item) {
                 if (((HasOnLoaded) action).onLoaded() != null) {
                     ((HasOnLoaded) action).onLoaded().run();
                 }
+            }
+        } else if (item instanceof Action) {
+            if (((HasOnLoaded) item).onLoaded() != null) {
+                ((HasOnLoaded) item).onLoaded().run();
             }
         }
         if (enableRecognizer && recognizerReady) {
             // TODO: show mic icon?
 
+            ActionList actionList = (ActionList) getNext();
             if (actionList != null) {
                 ((CanRecognizeSpeech) actionList)
                         .consumeRecognizer(speechRecognizer, this::perform);
