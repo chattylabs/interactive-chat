@@ -14,10 +14,6 @@ import com.chattylabs.android.commons.PermissionsHelper;
 import com.chattylabs.android.commons.ThreadUtils;
 import chattylabs.assistant.InteractiveAssistant;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.FeedbackManager;
-import net.hockeyapp.android.UpdateManager;
-
 import javax.inject.Inject;
 
 import chattylabs.conversations.ConversationalFlow;
@@ -65,11 +61,6 @@ public class AssistantActivity extends DaggerAppCompatActivity {
                 () -> onRequestPermissionsResult(
                         202, perms,
                         new int[] {PackageManager.PERMISSION_GRANTED}), 202);
-
-        // HokeyApp Events
-        UpdateManager.register(this);
-        FeedbackManager.register(this);
-        FeedbackManager.setActivityForScreenshot(this);
     }
 
     @Override
@@ -94,8 +85,6 @@ public class AssistantActivity extends DaggerAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // HokeyApp Events
-        CrashManager.register(this);
     }
 
     @SuppressLint("MissingPermission")
@@ -116,8 +105,6 @@ public class AssistantActivity extends DaggerAppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // HokeyApp Events
-        UpdateManager.unregister();
         // We will release any pending internal operation
         // and restart the component to its default values
         if (chatComponent != null)

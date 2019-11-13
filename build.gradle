@@ -1,9 +1,10 @@
 buildscript {
-    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.3.30'
     ext.support_version = "1.0.0"
-    ext.constraintlayout_version = "2.0.0-alpha3"
-    ext.android_commons = '0.5.2'
-    ext.conversational_flow = '0.17.5'
+    ext.constraintlayout_version = "2.0.0-beta3"
+    ext.android_commons = '0.7.2'
+    ext.vui_core = '0.20.0'
+    ext.android_speech = '0.12.0'
     repositories {
         mavenLocal()
         google()
@@ -12,10 +13,10 @@ buildscript {
         maven { url "https://dl.bintray.com/chattylabs/maven" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.chattylabs:versioning:0.19.5'
-        classpath 'com.novoda:bintray-release:0.9'
+        classpath 'com.novoda:bintray-release:0.9.1'
     }
 }
 
@@ -33,8 +34,11 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-
-println "Checking buildsystem..."
 exec {
-    commandLine "git", "submodule", "update", "--init"
+    def sh = "./android-buildsystem/submodule.sh"
+    if (file(sh).exists()) {
+        executable "sh"
+        args sh
+    } else
+        commandLine "git", "submodule", "update", "--init", "--remote", "--rebase"
 }

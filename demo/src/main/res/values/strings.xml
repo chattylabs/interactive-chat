@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Demo: User Assistant</string>
+    <string name="app_name">User Assistant</string>
     <string name="demo_welcome"><![CDATA[&#x1f44b; Hi there, this is the User Assistant Demo!]]></string>
     <string name="demo_ask_for_quiet_place"><![CDATA[I\'m going to talk aloud, <b>are you in a quiet place?</b>]]></string>
     <string name="demo_yes">Yes</string>
@@ -8,7 +8,7 @@
     <string name="demo_comeback_later">OK, no problem. Come back at anytime. See you later!</string>
     <string name="demo_select_icon_1">Try now to select one of the drawable images with your voice.</string>
     <string name="demo_select_icon_2">What would you say is your current sentiment?</string>
-    <string name="demo_done">I see 🤔. Now you should see correctly some Emojis. If you want to send some feedback, say now \"error\" or \"send feedback\".</string>
+    <string name="demo_done">I see 🤔. Now you should see correctly some Emojis. Have a good day!.</string>
     <string name="demo_thumbs_up"><![CDATA[&#x1f44d;]]></string>
     <string name="demo_thumbs_down"><![CDATA[👎]]></string>
     <string name="dissatisfied_1">Dissatisfied</string>
@@ -22,10 +22,10 @@
     <string name="satisfied_2">Happy</string>
     <string name="satisfied_3">Content</string>
     <string name="thumbsup_1">Thumbs up</string>
-    <string name="thumbsup_2">Send feedback</string>
+    <string name="thumbsup_2">Thanks</string>
     <string name="thumbsup_3">Done</string>
     <string name="thumbsdown_1">Thumbs down</string>
-    <string name="thumbsdown_2">Error</string>
+    <string name="thumbsdown_2">Bye</string>
     <string name="demo_part_of_day_1">Well done!. Let\'s try to select an option according to its text message.</string>
     <string name="demo_part_of_day_2">Which part of the day is your preferred one?</string>
     <string name="demo_morning">Morning</string>

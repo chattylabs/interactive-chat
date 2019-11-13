@@ -5,7 +5,6 @@ import android.content.Context;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.StringRes;
-import androidx.core.provider.FontRequest;
 import androidx.recyclerview.widget.RecyclerView;
 
 import chattylabs.assistant.ChoiceItem;
@@ -17,8 +16,6 @@ import chattylabs.assistant.InteractiveAssistant;
 import chattylabs.assistant.TextMessage;
 import chattylabs.assistant.Node;
 import chattylabs.conversations.ConversationalFlow;
-
-import net.hockeyapp.android.FeedbackManager;
 
 @SuppressLint("MissingPermission")
 class AssistantFlowBuilder {
@@ -184,19 +181,11 @@ class AssistantFlowBuilder {
         component.addNode(new TextAction.Builder(LIKED_YES_ID)
                 .setText(getString(R.string.demo_thumbs_up))
                 .setContentDescriptions(getStringArray(R.array.thumbsup))
-                .setOnSelected(action -> {
-                    FeedbackManager.takeScreenshot(context);
-                    FeedbackManager.showFeedbackActivity(context);
-                })
                 .setTextSize(24).build());
 
         component.addNode(new TextAction.Builder(LIKED_NO_ID)
                 .setText(getString(R.string.demo_thumbs_down))
                 .setContentDescriptions(getStringArray(R.array.thumbsdown))
-                .setOnSelected(action -> {
-                    FeedbackManager.takeScreenshot(context);
-                    FeedbackManager.showFeedbackActivity(context);
-                })
                 .setTextSize(24).build());
 
         flow.from(WELCOME_ID).to(QUIET_PLACE_ID);

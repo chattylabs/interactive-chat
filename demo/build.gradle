@@ -1,26 +1,27 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.chattylabs.versioning'
-apply from: '../buildsystem/android.gradle'
+apply from: '../android-buildsystem/android.gradle'
+apply from: '../android-buildsystem/versioning.gradle'
 
 versioning {
 
     tagPrefix "demo/"
 
     keywords {
-        minor "[demo-feature]"
-        patch "[demo-bug]", "[demo-patch]"
+        minor "[demo-feature]", "[feature]"
+        patch "[demo-bug]", "[demo-patch]", "[patch]"
     }
 }
 
 android {
+
+    compileSdkVersion 28
+
     defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
         applicationId "chattylabs.assistant.demo"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        versionCode versioning.code()
-        versionName versioning.name()
-
-        manifestPlaceholders = [HOCKEYAPP_APP_ID: "7932ed83b1af4cfba145be87d56c41fd"]
     }
 }
 
@@ -32,17 +33,16 @@ dependencies {
     implementation "com.google.android.material:material:$support_version"
 
     // Dagger
-    implementation 'com.google.dagger:dagger:2.15'
-    implementation 'com.google.dagger:dagger-android:2.15'
-    implementation 'com.google.dagger:dagger-android-support:2.15'
+    implementation 'com.google.dagger:dagger:2.16'
+    implementation 'com.google.dagger:dagger-android:2.16'
+    implementation 'com.google.dagger:dagger-android-support:2.16'
     kapt 'com.google.dagger:dagger-compiler:2.15'
     kapt 'com.google.dagger:dagger-android-processor:2.15'
 
     // SDK
-    implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
     implementation "com.chattylabs:android-commons:$android_commons"
-    implementation "chattylabs:conversations-core:$conversational_flow"
-    implementation 'chattylabs:addon-android-speech:0.9.1'
+    implementation "chattylabs:vui-core:$vui_core"
+    implementation "chattylabs:addon-android-speech:$android_speech"
     implementation project(':interactive-assistant')
 
     // Test dependencies

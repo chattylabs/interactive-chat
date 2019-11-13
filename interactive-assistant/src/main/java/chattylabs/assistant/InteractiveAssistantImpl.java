@@ -63,7 +63,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private TimerTask task;
     private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
     private Handler loadingHandler = new Handler(Looper.getMainLooper());
-    private Handler speechHandler = new Handler(Looper.getMainLooper());
+    private Handler ui = new Handler(Looper.getMainLooper());
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
     private Node currentNode;
     private Action lastAction;
@@ -213,10 +213,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             speechComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
                 synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
                 recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
-                speechHandler.post(() -> {
+                ui.post(() -> {
                     hideLoading();
                     listener.onStatusChecked(synthesizerStatus, recognizerStatus);
                 });
+                // TODO: P2 - to show TTS error screen
             });
         });
 
@@ -228,10 +229,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         showLoading();
         speechComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
             recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
-            speechHandler.post(() -> {
+            ui.post(() -> {
                 hideLoading();
                 listener.execute(recognizerStatus);
             });
+            // TODO: P2 - to show TTS error screen
         });
     }
 
@@ -241,75 +243,12 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         showLoading();
         speechComponent.checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
             synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
-            speechHandler.post(() -> {
+            ui.post(() -> {
                 hideLoading();
                 listener.execute(synthesizerStatus);
             });
-            // FIXME: Probably a Dagger issue
-            // Second time it exists the App seems like the TTS is still alive, so triedTtsData
-            // value is TRUE, causing checkAvailability never to be called.
             // TODO: P2 - to show TTS error screen
         });
-    }
-
-    @Override
-    public void release() {
-        cancel();
-        loadingHandler.removeCallbacksAndMessages(null);
-        uiThreadHandler.removeCallbacksAndMessages(null);
-        speechHandler.removeCallbacksAndMessages(null);
-        scheduleHandler.removeCallbacksAndMessages(null);
-        if (speechComponent != null) {
-            speechComponent.shutdown();
-        }
-        sharedPreferences.edit().clear().apply();
-        graph.clear();
-        currentNode = null;
-        lastAction = null;
-        doneListener = null;
-        paused = false;
-        enableSynthesizer = false;
-        enableRecognizer = false;
-        synthesizerReady = false;
-        recognizerReady = false;
-        speechSetupInProgress = false;
-        enableLastState = false;
-    }
-
-    private void cancel() {
-        if (timer != null) {
-            if (task != null) {
-                task.cancel();
-            }
-            timer.cancel();
-            timer = new Timer();
-        }
-        if (speechComponent != null) {
-            speechComponent.stop();
-        }
-    }
-
-    @Override
-    public void pause() {
-        paused = true;
-        cancel();
-    }
-
-    @Override
-    public void resume() {
-        if (paused) {
-            paused = false;
-            if (task != null) {
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (task != null) {
-                            task.run();
-                        }
-                    }
-                }, task.scheduledExecutionTime());
-            }
-        }
     }
 
     @Override
@@ -352,7 +291,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private void perform(Action action) {
         currentNode = action;
         lastAction = action;
-        if (speechComponent != null) speechComponent.stop();
+        if (speechSynthesizer != null) speechSynthesizer.shutdown();
+        if (speechRecognizer != null) speechRecognizer.stop();
         if (action instanceof HasOnSelected && ((HasOnSelected) action).onSelected() != null) {
             ((HasOnSelected) action).onSelected().execute(action);
         }
@@ -582,7 +522,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 if (item instanceof CanSynthesizeSpeech) {
                     showLoading();
                     ((CanSynthesizeSpeech) item).consumeSynthesizer(speechSynthesizer,
-                            () -> speechHandler.post(this::next));
+                            () -> ui.post(this::next));
                 } else {
                     next();
                 }
@@ -650,6 +590,63 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         }
         throw new IllegalArgumentException("Node \"" + id + "\" does not exists in the graph. " +
                 "Have you forgotten to add it with addNode(Node)?");
+    }
+
+    @Override
+    public void release() {
+        cancel();
+        loadingHandler.removeCallbacksAndMessages(null);
+        uiThreadHandler.removeCallbacksAndMessages(null);
+        ui.removeCallbacksAndMessages(null);
+        scheduleHandler.removeCallbacksAndMessages(null);
+        sharedPreferences.edit().clear().apply();
+        graph.clear();
+        currentNode = null;
+        lastAction = null;
+        doneListener = null;
+        paused = false;
+        enableSynthesizer = false;
+        enableRecognizer = false;
+        synthesizerReady = false;
+        recognizerReady = false;
+        speechSetupInProgress = false;
+        enableLastState = false;
+    }
+
+    private void cancel() {
+        if (timer != null) {
+            if (task != null) {
+                task.cancel();
+            }
+            timer.cancel();
+            timer = new Timer();
+        }
+        if (speechSynthesizer != null) speechSynthesizer.shutdown();
+        if (speechRecognizer != null) speechRecognizer.stop();
+        if (speechComponent != null) speechComponent.shutdown();
+    }
+
+    @Override
+    public void pause() {
+        paused = true;
+        cancel();
+    }
+
+    @Override
+    public void resume() {
+        if (paused) {
+            paused = false;
+            if (task != null) {
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (task != null) {
+                            task.run();
+                        }
+                    }
+                }, task.scheduledExecutionTime());
+            }
+        }
     }
 
 }

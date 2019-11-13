@@ -13,8 +13,6 @@
         android:name=".MyApplication"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <meta-data android:name="net.hockeyapp.android.appIdentifier" android:value="${HOCKEYAPP_APP_ID}" />
-
         <activity android:name=".AssistantActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.chattylabs.versioning'
-apply from: '../buildsystem/android.gradle'
+apply from: '../android-buildsystem/android.gradle'
+apply from: '../android-buildsystem/versioning.gradle'
 
 versioning {
 
@@ -12,12 +13,12 @@ versioning {
     }
 }
 
-description = 'Android Interactive Assistant'
-
 android {
+    compileSdkVersion 28
+
     defaultConfig {
-        versionCode versioning.code()
-        versionName versioning.name()
+        minSdkVersion 21
+        targetSdkVersion 28
     }
     testOptions {
         //unitTests.returnDefaultValues = true
@@ -37,7 +38,8 @@ dependencies {
     implementation 'com.google.android:flexbox:1.0.0'
     implementation "com.chattylabs:android-commons:$android_commons"
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
-    compileOnly "chattylabs:conversations-core:$conversational_flow"
+    compileOnly "chattylabs:vui-core:$vui_core"
+    compileOnly "chattylabs:addon-android-speech:$android_speech"
 
     // Testing
     testImplementation 'junit:junit:4.12'
@@ -45,4 +47,6 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:3.8'
 }
 
-apply from: '../publish.gradle'
+description = 'Android Interactive Assistant'
+ext.website ="https://github.com/chattylabs/android-sdk-interactive-assistant"
+apply from: '../android-buildsystem/publish.gradle'
