@@ -463,8 +463,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         task = new TimerTask() {
             @Override
             public void run() {
-                task = null;
                 scheduleHandler.post(() -> {
+                    task = null;
                     hideLoading();
                     addLast(item);
                     if (!(item instanceof Action) &&
@@ -621,8 +621,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             timer.cancel();
             timer = new Timer();
         }
-        if (speechSynthesizer != null) speechSynthesizer.shutdown();
-        if (speechRecognizer != null) speechRecognizer.stop();
         if (speechComponent != null) speechComponent.shutdown();
     }
 
