@@ -609,7 +609,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         sharedPreferences.edit().remove(LAST_VISITED_NODE).apply();
         sharedPreferences.edit().remove(VISITED_NODES).apply();
     }
-
     @Override
     public void release() {
         cancel();
