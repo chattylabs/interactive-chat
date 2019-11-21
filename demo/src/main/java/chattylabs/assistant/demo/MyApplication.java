@@ -1,7 +1,7 @@
 package chattylabs.assistant.demo;
 
-import com.chattylabs.android.commons.internal.ILogger;
-import com.chattylabs.android.commons.internal.ILoggerImpl;
+import chattylabs.android.commons.internal.ILogger;
+import chattylabs.android.commons.internal.ILoggerImpl;
 
 import java.util.Locale;
 

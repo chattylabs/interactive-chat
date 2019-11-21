@@ -1,6 +1,7 @@
 package chattylabs.assistant;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 public class Flow implements Source, SourceId {
     private Node from;
@@ -22,6 +23,12 @@ public class Flow implements Source, SourceId {
         return targetId;
     }
 
+    @Override
+    public TargetId from(@StringRes int id) {
+        from = edge.getNode(id);
+        return targetId;
+    }
+
     public void start(Node root) {
         edge.start(root);
     }
@@ -31,13 +38,23 @@ public class Flow implements Source, SourceId {
         for (Node n : optNodes) edge.addEdge(n, from);
     };
 
-    private TargetId targetId = (id, optIds) -> {
-        edge.addEdge(edge.getNode(id), from);
-        for (String s : optIds) edge.addEdge(edge.getNode(s), from);
+    private TargetId targetId = new TargetId() {
+        @Override
+        public void to(@NonNull String id, String... ids) {
+            edge.addEdge(edge.getNode(id), from);
+            for (String s : ids) edge.addEdge(edge.getNode(s), from);
+        }
+
+        @Override
+        public void to(@StringRes int id, @StringRes Integer... ids) {
+            edge.addEdge(edge.getNode(id), from);
+            for (int i : ids) edge.addEdge(edge.getNode(i), from);
+        }
     };
 
     abstract static class Edge {
         abstract Node getNode(@NonNull String id);
+        abstract Node getNode(@StringRes int id);
         abstract void addEdge(@NonNull Node node, @NonNull Node incomingEdge);
         abstract void start(@NonNull Node root);
     }

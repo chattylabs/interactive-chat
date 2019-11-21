@@ -40,9 +40,9 @@ dependencies {
     kapt 'com.google.dagger:dagger-android-processor:2.15'
 
     // SDK
-    implementation "com.chattylabs:android-commons:$android_commons"
-    implementation "chattylabs:vui-core:$vui_core"
-    implementation "chattylabs:addon-android-speech:$android_speech"
+    implementation "chattylabs.android:commons:$android_commons"
+    implementation "chattylabs.android:voice-user-interaction:$voice_user_interaction"
+    implementation "chattylabs.android:addon-android-speech:$android_speech"
     implementation project(':interactive-assistant')
 
     // Test dependencies

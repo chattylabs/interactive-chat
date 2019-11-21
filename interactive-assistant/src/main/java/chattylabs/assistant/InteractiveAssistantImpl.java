@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.StringRes;
 import androidx.core.provider.FontRequest;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.text.FontRequestEmojiCompatConfig;
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.TypedValue;
 
-import com.chattylabs.android.commons.DimensionUtils;
+import chattylabs.android.commons.DimensionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,12 +45,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private static final long DEFAULT_MESSAGE_DELAY = 500L;
 
     @VisibleForTesting
-    static final String LAST_VISITED_NODE = BuildConfig.APPLICATION_ID + ".LAST_VISITED_NODE";
+    static final String LAST_VISITED_NODE = BuildConfig.LIBRARY_PACKAGE_NAME + ".LAST_VISITED_NODE";
     @VisibleForTesting
-    static final String VISITED_NODES = BuildConfig.APPLICATION_ID + ".VISITED_NODES";
+    static final String VISITED_NODES = BuildConfig.LIBRARY_PACKAGE_NAME + ".VISITED_NODES";
 
     public static final int LOADING_DISPLAY_DELAY = 1000;
     public static final int ITEM_SEPARATOR_SIZE_DIP = 4;
+
+    private Context context;
 
     private final Pools.Pool<ArrayList<Node>> mListPool = new Pools.SimplePool<>(10);
     private final SimpleArrayMap<Node, ArrayList<Node>> graph = new SimpleArrayMap<>();
@@ -83,8 +86,9 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @SuppressLint("MissingPermission") InteractiveAssistantImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
+        context = recyclerView.getContext();
         if (recyclerView.getItemDecorationCount() == 0) {
-            int s = DimensionUtils.getDimension(recyclerView.getContext(),
+            int s = DimensionUtils.getDimension(context,
                     TypedValue.COMPLEX_UNIT_DIP, ITEM_SEPARATOR_SIZE_DIP);
             SeparatorItemDecoration separatorItemDecoration = new SeparatorItemDecoration(s);
             uiThreadHandler.post(() -> {
@@ -97,7 +101,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         doneListener = builder.doneListener;
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         //layoutManager.setSmoothScrollbarEnabled(false);
-        sharedPreferences = recyclerView.getContext().getSharedPreferences(
+        sharedPreferences = context.getSharedPreferences(
                 "interactive_chat", Context.MODE_PRIVATE);
         uiThreadHandler.post(() -> {
             //recyclerView.setItemAnimator(null);
@@ -105,7 +109,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             recyclerView.setAdapter(adapter);
             if (builder.fontRequest != null) {
                 config = new FontRequestEmojiCompatConfig(
-                        recyclerView.getContext(), builder.fontRequest
+                        context, builder.fontRequest
                 );
             } else {
                 FontRequest fontRequest = new FontRequest(
@@ -115,7 +119,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                         R.array.com_google_android_gms_fonts_certs
                 );
                 config = new FontRequestEmojiCompatConfig(
-                        recyclerView.getContext(), fontRequest
+                        context, fontRequest
                 );
             }
             config.registerInitCallback(new EmojiCompat.InitCallback() {
@@ -436,15 +440,18 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     private ActionList getActionList(ArrayList<Node> edges) {
+        String id = "UNKNOWN";
         try {
             ActionList actionList = new ActionList();
             for (int i = 0, size = edges.size(); i < size; i++) {
+                if (edges.get(i) instanceof HasId)
+                    id = ((HasId)edges.get(i)).getId();
                 actionList.add((Action) edges.get(i));
             }
             Collections.sort(actionList);
             return actionList;
         } catch (ClassCastException ignored) {
-            throw new IllegalStateException("Only actions can represent several edges in the graph");
+            throw new IllegalStateException("Only Actions can represent several edges in the graph. Error in [" + id + "] node.");
         }
     }
 
@@ -590,6 +597,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         }
         throw new IllegalArgumentException("Node \"" + id + "\" does not exists in the graph. " +
                 "Have you forgotten to add it with addNode(Node)?");
+    }
+
+    @Override
+    public Node getNode(@StringRes int id) {
+        return getNode(context.getString(id));
     }
 
     @Override

@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.chattylabs.android.commons.PermissionsHelper;
-import com.chattylabs.android.commons.ThreadUtils;
+import chattylabs.android.commons.PermissionsHelper;
+import chattylabs.android.commons.ThreadUtils;
 import chattylabs.assistant.InteractiveAssistant;
 
 import javax.inject.Inject;
