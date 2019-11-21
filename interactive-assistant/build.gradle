@@ -36,10 +36,10 @@ dependencies {
 
     // Dependencies
     implementation 'com.google.android:flexbox:1.0.0'
-    implementation "com.chattylabs:android-commons:$android_commons"
+    implementation "chattylabs.android:commons:$android_commons"
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
-    compileOnly "chattylabs:vui-core:$vui_core"
-    compileOnly "chattylabs:addon-android-speech:$android_speech"
+    compileOnly "chattylabs.android:voice-user-interaction:$voice_user_interaction"
+    compileOnly "chattylabs.android:addon-android-speech:$android_speech"
 
     // Testing
     testImplementation 'junit:junit:4.12'

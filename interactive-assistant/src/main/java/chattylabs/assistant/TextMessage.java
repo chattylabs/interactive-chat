@@ -21,7 +21,7 @@ public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewTy
     @Override
     public void consumeSynthesizer(SpeechSynthesizer component,
                                    OnSynthesized onSynthesized) {
-        component.playText(this.getText(),
+        component.playTextNow(this.getText(),
                 (SynthesizerListener.OnDone) utteranceId -> onSynthesized.execute());
     }
 

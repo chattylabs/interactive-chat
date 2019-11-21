@@ -1,10 +1,10 @@
 buildscript {
-    ext.kotlin_version = '1.3.30'
+    ext.kotlin_version = '1.3.50'
     ext.support_version = "1.0.0"
     ext.constraintlayout_version = "2.0.0-beta3"
-    ext.android_commons = '0.7.2'
-    ext.vui_core = '0.20.0'
-    ext.android_speech = '0.12.0'
+    ext.android_commons = '0.8.0'
+    ext.voice_user_interaction = '0.25.0'
+    ext.android_speech = '0.17.0'
     repositories {
         mavenLocal()
         google()
