@@ -9,6 +9,9 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+
+import org.jetbrains.annotations.NotNull;
+
 import chattylabs.conversations.ConversationalFlow;
 
 public class MultiChoiceAction implements HasId,
@@ -36,7 +39,7 @@ public class MultiChoiceAction implements HasId,
         this.stopFlow = builder.stopFlow;
     }
 
-    @Override
+    @NotNull @Override
     public String getId() {
         return this.id;
     }

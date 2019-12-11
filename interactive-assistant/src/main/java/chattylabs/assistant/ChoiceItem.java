@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ChoiceItem implements HasId,
         HasContentDescriptions, HasOnLoaded, Action {
     final String id;
@@ -86,7 +88,7 @@ public class ChoiceItem implements HasId,
         this.onLoaded = builder.onLoaded;
     }
 
-    @Override
+    @NotNull @Override
     public String getId() {
         return id;
     }

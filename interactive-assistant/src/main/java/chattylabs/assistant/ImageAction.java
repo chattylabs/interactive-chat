@@ -5,6 +5,9 @@ import java.util.Objects;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
 import chattylabs.conversations.ConversationalFlow;
 
 public class ImageAction implements HasId, HasContentDescriptions,
@@ -120,7 +123,7 @@ public class ImageAction implements HasId, HasContentDescriptions,
         this.stopFlow = builder.stopFlow;
     }
 
-    @Override
+    @NotNull @Override
     public String getId() {
         return id;
     }

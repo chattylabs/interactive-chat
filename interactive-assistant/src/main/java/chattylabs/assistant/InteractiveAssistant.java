@@ -106,6 +106,8 @@ public interface InteractiveAssistant {
 
     void next();
 
+    void next(Node node);
+
     void selectLastVisitedAction();
 
     void enableSpeechSynthesizer(Context context, boolean enable);
@@ -116,8 +118,6 @@ public interface InteractiveAssistant {
     boolean isSpeechSynthesizerEnabled();
 
     boolean isSpeechRecognizerEnabled();
-
-    void next(@NonNull Node node);
 
     void setupSpeech(Context context, OnSpeechStatusChecked listener);
 
