@@ -4,8 +4,12 @@ package chattylabs.assistant;
 import java.util.Objects;
 
 import androidx.annotation.ColorRes;
+
+import org.jetbrains.annotations.NotNull;
+
 import chattylabs.conversations.SpeechSynthesizer;
 import chattylabs.conversations.SynthesizerListener;
+import chattylabs.conversations.VoiceMessage;
 
 public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewType,
         CanSynthesizeSpeech {
@@ -25,7 +29,7 @@ public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewTy
                 (SynthesizerListener.OnDone) utteranceId -> onSynthesized.execute());
     }
 
-    public static class Builder {
+    public static final class Builder {
         private String id;
         private String text;
         private float textSize;
@@ -86,6 +90,10 @@ public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewTy
         this.treatedAsFirst = builder.treatedAsFirst;
     }
 
+    public static Builder newBuilder(String id) {
+        return new Builder(id);
+    }
+
     @Override
     public int getViewType() {
         return treatedAsFirst ?
@@ -98,7 +106,7 @@ public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewTy
         return TextMessageViewHolderBuilder.build();
     }
 
-    @Override
+    @NotNull @Override
     public String getId() {
         return id;
     }

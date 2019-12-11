@@ -1,5 +1,7 @@
 package chattylabs.assistant;
 
+import androidx.annotation.NonNull;
+
 public interface HasId {
-    String getId();
+    @NonNull String getId();
 }

@@ -6,6 +6,8 @@ import java.util.Objects;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ImageMessage implements Node, HasId, HasOnLoaded, HasViewType {
     final String id;
     final int image;
@@ -62,7 +64,7 @@ public class ImageMessage implements Node, HasId, HasOnLoaded, HasViewType {
         return ImageMessageViewHolderBuilder.build();
     }
 
-    @Override
+    @NotNull @Override
     public String getId() {
         return id;
     }
