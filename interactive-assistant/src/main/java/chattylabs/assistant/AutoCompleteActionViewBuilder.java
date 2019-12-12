@@ -1,8 +1,6 @@
 package chattylabs.assistant;
 
 import android.content.Context;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.emoji.text.EmojiCompat;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
@@ -13,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 import java.util.Random;

@@ -2,15 +2,13 @@ package chattylabs.assistant;
 
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
-
-import org.jetbrains.annotations.NotNull;
 
 import chattylabs.conversations.ConversationalFlow;
 
@@ -39,7 +37,7 @@ public class MultiChoiceAction implements HasId,
         this.stopFlow = builder.stopFlow;
     }
 
-    @NotNull @Override
+    @NonNull @Override
     public String getId() {
         return this.id;
     }

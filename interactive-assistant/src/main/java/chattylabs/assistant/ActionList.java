@@ -6,7 +6,8 @@ import java.util.Set;
 import chattylabs.conversations.RecognizerListener;
 import chattylabs.conversations.SpeechRecognizer;
 
-import static chattylabs.assistant.CanCheckContentDescriptions.*;
+import static chattylabs.assistant.CanCheckContentDescriptions.MATCHED;
+import static chattylabs.assistant.CanCheckContentDescriptions.REPEAT;
 
 class ActionList extends ArrayList<Action> implements Node, HasViewType, CanRecognizeSpeech {
 

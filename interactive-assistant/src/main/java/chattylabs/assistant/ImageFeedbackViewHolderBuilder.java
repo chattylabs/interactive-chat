@@ -1,11 +1,12 @@
 package chattylabs.assistant;
 
 import android.content.res.ColorStateList;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 
 class ImageFeedbackViewHolderBuilder implements ViewHolderBuilder {

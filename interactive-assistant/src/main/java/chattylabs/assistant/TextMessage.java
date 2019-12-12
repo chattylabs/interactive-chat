@@ -1,15 +1,13 @@
 package chattylabs.assistant;
 
 
-import java.util.Objects;
-
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 import chattylabs.conversations.SpeechSynthesizer;
 import chattylabs.conversations.SynthesizerListener;
-import chattylabs.conversations.VoiceMessage;
 
 public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewType,
         CanSynthesizeSpeech {
@@ -106,7 +104,8 @@ public class TextMessage implements Node, HasId, HasOnLoaded, HasText, HasViewTy
         return TextMessageViewHolderBuilder.build();
     }
 
-    @NotNull @Override
+    @NonNull
+    @Override
     public String getId() {
         return id;
     }

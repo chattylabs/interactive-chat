@@ -2,11 +2,9 @@ package chattylabs.assistant;
 
 import android.widget.ToggleButton;
 
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 public class ChoiceItem implements HasId,
         HasContentDescriptions, HasOnLoaded, Action {
@@ -88,7 +86,7 @@ public class ChoiceItem implements HasId,
         this.onLoaded = builder.onLoaded;
     }
 
-    @NotNull @Override
+    @NonNull @Override
     public String getId() {
         return id;
     }
