@@ -1,12 +1,10 @@
 package chattylabs.assistant;
 
-import java.util.Objects;
-
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 import chattylabs.conversations.ConversationalFlow;
 
@@ -123,7 +121,7 @@ public class ImageAction implements HasId, HasContentDescriptions,
         this.stopFlow = builder.stopFlow;
     }
 
-    @NotNull @Override
+    @NonNull @Override
     public String getId() {
         return id;
     }

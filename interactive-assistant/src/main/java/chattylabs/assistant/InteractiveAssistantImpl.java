@@ -6,17 +6,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
+import androidx.annotation.VisibleForTesting;
+import androidx.collection.SimpleArrayMap;
 import androidx.core.provider.FontRequest;
+import androidx.core.util.Pools;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.TypedValue;
-
-import chattylabs.android.commons.DimensionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,13 +29,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.annotation.VisibleForTesting;
-import androidx.collection.SimpleArrayMap;
-import androidx.core.util.Pools;
-
+import chattylabs.android.commons.DimensionUtils;
 import chattylabs.android.commons.Tag;
 import chattylabs.conversations.BuildConfig;
 import chattylabs.conversations.ConversationalFlow;

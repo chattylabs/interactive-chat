@@ -3,19 +3,18 @@ package chattylabs.assistant.demo;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import chattylabs.android.commons.PermissionsHelper;
-import chattylabs.android.commons.ThreadUtils;
-import chattylabs.assistant.InteractiveAssistant;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 
+import chattylabs.android.commons.PermissionsHelper;
+import chattylabs.android.commons.ThreadUtils;
+import chattylabs.assistant.InteractiveAssistant;
 import chattylabs.conversations.ConversationalFlow;
 import dagger.android.support.DaggerAppCompatActivity;
 

@@ -1,7 +1,6 @@
 package chattylabs.assistant;
 
 import android.content.Context;
-import androidx.emoji.text.EmojiCompat;
 import android.text.Spanned;
 import android.util.TypedValue;
 import android.view.LayoutInflater;

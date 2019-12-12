@@ -1,12 +1,11 @@
 package chattylabs.assistant;
 
 
-import java.util.Objects;
-
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 public class ImageMessage implements Node, HasId, HasOnLoaded, HasViewType {
     final String id;
@@ -64,7 +63,8 @@ public class ImageMessage implements Node, HasId, HasOnLoaded, HasViewType {
         return ImageMessageViewHolderBuilder.build();
     }
 
-    @NotNull @Override
+    @NonNull
+    @Override
     public String getId() {
         return id;
     }

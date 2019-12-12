@@ -1,14 +1,14 @@
 package chattylabs.assistant;
 
 import android.os.Build;
-import androidx.emoji.text.EmojiCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spanned;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import chattylabs.android.commons.DimensionUtils;
 

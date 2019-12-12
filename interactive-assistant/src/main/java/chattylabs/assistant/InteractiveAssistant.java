@@ -3,18 +3,18 @@ package chattylabs.assistant;
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
-
-import androidx.core.provider.FontRequest;
-import androidx.emoji.text.EmojiCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 
-import java.util.Set;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
+import androidx.core.provider.FontRequest;
+import androidx.emoji.text.EmojiCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Set;
+
 import chattylabs.conversations.ConversationalFlow;
 import chattylabs.conversations.RecognizerListener;
 import chattylabs.conversations.SynthesizerListener;

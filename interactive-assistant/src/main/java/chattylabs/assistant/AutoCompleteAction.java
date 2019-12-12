@@ -2,13 +2,11 @@ package chattylabs.assistant;
 
 import android.widget.AutoCompleteTextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import androidx.annotation.NonNull;
-
-import org.jetbrains.annotations.NotNull;
 
 public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
         HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
@@ -113,7 +111,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
         this.widget = widget;
     }
 
-    @NotNull @Override
+    @NonNull @Override
     public String getId() {
         return id;
     }

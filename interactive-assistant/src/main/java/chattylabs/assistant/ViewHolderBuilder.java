@@ -1,7 +1,8 @@
 package chattylabs.assistant;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 interface ViewHolderBuilder {
     RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType);

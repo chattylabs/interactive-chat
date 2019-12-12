@@ -8,13 +8,13 @@ import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.RecyclerView;
 
 import chattylabs.assistant.ChoiceItem;
-import chattylabs.assistant.ImageAction;
-import chattylabs.assistant.MultiChoiceAction;
-import chattylabs.assistant.TextAction;
 import chattylabs.assistant.Flow;
+import chattylabs.assistant.ImageAction;
 import chattylabs.assistant.InteractiveAssistant;
-import chattylabs.assistant.TextMessage;
+import chattylabs.assistant.MultiChoiceAction;
 import chattylabs.assistant.Node;
+import chattylabs.assistant.TextAction;
+import chattylabs.assistant.TextMessage;
 import chattylabs.conversations.ConversationalFlow;
 
 @SuppressLint("MissingPermission")
