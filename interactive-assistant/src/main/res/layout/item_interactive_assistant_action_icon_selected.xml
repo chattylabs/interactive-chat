@@ -6,9 +6,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="?interactive_messageTextStyle"
-        tools:text="@tools:sample/lorem/random"/>
+        style="?interactive_actionIconSelectedStyle"
+        tools:src="@drawable/ic_check_black_24dp"
+        tools:ignore="ContentDescription" />
 </androidx.appcompat.widget.LinearLayoutCompat>

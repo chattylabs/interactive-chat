@@ -5,9 +5,10 @@
     <item type="id" name="interactive_assistant_action_id" />
     <!-- View Types -->
     <item type="id" name="interactive_assistant_action_list_view_type" />
+    <item type="id" name="interactive_assistant_action_multi_option_view_type" />
     <item type="id" name="interactive_assistant_feedback_image_view_type" />
     <item type="id" name="interactive_assistant_feedback_text_view_type" />
-    <item type="id" name="interactive_assistant_multi_option_feedback_text_view_type" />
+    <item type="id" name="interactive_assistant_multi_option_feedback_view_type" />
     <item type="id" name="interactive_assistant_loading_view_type" />
     <item type="id" name="interactive_assistant_message_view_type" />
     <item type="id" name="interactive_assistant_message_image_view_type" />

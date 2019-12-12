@@ -4,5 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    style="?interactive_actionTextStyle"
-    tools:text="@tools:sample/lorem" />
+    style="?interactive_actionIconStyle"
+    tools:icon="@drawable/ic_check_black_24dp"
+    tools:text="@tools:sample/lorem"
+    tools:ignore="ContentDescription" />

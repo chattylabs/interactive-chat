@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<chattylabs.assistant.MultiChoiceActionContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<chattylabs.assistant.ActionMultiChoiceLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,9 +10,26 @@
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        app:flexDirection="row_reverse"
-        app:flexWrap="wrap" />
+        style="?interactive_actionsContainerStyle">
+
+        <com.google.android.material.chip.Chip
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            tools:text="1" />
+        <com.google.android.material.chip.Chip
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            tools:text="2" />
+        <com.google.android.material.chip.Chip
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            tools:text="3" />
+        <com.google.android.material.chip.Chip
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            tools:text="3" />
+
+    </com.google.android.flexbox.FlexboxLayout>
 
     <include
         layout="@layout/item_interactive_assistant_action_text"
@@ -18,4 +37,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end" />
 
-</chattylabs.assistant.MultiChoiceActionContainer>
+</chattylabs.assistant.ActionMultiChoiceLayout>

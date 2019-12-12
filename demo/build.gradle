@@ -29,15 +29,15 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Android dependencies
-    implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "com.google.android.material:material:$support_version"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "com.google.android.material:material:$material"
 
     // Dagger
-    implementation 'com.google.dagger:dagger:2.16'
-    implementation 'com.google.dagger:dagger-android:2.16'
-    implementation 'com.google.dagger:dagger-android-support:2.16'
-    kapt 'com.google.dagger:dagger-compiler:2.15'
-    kapt 'com.google.dagger:dagger-android-processor:2.15'
+    implementation 'com.google.dagger:dagger:2.24'
+    implementation 'com.google.dagger:dagger-android:2.24'
+    implementation 'com.google.dagger:dagger-android-support:2.24'
+    kapt 'com.google.dagger:dagger-compiler:2.24'
+    kapt 'com.google.dagger:dagger-android-processor:2.24'
 
     // SDK
     implementation "chattylabs.android:commons:$android_commons"

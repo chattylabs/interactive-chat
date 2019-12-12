@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="interactive_actionsContainerStyle" format="reference"/>
+    <attr name="interactive_loadingDotsColor" format="color"/>
+    <attr name="interactive_actionTextStyle" format="reference"/>
+    <attr name="interactive_actionTextSelectedStyle" format="reference"/>
+    <attr name="interactive_actionIconStyle" format="reference"/>
+    <attr name="interactive_actionIconSelectedStyle" format="reference"/>
+    <attr name="interactive_actionChipStyle" format="reference"/>
+    <attr name="interactive_messageImageStyle" format="reference"/>
+    <attr name="interactive_messageTextStyle" format="reference"/>
+    <attr name="interactive_messageTextFirstStyle" format="reference"/>
+    <attr name="interactive_messageTextCornerRadius" format="dimension"/>
+    <attr name="interactive_messageTextStrokeWidth" format="dimension"/>
+    <attr name="interactive_messageTextStrokeColor" format="color"/>
+</resources>

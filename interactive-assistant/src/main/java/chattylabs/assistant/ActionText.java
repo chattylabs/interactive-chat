@@ -1,44 +1,67 @@
 package chattylabs.assistant;
 
-import android.widget.AutoCompleteTextView;
-
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
+import chattylabs.conversations.ConversationalFlow;
 
+public class ActionText implements HasId, HasContentDescriptions,
+        HasOnSelected, CanSkipTracking, CanStopFlow, CanCheckContentDescriptions,
+        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
     final String id;
+    final String text;
+    final LazyTextAfter textAfter;
     final float textSize;
-    final int textLines;
-    final int charCount;
-    final List<String> hints;
-    final List<ActionText> actions;
+    final String[] contentDescriptions;
     final int order;
     final Runnable onLoaded;
+    final OnSelected onSelected;
     boolean skipTracking;
     boolean stopFlow;
-    AutoCompleteTextView widget;
+
+    public interface LazyTextAfter {
+        String get();
+    }
+
+    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
+        for (String pattern : patterns) {
+            if (pattern != null && ConversationalFlow.matches(text, pattern)) return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int matches(String result) {
+        String[] expected = this.getContentDescriptions();
+        return (expected != null && expected.length > 0 && checkWord(expected, result))
+                ? MATCHED : NOT_MATCHED;
+    }
 
     public static class Builder {
         private String id;
+        private String text;
+        private LazyTextAfter textAfter;
         private float textSize;
-        private int textLines;
-        private int charCount;
-        private List<String> hints;
-        private List<ActionText> actions;
+        private String[] contentDescriptions;
         private int order;
         private Runnable onLoaded;
+        private OnSelected onSelected;
         private boolean skipTracking;
         private boolean stopFlow;
 
         public Builder(String id) {
             this.id = id;
-            hints = new ArrayList<>();
-            actions = new ArrayList<>();
+        }
+
+        public Builder setText(String text) {
+            this.text = text;
+            return this;
+        }
+
+        public Builder setTextAfter(LazyTextAfter textAfter) {
+            this.textAfter = textAfter;
+            return this;
         }
 
         public Builder setTextSize(float textSizeInSp) {
@@ -46,23 +69,8 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
             return this;
         }
 
-        public Builder setTextLines(int textLines) {
-            this.textLines = textLines;
-            return this;
-        }
-
-        public Builder setCharCount(int charCount) {
-            this.charCount = charCount;
-            return this;
-        }
-
-        public Builder addHints(List<String> hints) {
-            this.hints.addAll(hints);
-            return this;
-        }
-
-        public Builder addAction(ActionText action) {
-            this.actions.add(action);
+        public Builder setContentDescriptions(String[] contentDescriptions) {
+            this.contentDescriptions = contentDescriptions;
             return this;
         }
 
@@ -76,6 +84,11 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
             return this;
         }
 
+        public Builder setOnSelected(OnSelected onSelected) {
+            this.onSelected = onSelected;
+            return this;
+        }
+
         public Builder skipTracking(boolean skipTracking) {
             this.skipTracking = skipTracking;
             return this;
@@ -86,29 +99,28 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
             return this;
         }
 
-        public AutoCompleteAction build() {
+        public ActionText build() {
             if (id == null || id.length() == 0) {
                 throw new NullPointerException("Property \"id\" is required");
             }
-            return new AutoCompleteAction(this);
+            if (text == null || text.length() == 0) {
+                throw new NullPointerException("Property \"text\" is required");
+            }
+            return new ActionText(this);
         }
     }
 
-    AutoCompleteAction(Builder builder) {
+    ActionText(Builder builder) {
         this.id = builder.id;
+        this.text = builder.text;
+        this.textAfter = builder.textAfter;
         this.textSize = builder.textSize;
-        this.textLines = builder.textLines;
-        this.charCount = builder.charCount;
-        this.hints = builder.hints;
-        this.actions = builder.actions;
+        this.contentDescriptions = builder.contentDescriptions;
         this.order = builder.order;
         this.onLoaded = builder.onLoaded;
+        this.onSelected = builder.onSelected;
         this.skipTracking = builder.skipTracking;
         this.stopFlow = builder.stopFlow;
-    }
-
-    void attach(AutoCompleteTextView widget) {
-        this.widget = widget;
     }
 
     @NonNull @Override
@@ -117,27 +129,24 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     }
 
     public String getText() {
-        return widget.getText().toString();
+        return text;
     }
 
-    public List<String> getHints() {
-        return hints;
-    }
-
-    public List<ActionText> getActions() {
-        return actions;
+    public LazyTextAfter getTextAfter() {
+        return textAfter;
     }
 
     public float getTextSize() {
         return textSize;
     }
 
-    public int getTextLines() {
-        return textLines;
-    }
-
-    public int getCharCount() {
-        return charCount;
+    @Override
+    public String[] getContentDescriptions() {
+        if (contentDescriptions != null)
+            return contentDescriptions;
+        else if (text != null)
+            return new String[]{getText()};
+        return new String[]{getTextAfter().get()};
     }
 
     @Override
@@ -148,6 +157,11 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     @Override
     public Runnable onLoaded() {
         return onLoaded;
+    }
+
+    @Override
+    public OnSelected onSelected() {
+        return onSelected;
     }
 
     @Override
@@ -162,13 +176,13 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
 
     @Override
     public ActionViewBuilder getActionViewBuilder() {
-        return AutoCompleteActionViewBuilder.build();
+        return ActionTextViewBuilder.build();
     }
 
     @Override
     public Node buildActionFeedback() {
         return new FeedbackText.Builder()
-                .setText(getText())
+                .setText(textAfter != null ? getTextAfter().get() : text)
                 .setTextSize(textSize).build();
     }
 
@@ -181,7 +195,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AutoCompleteAction that = (AutoCompleteAction) o;
+        ActionText that = (ActionText) o;
         return Objects.equals(getId(), that.getId());
     }
 
