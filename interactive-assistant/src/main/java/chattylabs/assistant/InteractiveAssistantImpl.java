@@ -116,13 +116,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 FontRequest fontRequest = new FontRequest(
                         "com.google.android.gms.fonts",
                         "com.google.android.gms",
-                        "Source Sans Pro",
+                        "Noto Color Emoji Compat",
                         R.array.com_google_android_gms_fonts_certs
                 );
                 config = new FontRequestEmojiCompatConfig(
                         context, fontRequest
                 );
             }
+            config.setReplaceAll(true);
             config.registerInitCallback(new EmojiCompat.InitCallback() {
                 @Override
                 public void onInitialized() {
@@ -194,7 +195,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     void addEdge(@NonNull Node node, @NonNull Node incomingEdge) {
         if (!graph.containsKey(node) || !graph.containsKey(incomingEdge)) {
             throw new IllegalArgumentException("All nodes must be present in the graph " +
-                                               "before being added as an edge");
+                    "before generating the Flow. " +
+                    "\nNode [" + (!graph.containsKey(incomingEdge) ?
+                    ((HasId) incomingEdge).getId() :
+                    ((HasId) node).getId()) +
+                    "] has not been added yet.");
         }
 
         ArrayList<Node> edges = graph.get(node);
@@ -384,7 +389,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             }
 
         } else if (enableRecognizer && !speechSetupInProgress) {
-            throw new IllegalStateException("Have you checked #setupSpeech()?");
+            throw new IllegalStateException("Have you called #setupSpeech()?");
         } else {
             currentNode = item;
         }
@@ -554,7 +559,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         if (action instanceof CanHandleState) {
             ((CanHandleState) action).restoreSavedState(sharedPreferences);
         }
-        addLast(((MustBuildActionFeedback) action).buildActionFeedback());
+        if (action instanceof MustBuildActionFeedback)
+            addLast(((MustBuildActionFeedback) action).buildActionFeedback());
     }
 
     private void addLast(Node node) {

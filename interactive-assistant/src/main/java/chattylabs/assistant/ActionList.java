@@ -23,6 +23,8 @@ class ActionList extends ArrayList<Action> implements Node, HasViewType, CanReco
 
     @Override
     public int getViewType() {
+        if (size() == 1 && get(0) instanceof ActionMultiChoice)
+            return R.id.interactive_assistant_action_multi_option_view_type;
         return R.id.interactive_assistant_action_list_view_type;
     }
 

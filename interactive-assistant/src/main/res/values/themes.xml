@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--Top level DayNight theme to be used in AndroidManifest.xml-->
+    <style name="InteractiveTheme"/>
+    <style name="InteractiveTheme.DayNight" parent="Base.InteractiveTheme"/>
+
+    <!--Base custom theme which will be shared between both light and dark theme variants-->
+    <style name="Base.InteractiveTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <!--Interactive Assistant attributes-->
+        <item name="interactive_loadingDotsColor">#777</item>
+        <item name="interactive_actionsContainerStyle">@style/InteractiveTheme.ActionContainerStyle</item>
+        <item name="interactive_actionTextStyle">@style/InteractiveTheme.ActionTextStyle</item>
+        <item name="interactive_actionTextSelectedStyle">@style/InteractiveTheme.ActionTextSelectedStyle</item>
+        <item name="interactive_actionIconStyle">@style/InteractiveTheme.ActionIconStyle</item>
+        <item name="interactive_actionIconSelectedStyle">@style/InteractiveTheme.ActionIconSelectedStyle</item>
+        <item name="interactive_actionChipStyle">@style/InteractiveTheme.ActionChipStyle</item>
+        <item name="interactive_messageImageStyle">@style/InteractiveTheme.MessageImageStyle</item>
+        <item name="interactive_messageTextStyle">@style/InteractiveTheme.MessageTextStyle</item>
+        <item name="interactive_messageTextFirstStyle">@style/InteractiveTheme.MessageTextStyle</item>
+        <item name="interactive_messageTextCornerRadius">30dp</item>
+        <item name="interactive_messageTextStrokeWidth">1sp</item>
+        <item name="interactive_messageTextStrokeColor">#eee</item>
+
+    </style>
+
+    <style name="InteractiveTheme.ActionContainerStyle">
+        <item name="flexWrap">wrap</item>
+        <item name="flexDirection">row_reverse</item>
+        <item name="showDivider">middle</item>
+        <item name="dividerDrawable">@drawable/interactive_actions_divider</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="InteractiveTheme.ActionTextStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="InteractiveTheme.ActionTextSelectedStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="InteractiveTheme.ActionIconStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="InteractiveTheme.ActionIconSelectedStyle">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+    </style>
+
+    <style name="InteractiveTheme.ActionChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="android:includeFontPadding">false</item>
+        <item name="chipIconVisible">true</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="InteractiveTheme.MessageImageStyle">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:background">@drawable/interactive_bubble_text</item>
+        <item name="android:layout_marginEnd">50dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingStart">25dp</item>
+        <item name="android:paddingEnd">25dp</item>
+    </style>
+
+    <style name="InteractiveTheme.MessageTextStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:background">@drawable/interactive_bubble_text</item>
+        <item name="android:layout_marginEnd">50dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:paddingStart">25dp</item>
+        <item name="android:paddingEnd">25dp</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+</resources>

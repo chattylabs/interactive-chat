@@ -29,13 +29,13 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     // Android
-    implementation "androidx.appcompat:appcompat:$support_version"
-    implementation "com.google.android.material:material:$support_version"
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    implementation "com.google.android.material:material:$material"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
-    implementation "androidx.emoji:emoji:$support_version"
+    implementation "androidx.emoji:emoji:$emoji"
 
     // Dependencies
-    implementation 'com.google.android:flexbox:1.0.0'
+    implementation 'com.google.android:flexbox:2.0.0'
     implementation "chattylabs.android:commons:$android_commons"
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
     compileOnly "chattylabs.android:voice-user-interaction:$voice_user_interaction"

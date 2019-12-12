@@ -10,6 +10,7 @@ import android.text.Spanned;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
 import androidx.core.provider.FontRequest;
+import androidx.core.text.HtmlCompat;
 import androidx.emoji.text.EmojiCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,16 +22,12 @@ import chattylabs.conversations.SynthesizerListener;
 
 public interface InteractiveAssistant {
 
-    static Spanned makeText(CharSequence text) {
+    static Spanned formatHTML(CharSequence text) {
         Spanned span;
         if (text instanceof SpannableString) {
             span = ((SpannableString) text);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                span = Html.fromHtml(text.toString(), Html.FROM_HTML_MODE_COMPACT);
-            } else {
-                span = Html.fromHtml(text.toString());
-            }
+            span = HtmlCompat.fromHtml(text.toString(), HtmlCompat.FROM_HTML_MODE_COMPACT);
         }
         return span;
     }

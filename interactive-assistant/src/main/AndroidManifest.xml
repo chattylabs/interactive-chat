@@ -1,9 +1,11 @@
 <manifest package="chattylabs.assistant"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <application tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
-    <meta-data
-        android:name="preloaded_fonts"
-        android:resource="@array/preloaded_fonts" />
+    <application
+        android:theme="@style/InteractiveTheme.DayNight"
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,MissingApplicationIcon">
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 </manifest>

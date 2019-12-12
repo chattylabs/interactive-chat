@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AssistantAdapter extends ViewAdapter<RecyclerView.ViewHolder> {
 
@@ -79,7 +80,7 @@ public class AssistantAdapter extends ViewAdapter<RecyclerView.ViewHolder> {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        return viewHolders.get(viewType).createViewHolder(viewGroup, viewType);
+        return Objects.requireNonNull(viewHolders.get(viewType)).createViewHolder(viewGroup, viewType);
     }
 
     @Override
