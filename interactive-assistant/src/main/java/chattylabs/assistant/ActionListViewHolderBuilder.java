@@ -7,8 +7,6 @@ import android.widget.FrameLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.flexbox.FlexboxLayout;
-
 class ActionListViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
