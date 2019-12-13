@@ -1,8 +1,6 @@
 package chattylabs.assistant;
 
 import android.content.Context;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.emoji.text.EmojiCompat;
 import android.text.InputType;
 import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
@@ -13,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 import java.util.Random;
@@ -34,27 +34,21 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
                 R.layout.item_interactive_assistant_action_autotextfield,
                 viewGroup, false);
 
-        List<TextAction> actions = autoCompleteAction.getActions();
+        List<ActionText> actions = autoCompleteAction.getActions();
 
-        for (TextAction item : actions) {
+        for (ActionText item : actions) {
             final Button button =
                     (Button) inflater.inflate(R.layout.item_interactive_assistant_action_text,
                     viewGroup, false);
-            final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.leftMargin = widget.getContext().getResources()
-                    .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_left);
-            layoutParams.topMargin = widget.getContext().getResources()
-                    .getDimensionPixelSize(R.dimen.item_interactive_chat_margin_top);
             final CharSequence text = InteractiveAssistant.processEmoji(item.getText());
-            final Spanned span = InteractiveAssistant.makeText(text);
+            final Spanned span = InteractiveAssistant.formatHTML(text);
             button.setText(span);
             final LinearLayout buttonLayout = (LinearLayout) widget.getChildAt(1);
             button.setOnClickListener(v -> {
                 widget.callOnClick();
                 item.onSelected().execute(item);
             });
-            buttonLayout.addView(button, layoutParams);
+            buttonLayout.addView(button);
         }
 
         // TODO: Add adapter, etc..

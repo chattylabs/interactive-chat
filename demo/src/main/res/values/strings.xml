@@ -39,4 +39,7 @@
     <string name="demo_option_3">White</string>
     <string name="demo_option_4">Yellow</string>
     <string name="demo_options_message">Choose your favorite colours from the list.</string>
+    <string name="demo_sentiment_dissatisfied">Sad</string>
+    <string name="demo_sentiment_neutral">Neutral</string>
+    <string name="demo_sentiment_satisfied">Happy</string>
 </resources>

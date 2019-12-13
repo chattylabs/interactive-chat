@@ -1,12 +1,11 @@
 package chattylabs.assistant.demo;
 
-import chattylabs.android.commons.internal.ILogger;
-import chattylabs.android.commons.internal.ILoggerImpl;
-
 import java.util.Locale;
 
 import javax.inject.Singleton;
 
+import chattylabs.android.commons.internal.ILogger;
+import chattylabs.android.commons.internal.ILoggerImpl;
 import chattylabs.conversations.AndroidSpeechRecognizer;
 import chattylabs.conversations.AndroidSpeechSynthesizer;
 import chattylabs.conversations.ConversationalFlow;

@@ -2,35 +2,30 @@ package chattylabs.assistant;
 
 import android.Manifest;
 import android.content.Context;
-import android.os.Build;
-
-import androidx.core.provider.FontRequest;
-import androidx.emoji.text.EmojiCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 
-import java.util.Set;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
+import androidx.core.provider.FontRequest;
+import androidx.core.text.HtmlCompat;
+import androidx.emoji.text.EmojiCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Set;
+
 import chattylabs.conversations.ConversationalFlow;
 import chattylabs.conversations.RecognizerListener;
 import chattylabs.conversations.SynthesizerListener;
 
 public interface InteractiveAssistant {
 
-    static Spanned makeText(CharSequence text) {
+    static Spanned formatHTML(CharSequence text) {
         Spanned span;
         if (text instanceof SpannableString) {
             span = ((SpannableString) text);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                span = Html.fromHtml(text.toString(), Html.FROM_HTML_MODE_COMPACT);
-            } else {
-                span = Html.fromHtml(text.toString());
-            }
+            span = HtmlCompat.fromHtml(text.toString(), HtmlCompat.FROM_HTML_MODE_COMPACT);
         }
         return span;
     }
@@ -106,6 +101,8 @@ public interface InteractiveAssistant {
 
     void next();
 
+    void next(Node node);
+
     void selectLastVisitedAction();
 
     void enableSpeechSynthesizer(Context context, boolean enable);
@@ -116,8 +113,6 @@ public interface InteractiveAssistant {
     boolean isSpeechSynthesizerEnabled();
 
     boolean isSpeechRecognizerEnabled();
-
-    void next(@NonNull Node node);
 
     void setupSpeech(Context context, OnSpeechStatusChecked listener);
 

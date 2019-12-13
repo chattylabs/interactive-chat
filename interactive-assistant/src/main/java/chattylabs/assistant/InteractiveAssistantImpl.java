@@ -6,17 +6,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.TypedValue;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
+import androidx.annotation.VisibleForTesting;
+import androidx.collection.SimpleArrayMap;
 import androidx.core.provider.FontRequest;
+import androidx.core.util.Pools;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.TypedValue;
-
-import chattylabs.android.commons.DimensionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,12 +29,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
-import androidx.annotation.VisibleForTesting;
-import androidx.collection.SimpleArrayMap;
-import androidx.core.util.Pools;
+import chattylabs.android.commons.DimensionUtils;
+import chattylabs.android.commons.Tag;
 import chattylabs.conversations.BuildConfig;
 import chattylabs.conversations.ConversationalFlow;
 import chattylabs.conversations.RecognizerListener;
@@ -41,6 +40,7 @@ import chattylabs.conversations.SynthesizerListener;
 
 
 final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAssistant {
+    private final String TAG = Tag.make("InteractiveAssistantImpl");
 
     private static final long DEFAULT_MESSAGE_DELAY = 500L;
 
@@ -68,6 +68,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private Handler loadingHandler = new Handler(Looper.getMainLooper());
     private Handler ui = new Handler(Looper.getMainLooper());
     private Handler scheduleHandler = new Handler(Looper.getMainLooper());
+    private Flow flow;
     private Node currentNode;
     private Action lastAction;
     private Runnable doneListener;
@@ -115,13 +116,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 FontRequest fontRequest = new FontRequest(
                         "com.google.android.gms.fonts",
                         "com.google.android.gms",
-                        "Source Sans Pro",
+                        "Noto Color Emoji Compat",
                         R.array.com_google_android_gms_fonts_certs
                 );
                 config = new FontRequestEmojiCompatConfig(
                         context, fontRequest
                 );
             }
+            config.setReplaceAll(true);
             config.registerInitCallback(new EmojiCompat.InitCallback() {
                 @Override
                 public void onInitialized() {
@@ -146,6 +148,88 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
+    public void addNode(@NonNull Node node) {
+        if (!graph.containsKey(node)) graph.put(node, null);
+    }
+
+    @Override
+    public Flow prepare() {
+        if (flow == null) flow = new Flow(this);
+        return flow;
+    }
+
+    @Override
+    public synchronized void next() {
+        boolean canTrack = !(lastAction instanceof CanSkipTracking) ||
+                           !((CanSkipTracking) lastAction).skipTracking();
+        if (lastAction != null && canTrack) trackLastNode();
+        show(getNext(), DEFAULT_MESSAGE_DELAY);
+    }
+
+    @Override
+    public synchronized void next(Node node) {
+        show(node, DEFAULT_MESSAGE_DELAY);
+    }
+
+    @Nullable
+    private Node getNext() {
+        ArrayList<Node> outgoingEdges = getOutgoingEdges(currentNode);
+        if (outgoingEdges == null || outgoingEdges.isEmpty()) {
+            return null;
+        }
+
+        if (outgoingEdges.size() == 1) {
+            Node node = outgoingEdges.get(0);
+            if (node instanceof Action) {
+                ArrayList<Node> nodes = new ArrayList<>(1);
+                nodes.add(node);
+                return getActionList(nodes);
+            }
+            return outgoingEdges.get(0);
+        } else {
+            return getActionList(outgoingEdges);
+        }
+    }
+
+    @Override
+    void addEdge(@NonNull Node node, @NonNull Node incomingEdge) {
+        if (!graph.containsKey(node) || !graph.containsKey(incomingEdge)) {
+            throw new IllegalArgumentException("All nodes must be present in the graph " +
+                    "before generating the Flow. " +
+                    "\nNode [" + (!graph.containsKey(incomingEdge) ?
+                    ((HasId) incomingEdge).getId() :
+                    ((HasId) node).getId()) +
+                    "] has not been added yet.");
+        }
+
+        ArrayList<Node> edges = graph.get(node);
+        if (edges == null) {
+            // If edges is null, we should try and get one from the pool and add it to the graph
+            edges = getEmptyList();
+            graph.put(node, edges);
+        }
+        // Finally add the edge to the list
+        edges.add(incomingEdge);
+    }
+
+    @Override
+    public Node getNode(@NonNull String id) {
+        for (int i = 0, size = graph.size(); i < size; i++) {
+            Node node = graph.keyAt(i);
+            if (node instanceof HasId && ((HasId) node).getId().equals(id)) {
+                return node;
+            }
+        }
+        throw new IllegalArgumentException("Node [" + id + "] does not exists in the graph. " +
+                                           "Have you forgotten to add it with addNode(Node)?");
+    }
+
+    @Override
+    public Node getNode(@StringRes int id) {
+        return getNode(context.getString(id));
+    }
+
+    @Override
     synchronized void start(@NonNull Node root) {
         String lastSavedNodeId = getLastVisitedNodeId((HasId) root);
         Node lastSavedNode = getNode(lastSavedNodeId);
@@ -157,6 +241,179 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         if (initialized) {
             next();
         }
+    }
+
+    private ActionList getActionList(ArrayList<Node> edges) {
+        String id = "UNKNOWN";
+        try {
+            ActionList actionList = new ActionList();
+            for (int i = 0, size = edges.size(); i < size; i++) {
+                if (edges.get(i) instanceof HasId)
+                    id = ((HasId)edges.get(i)).getId();
+                actionList.add((Action) edges.get(i));
+            }
+            Collections.sort(actionList);
+            return actionList;
+        } catch (ClassCastException ignored) {
+            throw new IllegalStateException("Only Actions can represent several edges in the graph. Error in [" + id + "] node.");
+        }
+    }
+
+    @NonNull
+    private ArrayList<Node> getEmptyList() {
+        ArrayList<Node> list = mListPool.acquire();
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Nullable
+    private ArrayList<Node> getIncomingEdges(@NonNull Node node) {
+        return graph.get(node);
+    }
+
+    @Nullable
+    private ArrayList<Node> getOutgoingEdges(@NonNull Node node) {
+        ArrayList<Node> result = null;
+        for (int i = 0, size = graph.size(); i < size; i++) {
+            ArrayList<Node> edges = graph.valueAt(i);
+            if (edges != null && edges.contains(node)) {
+                if (result == null) {
+                    result = new ArrayList<>();
+                }
+                result.add(graph.keyAt(i));
+            }
+        }
+        return result;
+    }
+
+
+    // Internal
+
+    private void traverse(List<Node> items, Node root, Node target) {
+        if (root.equals(target)) return;
+        final ArrayList<Node> edges = getOutgoingEdges(root);
+        if (edges != null && !edges.isEmpty()) {
+            if (edges.size() == 1) {
+                Node node = edges.get(0);
+                if (node.equals(target)) {
+                    items.add(node);
+                    return;
+                }
+                if (node instanceof Action) {
+                    Action action = (Action) node;
+                    if (action instanceof CanHandleState) {
+                        ((CanHandleState) action).restoreSavedState(sharedPreferences);
+                    }
+                    if (action instanceof MustBuildActionFeedback) {
+                        items.add(((MustBuildActionFeedback) action).buildActionFeedback());
+                    }
+                    traverse(items, action, target);
+                } else {
+                    items.add(node);
+                    traverse(items, node, target);
+                }
+            } else {
+                ActionList actionList = getActionList(edges);
+                Action action = actionList.getVisited(getVisitedNodes());
+                if (action != null) {
+                    if (action instanceof CanHandleState) {
+                        ((CanHandleState) action).restoreSavedState(sharedPreferences);
+                    }
+                    if (action instanceof MustBuildActionFeedback) {
+                        items.add(((MustBuildActionFeedback) action).buildActionFeedback());
+                    }
+                    traverse(items, action, target);
+                }
+            }
+        }
+    }
+
+    private void show(@Nullable Node node, long delay) {
+        if (node != null) {
+            schedule(node, delay);
+        } else {
+            if (!(currentNode instanceof ActionList)) {
+                hideLoading(); // Otherwise there is no more nodes
+                if (doneListener != null) doneListener.run();
+            }
+        }
+    }
+
+    private void schedule(Node item, long timeout) {
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                scheduleHandler.post(() -> {
+                    task = null;
+                    hideLoading();
+                    addLast(item);
+                    if (!(item instanceof Action) &&
+                        !(item instanceof ActionList)) {
+                        currentNode = item;
+                        handleNotActionNode(item);
+                    } else {
+                        handleActionNode(item);
+                        // Never show next node automatically for actions
+                        // Let the developer to choose when to do next()
+                    }
+                });
+            }
+        };
+        timer.schedule(task, timeout);
+    }
+
+    private void handleActionNode(Node item) {
+        if (item instanceof ActionList) {
+            for (Action action : (ActionList)  item) {
+                if (((HasOnLoaded) action).onLoaded() != null) {
+                    ((HasOnLoaded) action).onLoaded().run();
+                }
+            }
+        } else if (item instanceof Action) {
+            if (((HasOnLoaded) item).onLoaded() != null) {
+                currentNode = item;
+                ((HasOnLoaded) item).onLoaded().run();
+            }
+        }
+        if (enableRecognizer && recognizerReady) {
+            // TODO: show mic icon?
+
+            ActionList actionList = (ActionList) getNext();
+            if (actionList != null) {
+                ((CanRecognizeSpeech) actionList)
+                    .consumeRecognizer(speechRecognizer, this::perform);
+            } else {
+                currentNode = item;
+            }
+
+        } else if (enableRecognizer && !speechSetupInProgress) {
+            throw new IllegalStateException("Have you called #setupSpeech()?");
+        } else {
+            currentNode = item;
+        }
+    }
+
+    private void handleNotActionNode(Node item) {
+        if (((HasOnLoaded) item).onLoaded() != null) {
+            ((HasOnLoaded) item).onLoaded().run();
+        }
+        if (enableSynthesizer && synthesizerReady) {
+            if (item instanceof HasText) {
+                if (item instanceof CanSynthesizeSpeech) {
+                    showLoading();
+                    ((CanSynthesizeSpeech) item).consumeSynthesizer(speechSynthesizer,
+                                                                    () -> ui.post(this::next));
+                } else {
+                    next();
+                }
+            } else {
+                next();
+            }
+        } else if (enableSynthesizer && !speechSetupInProgress) {
+            throw new IllegalStateException("Have you called #setupSpeech()?");
+        } else next();
     }
 
     @Override
@@ -175,13 +432,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
-    public void addNode(@NonNull Node node) {
-        if (!graph.containsKey(node)) {
-            graph.put(node, null);
-        }
-    }
-
-    @Override
     public boolean isSpeechSynthesizerEnabled() {
         return enableSynthesizer;
     }
@@ -189,24 +439,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     @Override
     public boolean isSpeechRecognizerEnabled() {
         return enableRecognizer;
-    }
-
-    @Override
-    public Flow prepare() {
-        return new Flow(this);
-    }
-
-    @Override
-    synchronized public void next() {
-        boolean canTrack = !(lastAction instanceof CanSkipTracking) ||
-                !((CanSkipTracking) lastAction).skipTracking();
-        if (lastAction != null && canTrack) trackLastNode();
-        show(getNext(), DEFAULT_MESSAGE_DELAY);
-    }
-
-    @Override
-    public void next(@NonNull Node node) {
-        show(node, DEFAULT_MESSAGE_DELAY);
     }
 
     @Override
@@ -311,7 +543,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @Override
     public void selectLastVisitedAction() {
-        Node node = getNode();
+        Node node = getCurrentNode();
         Action action = null;
         removeLastItem();
         if (node instanceof Action) {
@@ -327,7 +559,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         if (action instanceof CanHandleState) {
             ((CanHandleState) action).restoreSavedState(sharedPreferences);
         }
-        addLast(((MustBuildActionFeedback) action).buildActionFeedback());
+        if (action instanceof MustBuildActionFeedback)
+            addLast(((MustBuildActionFeedback) action).buildActionFeedback());
     }
 
     private void addLast(Node node) {
@@ -365,7 +598,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         return sharedPreferences.getString(LAST_VISITED_NODE, node.getId());
     }
 
-    private Node getNode() {
+    private Node getCurrentNode() {
         return currentNode;
     }
 
@@ -374,236 +607,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         currentNode = node;
     }
 
-    @Nullable
-    private Node getNext() {
-        ArrayList<Node> outgoingEdges = getOutgoingEdges(currentNode);
-        if (outgoingEdges == null || outgoingEdges.isEmpty()) {
-            return null;
-        }
-
-        if (outgoingEdges.size() == 1) {
-            Node node = outgoingEdges.get(0);
-            if (node instanceof Action) {
-                ArrayList<Node> nodes = new ArrayList<>(1);
-                nodes.add(node);
-                return getActionList(nodes);
-            }
-            return outgoingEdges.get(0);
-        } else {
-            return getActionList(outgoingEdges);
-        }
-    }
-
     @Override
     public void removeLastState() {
         sharedPreferences.edit().remove(LAST_VISITED_NODE).apply();
         sharedPreferences.edit().remove(VISITED_NODES).apply();
     }
-
-    private void traverse(List<Node> items, Node root, Node target) {
-        if (root.equals(target)) return;
-        final ArrayList<Node> edges = getOutgoingEdges(root);
-        if (edges != null && !edges.isEmpty()) {
-            if (edges.size() == 1) {
-                Node node = edges.get(0);
-                if (node.equals(target)) {
-                    items.add(node);
-                    return;
-                }
-                if (node instanceof Action) {
-                    Action action = (Action) node;
-                    if (action instanceof CanHandleState) {
-                        ((CanHandleState) action).restoreSavedState(sharedPreferences);
-                    }
-                    if (action instanceof MustBuildActionFeedback) {
-                        items.add(((MustBuildActionFeedback) action).buildActionFeedback());
-                    }
-                    traverse(items, action, target);
-                } else {
-                    items.add(node);
-                    traverse(items, node, target);
-                }
-            } else {
-                ActionList actionList = getActionList(edges);
-                Action action = actionList.getVisited(getVisitedNodes());
-                if (action != null) {
-                    if (action instanceof CanHandleState) {
-                        ((CanHandleState) action).restoreSavedState(sharedPreferences);
-                    }
-                    if (action instanceof MustBuildActionFeedback) {
-                        items.add(((MustBuildActionFeedback) action).buildActionFeedback());
-                    }
-                    traverse(items, action, target);
-                }
-            }
-        }
-    }
-
-    private ActionList getActionList(ArrayList<Node> edges) {
-        String id = "UNKNOWN";
-        try {
-            ActionList actionList = new ActionList();
-            for (int i = 0, size = edges.size(); i < size; i++) {
-                if (edges.get(i) instanceof HasId)
-                    id = ((HasId)edges.get(i)).getId();
-                actionList.add((Action) edges.get(i));
-            }
-            Collections.sort(actionList);
-            return actionList;
-        } catch (ClassCastException ignored) {
-            throw new IllegalStateException("Only Actions can represent several edges in the graph. Error in [" + id + "] node.");
-        }
-    }
-
-    private void show(@Nullable Node node, long delay) {
-        if (node != null) {
-            schedule(node, delay);
-        } else {
-            if (!(currentNode instanceof ActionList)) {
-                hideLoading(); // Otherwise there is no more nodes
-                if (doneListener != null) doneListener.run();
-            }
-        }
-    }
-
-    private void schedule(Node item, long timeout) {
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                scheduleHandler.post(() -> {
-                    task = null;
-                    hideLoading();
-                    addLast(item);
-                    if (!(item instanceof Action) &&
-                        !(item instanceof ActionList)) {
-                        currentNode = item;
-                        handleNotActionNode(item);
-                    } else {
-                        handleActionNode(item);
-                        // Never show next node automatically for actions
-                        // Let the developer to choose when to do next()
-                    }
-                });
-            }
-        };
-        timer.schedule(task, timeout);
-    }
-
-    private void handleActionNode(Node item) {
-        if (item instanceof ActionList) {
-            for (Action action : (ActionList)  item) {
-                if (((HasOnLoaded) action).onLoaded() != null) {
-                    ((HasOnLoaded) action).onLoaded().run();
-                }
-            }
-        } else if (item instanceof Action) {
-            if (((HasOnLoaded) item).onLoaded() != null) {
-                currentNode = item;
-                ((HasOnLoaded) item).onLoaded().run();
-            }
-        }
-        if (enableRecognizer && recognizerReady) {
-            // TODO: show mic icon?
-
-            ActionList actionList = (ActionList) getNext();
-            if (actionList != null) {
-                ((CanRecognizeSpeech) actionList)
-                        .consumeRecognizer(speechRecognizer, this::perform);
-            } else {
-                currentNode = item;
-            }
-
-        } else if (enableRecognizer && !speechSetupInProgress) {
-            throw new IllegalStateException("Have you checked #setupSpeech()?");
-        } else {
-            currentNode = item;
-        }
-    }
-
-    private void handleNotActionNode(Node item) {
-        if (((HasOnLoaded) item).onLoaded() != null) {
-            ((HasOnLoaded) item).onLoaded().run();
-        }
-        if (enableSynthesizer && synthesizerReady) {
-            if (item instanceof HasText) {
-                if (item instanceof CanSynthesizeSpeech) {
-                    showLoading();
-                    ((CanSynthesizeSpeech) item).consumeSynthesizer(speechSynthesizer,
-                            () -> ui.post(this::next));
-                } else {
-                    next();
-                }
-            } else {
-                next();
-            }
-        } else if (enableSynthesizer && !speechSetupInProgress) {
-            throw new IllegalStateException("Have you called #setupSpeech()?");
-        } else next();
-    }
-
-    @NonNull
-    private ArrayList<Node> getEmptyList() {
-        ArrayList<Node> list = mListPool.acquire();
-        if (list == null) {
-            list = new ArrayList<>();
-        }
-        return list;
-    }
-
-    @Nullable
-    private ArrayList<Node> getIncomingEdges(@NonNull Node node) {
-        return graph.get(node);
-    }
-
-    @Nullable
-    private ArrayList<Node> getOutgoingEdges(@NonNull Node node) {
-        ArrayList<Node> result = null;
-        for (int i = 0, size = graph.size(); i < size; i++) {
-            ArrayList<Node> edges = graph.valueAt(i);
-            if (edges != null && edges.contains(node)) {
-                if (result == null) {
-                    result = new ArrayList<>();
-                }
-                result.add(graph.keyAt(i));
-            }
-        }
-        return result;
-    }
-
-    @Override
-    void addEdge(@NonNull Node node, @NonNull Node incomingEdge) {
-        if (!graph.containsKey(node) || !graph.containsKey(incomingEdge)) {
-            throw new IllegalArgumentException("All nodes must be present in the graph " +
-                    "before being added as an edge");
-        }
-
-        ArrayList<Node> edges = graph.get(node);
-        if (edges == null) {
-            // If edges is null, we should try and get one from the pool and add it to the graph
-            edges = getEmptyList();
-            graph.put(node, edges);
-        }
-        // Finally add the edge to the list
-        edges.add(incomingEdge);
-    }
-
-    @Override
-    public Node getNode(@NonNull String id) {
-        for (int i = 0, size = graph.size(); i < size; i++) {
-            Node node = graph.keyAt(i);
-            if (node instanceof HasId && ((HasId) node).getId().equals(id)) {
-                return node;
-            }
-        }
-        throw new IllegalArgumentException("Node \"" + id + "\" does not exists in the graph. " +
-                "Have you forgotten to add it with addNode(Node)?");
-    }
-
-    @Override
-    public Node getNode(@StringRes int id) {
-        return getNode(context.getString(id));
-    }
-
     @Override
     public void release() {
         cancel();
