@@ -84,7 +84,7 @@ class AssistantFlowBuilder {
 
         // We make sure we are setting up the proper speech component.
         // Once it is ready, we start the flow.
-        component.setupSpeech(context, (synthesizerStatus, recognizerStatus) ->
+        component.setupSpeech((synthesizerStatus, recognizerStatus) ->
                 flow.start(rootNode));
 
         return component;
@@ -101,8 +101,8 @@ class AssistantFlowBuilder {
         component.addNode(new ActionText.Builder(QUIET_PLACE_YES_ID)
                 .setText(getString(R.string.demo_yes))
                 .setOnSelected(action -> {
-                    component.enableSpeechSynthesizer(context, true);
-                    component.enableSpeechRecognizer(context, true);
+                    component.enableSpeechSynthesizer(true);
+                    component.enableSpeechRecognizer(true);
                 })
                 .build());
 

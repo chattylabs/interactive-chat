@@ -2,6 +2,7 @@ package chattylabs.assistant;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -52,7 +53,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     public static final int LOADING_DISPLAY_DELAY = 1000;
     public static final int ITEM_SEPARATOR_SIZE_DIP = 4;
 
-    private Context context;
+    private Activity context;
 
     private final Pools.Pool<ArrayList<Node>> mListPool = new Pools.SimplePool<>(10);
     private final SimpleArrayMap<Node, ArrayList<Node>> graph = new SimpleArrayMap<>();
@@ -64,14 +65,12 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     private Timer timer;
     private TimerTask task;
-    private Handler uiThreadHandler = new Handler(Looper.getMainLooper());
     private Handler loadingHandler = new Handler(Looper.getMainLooper());
-    private Handler ui = new Handler(Looper.getMainLooper());
-    private Handler scheduleHandler = new Handler(Looper.getMainLooper());
     private Flow flow;
     private Node currentNode;
     private Action lastAction;
     private Runnable doneListener;
+
     private boolean initialized;
     private boolean started;
     private boolean paused;
@@ -87,12 +86,12 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @SuppressLint("MissingPermission") InteractiveAssistantImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
-        context = recyclerView.getContext();
+        context = (Activity) recyclerView.getContext();
         if (recyclerView.getItemDecorationCount() == 0) {
             int s = DimensionUtils.getDimension(context,
                     TypedValue.COMPLEX_UNIT_DIP, ITEM_SEPARATOR_SIZE_DIP);
             SeparatorItemDecoration separatorItemDecoration = new SeparatorItemDecoration(s);
-            uiThreadHandler.post(() -> {
+            context.runOnUiThread(() -> {
                 recyclerView.addItemDecoration(separatorItemDecoration);
             });
         }
@@ -104,7 +103,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         //layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = context.getSharedPreferences(
                 "interactive_chat", Context.MODE_PRIVATE);
-        uiThreadHandler.post(() -> {
+        context.runOnUiThread(() -> {
             //recyclerView.setItemAnimator(null);
             EmojiCompat.Config config = null;
             recyclerView.setAdapter(adapter);
@@ -163,16 +162,18 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         boolean canTrack = !(lastAction instanceof CanSkipTracking) ||
                            !((CanSkipTracking) lastAction).skipTracking();
         if (lastAction != null && canTrack) trackLastNode();
-        show(getNext(), DEFAULT_MESSAGE_DELAY);
+        show(getNext());
     }
 
     @Override
     public synchronized void next(Node node) {
-        show(node, DEFAULT_MESSAGE_DELAY);
+        show(node);
     }
 
     @Nullable
     private Node getNext() {
+        Node currentNode = getCurrentNode();
+        if (currentNode instanceof ActionList) return null;
         ArrayList<Node> outgoingEdges = getOutgoingEdges(currentNode);
         if (outgoingEdges == null || outgoingEdges.isEmpty()) {
             return null;
@@ -330,38 +331,15 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         }
     }
 
-    private void show(@Nullable Node node, long delay) {
+    private void show(@Nullable Node node) {
         if (node != null) {
-            schedule(node, delay);
+            schedule(node);
         } else {
             if (!(currentNode instanceof ActionList)) {
                 hideLoading(); // Otherwise there is no more nodes
                 if (doneListener != null) doneListener.run();
             }
         }
-    }
-
-    private void schedule(Node item, long timeout) {
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                scheduleHandler.post(() -> {
-                    task = null;
-                    hideLoading();
-                    addLast(item);
-                    if (!(item instanceof Action) &&
-                        !(item instanceof ActionList)) {
-                        currentNode = item;
-                        handleNotActionNode(item);
-                    } else {
-                        handleActionNode(item);
-                        // Never show next node automatically for actions
-                        // Let the developer to choose when to do next()
-                    }
-                });
-            }
-        };
-        timer.schedule(task, timeout);
     }
 
     private void handleActionNode(Node item) {
@@ -382,6 +360,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
             ActionList actionList = (ActionList) getNext();
             if (actionList != null) {
+                currentNode = item;
+                // We don't setup the currentNode because we don't know yet what's the action selected
                 ((CanRecognizeSpeech) actionList)
                     .consumeRecognizer(speechRecognizer, this::perform);
             } else {
@@ -404,7 +384,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 if (item instanceof CanSynthesizeSpeech) {
                     showLoading();
                     ((CanSynthesizeSpeech) item).consumeSynthesizer(speechSynthesizer,
-                                                                    () -> ui.post(this::next));
+                                                                    () -> context.runOnUiThread(this::next));
                 } else {
                     next();
                 }
@@ -417,7 +397,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
-    public void enableSpeechSynthesizer(Context context, boolean enable) {
+    public void enableSpeechSynthesizer(boolean enable) {
         this.enableSynthesizer = enable;
         if (speechComponent != null && synthesizerReady)
             speechSynthesizer = speechComponent.getSpeechSynthesizer(context);
@@ -425,7 +405,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @Override
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    public void enableSpeechRecognizer(Context context, boolean enable) {
+    public void enableSpeechRecognizer(boolean enable) {
         this.enableRecognizer = enable;
         if (speechComponent != null && recognizerReady)
             speechRecognizer = speechComponent.getSpeechRecognizer(context);
@@ -442,14 +422,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
-    public void setupSpeech(Context context, OnSpeechStatusChecked listener) {
+    public void setupSpeech(OnSpeechStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
         speechComponent.checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
             speechComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
                 synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
                 recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
-                ui.post(() -> {
+                context.runOnUiThread(() -> {
                     hideLoading();
                     listener.onStatusChecked(synthesizerStatus, recognizerStatus);
                 });
@@ -460,12 +440,12 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
-    public void setupSpeech(Context context, RecognizerListener.OnStatusChecked listener) {
+    public void setupSpeech(RecognizerListener.OnStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
         speechComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
             recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
-            ui.post(() -> {
+            context.runOnUiThread(() -> {
                 hideLoading();
                 listener.execute(recognizerStatus);
             });
@@ -474,12 +454,12 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override
-    public void setupSpeech(Context context, SynthesizerListener.OnStatusChecked listener) {
+    public void setupSpeech(SynthesizerListener.OnStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
         speechComponent.checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
             synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
-            ui.post(() -> {
+            context.runOnUiThread(() -> {
                 hideLoading();
                 listener.execute(synthesizerStatus);
             });
@@ -502,8 +482,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     public void hideLoading() {
         if (loadingHandler != null) loadingHandler.removeCallbacksAndMessages(null);
         int position = adapter.getLastPositionOf(LoadingView.class);
-        if (position != -1 && uiThreadHandler != null)
-            uiThreadHandler.post(() -> adapter.removeItem(position));
+        if (position != -1 && !context.isFinishing())
+            context.runOnUiThread(() -> adapter.removeItem(position));
     }
 
     private void trackLastNode() {
@@ -564,14 +544,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     private void addLast(Node node) {
-        uiThreadHandler.post(() -> {
+        context.runOnUiThread(() -> {
             adapter.addItem(node);
             layoutManager.scrollToPosition(adapter.getItemCount() - 1);
         });
     }
 
     private void removeLastItem() {
-        if (adapter.getItemCount() > 0) uiThreadHandler.post(() ->
+        if (adapter.getItemCount() > 0) context.runOnUiThread(() ->
                 adapter.removeItem(adapter.getItemCount() - 1));
     }
 
@@ -616,9 +596,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     public void release() {
         cancel();
         loadingHandler.removeCallbacksAndMessages(null);
-        uiThreadHandler.removeCallbacksAndMessages(null);
-        ui.removeCallbacksAndMessages(null);
-        scheduleHandler.removeCallbacksAndMessages(null);
         sharedPreferences.edit().clear().apply();
         graph.clear();
         currentNode = null;
@@ -635,13 +612,33 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     private void cancel() {
         if (timer != null) {
-            if (task != null) {
-                task.cancel();
-            }
             timer.cancel();
             timer = new Timer();
         }
         if (speechComponent != null) speechComponent.shutdown();
+    }
+
+    private void schedule(Node item) {
+        task = new TimerTask() {
+            @Override
+            public void run() {
+                context.runOnUiThread(() -> {
+                    task = null;
+                    hideLoading();
+                    addLast(item);
+                    if (!(item instanceof Action) &&
+                        !(item instanceof ActionList)) {
+                        currentNode = item;
+                        handleNotActionNode(item);
+                    } else {
+                        handleActionNode(item);
+                        // Never show next node automatically for actions
+                        // Let the developer to choose when to do next()
+                    }
+                });
+            }
+        };
+        timer.schedule(task, DEFAULT_MESSAGE_DELAY);
     }
 
     @Override
@@ -656,14 +653,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             paused = false;
             if (task != null) {
                 timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (task != null) {
-                            task.run();
-                        }
+                    @Override public void run() {
+                        task.run();
                     }
-                }, task.scheduledExecutionTime());
-            }
+                }, DEFAULT_MESSAGE_DELAY);
+            } else next();
         }
     }
 

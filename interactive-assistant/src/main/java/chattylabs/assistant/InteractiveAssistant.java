@@ -105,20 +105,20 @@ public interface InteractiveAssistant {
 
     void selectLastVisitedAction();
 
-    void enableSpeechSynthesizer(Context context, boolean enable);
+    void enableSpeechSynthesizer(boolean enable);
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    void enableSpeechRecognizer(Context context, boolean enable);
+    void enableSpeechRecognizer(boolean enable);
 
     boolean isSpeechSynthesizerEnabled();
 
     boolean isSpeechRecognizerEnabled();
 
-    void setupSpeech(Context context, OnSpeechStatusChecked listener);
+    void setupSpeech(OnSpeechStatusChecked listener);
 
-    void setupSpeech(Context context, RecognizerListener.OnStatusChecked listener);
+    void setupSpeech(RecognizerListener.OnStatusChecked listener);
 
-    void setupSpeech(Context context, SynthesizerListener.OnStatusChecked listener);
+    void setupSpeech(SynthesizerListener.OnStatusChecked listener);
 
     void release();
 
