@@ -74,7 +74,8 @@ class ActionMultiChoiceViewBuilder implements ActionViewBuilder {
 
         if (actionChipChoice.getIcon() != 0) {
             chip.setChipIconResource(actionChipChoice.getIcon());
-            chip.setChipIconTintResource(actionChipChoice.getIconTintColor());
+            if (actionChipChoice.getIconTintColor() != 0)
+                chip.setChipIconTintResource(actionChipChoice.getIconTintColor());
         }
         chip.setSelected(actionChipChoice.isSelected());
         chip.setChecked(actionChipChoice.isSelected());
