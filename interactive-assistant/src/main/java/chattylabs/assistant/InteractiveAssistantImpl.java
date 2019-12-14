@@ -654,7 +654,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             if (task != null) {
                 timer.schedule(new TimerTask() {
                     @Override public void run() {
-                        task.run();
+                        if (task != null) task.run();
                     }
                 }, DEFAULT_MESSAGE_DELAY);
             } else next();
