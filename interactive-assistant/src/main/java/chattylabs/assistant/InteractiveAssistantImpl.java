@@ -521,8 +521,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         if (action instanceof HasOnSelected && ((HasOnSelected) action).onSelected() != null) {
             ((HasOnSelected) action).onSelected().execute(action);
         }
-        boolean continueFlow = !(action instanceof CanStopFlow) || !((CanStopFlow) action).stopFlow();
-        if (continueFlow) {
+        boolean markAsSelected = !(action instanceof CanSkipSelected) || !((CanSkipSelected) action).skipSelected();
+        if (markAsSelected) {
             boolean canTrack = !(action instanceof CanSkipTracking) || !((CanSkipTracking) action).skipTracking();
             if (canTrack && enableLastState) saveVisitedNode((HasId) action);
             selectLastVisitedAction();
