@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.novoda:bintray-release:0.9.1'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'com.chattylabs.versioning'
 apply from: '../android-buildsystem/android.gradle'
@@ -31,7 +40,7 @@ dependencies {
     // Android
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "com.google.android.material:material:$material"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
     implementation "androidx.emoji:emoji:$emoji"
 
     // Dependencies
@@ -39,7 +48,7 @@ dependencies {
     implementation "chattylabs.android:commons:$android_commons"
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
     compileOnly "chattylabs.android:voice-user-interaction:$voice_user_interaction"
-    compileOnly "chattylabs.android:addon-android-speech:$android_speech"
+    compileOnly "chattylabs.android:addon-android-speech:$addon_android_speech"
 
     // Testing
     testImplementation 'junit:junit:4.12'
