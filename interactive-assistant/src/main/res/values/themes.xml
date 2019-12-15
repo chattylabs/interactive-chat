@@ -42,7 +42,6 @@
     </style>
 
     <style name="InteractiveTheme.ActionTextStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:includeFontPadding">false</item>
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">20dp</item>
         <item name="android:layout_gravity">end</item>
@@ -51,7 +50,6 @@
     </style>
 
     <style name="InteractiveTheme.ActionTextSelectedStyle" parent="Widget.MaterialComponents.TextView">
-        <item name="android:includeFontPadding">false</item>
         <item name="android:padding">16dp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:layout_gravity">end</item>
@@ -62,7 +60,6 @@
     </style>
 
     <style name="InteractiveTheme.ActionIconStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:includeFontPadding">false</item>
         <item name="android:textAllCaps">false</item>
         <item name="cornerRadius">20dp</item>
         <item name="android:layout_gravity">end</item>
@@ -71,7 +68,6 @@
     </style>
 
     <style name="InteractiveTheme.ActionIconSelectedStyle">
-        <item name="android:includeFontPadding">false</item>
         <item name="android:padding">16dp</item>
         <item name="android:layout_gravity">end</item>
         <item name="android:lineSpacingExtra">6sp</item>
@@ -81,20 +77,17 @@
     </style>
 
     <style name="InteractiveTheme.ActionChipStyle" parent="@style/Widget.MaterialComponents.Chip.Choice">
-        <item name="android:includeFontPadding">false</item>
         <item name="chipIconVisible">true</item>
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
 
     <style name="InteractiveTheme.MessageImageStyle">
-        <item name="android:includeFontPadding">false</item>
         <item name="android:background">@drawable/interactive_bubble_text</item>
         <item name="android:layout_marginEnd">50dp</item>
     </style>
 
     <style name="InteractiveTheme.MessageTextStyle" parent="Widget.MaterialComponents.TextView">
-        <item name="android:includeFontPadding">false</item>
         <item name="android:background">@drawable/interactive_bubble_text</item>
         <item name="android:layout_marginEnd">50dp</item>
         <item name="android:lineSpacingExtra">6sp</item>
