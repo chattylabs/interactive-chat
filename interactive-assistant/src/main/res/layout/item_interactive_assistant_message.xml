@@ -10,5 +10,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="?interactive_messageTextStyle"
-        tools:text="@tools:sample/lorem/random"/>
+        tools:text="asdasaa asd asd asd"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -19,7 +19,9 @@
         <item name="interactive_messageImageStyle">@style/InteractiveTheme.MessageImageStyle</item>
         <item name="interactive_messageTextStyle">@style/InteractiveTheme.MessageTextStyle</item>
         <item name="interactive_messageTextFirstStyle">@style/InteractiveTheme.MessageTextStyle</item>
-        <item name="interactive_messageTextCornerRadius">30dp</item>
+        <item name="interactive_messageTextPaddingHorizontal">16dp</item>
+        <item name="interactive_messageTextPaddingVertical">12dp</item>
+        <item name="interactive_messageTextCornerRadius">20dp</item>
         <item name="interactive_messageTextStrokeWidth">1sp</item>
         <item name="interactive_messageTextStrokeColor">#eee</item>
 
@@ -84,20 +86,12 @@
         <item name="android:includeFontPadding">false</item>
         <item name="android:background">@drawable/interactive_bubble_text</item>
         <item name="android:layout_marginEnd">50dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
-        <item name="android:paddingStart">25dp</item>
-        <item name="android:paddingEnd">25dp</item>
     </style>
 
     <style name="InteractiveTheme.MessageTextStyle" parent="Widget.MaterialComponents.TextView">
         <item name="android:includeFontPadding">false</item>
         <item name="android:background">@drawable/interactive_bubble_text</item>
         <item name="android:layout_marginEnd">50dp</item>
-        <item name="android:paddingTop">12dp</item>
-        <item name="android:paddingBottom">12dp</item>
-        <item name="android:paddingStart">25dp</item>
-        <item name="android:paddingEnd">25dp</item>
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:letterSpacing">0.01</item>
     </style>
