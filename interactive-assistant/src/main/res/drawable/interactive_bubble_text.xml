@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <padding android:left="?interactive_messageTextPaddingHorizontal"
+             android:right="?interactive_messageTextPaddingHorizontal"
+             android:top="?interactive_messageTextPaddingVertical"
+             android:bottom="?interactive_messageTextPaddingVertical"/>
     <corners android:radius="?interactive_messageTextCornerRadius" />
     <stroke android:color="?interactive_messageTextStrokeColor"
             android:width="?interactive_messageTextStrokeWidth" />
