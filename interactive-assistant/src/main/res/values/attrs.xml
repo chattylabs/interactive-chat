@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="interactiveTheme" format="reference"/>
     <attr name="interactive_actionsContainerStyle" format="reference"/>
+    <attr name="interactive_actionsDivider" format="dimension"/>
     <attr name="interactive_loadingDotsColor" format="color"/>
     <attr name="interactive_actionTextStyle" format="reference"/>
     <attr name="interactive_actionTextSelectedStyle" format="reference"/>
