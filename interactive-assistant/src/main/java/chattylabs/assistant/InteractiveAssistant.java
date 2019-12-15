@@ -20,6 +20,8 @@ import chattylabs.conversations.SynthesizerListener;
 
 public interface InteractiveAssistant {
 
+    String INTERACTIVE_CHAT = "interactive_chat";
+
     static Spanned formatHTML(CharSequence text) {
         Spanned span;
         if (text instanceof SpannableString) {

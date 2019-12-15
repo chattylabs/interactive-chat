@@ -4,5 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    tools:theme="?interactiveTheme"
     style="?interactive_actionChipStyle"
     tools:text="@tools:sample/lorem" />

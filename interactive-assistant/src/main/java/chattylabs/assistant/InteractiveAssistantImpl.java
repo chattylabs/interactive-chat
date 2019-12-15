@@ -87,6 +87,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     @SuppressLint("MissingPermission") InteractiveAssistantImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
         context = (Activity) recyclerView.getContext();
+
+        final TypedValue tv = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.interactiveTheme, tv, true);
+        int theme = tv.resourceId;
+        if (theme != 0) {
+            context.getTheme().applyStyle(theme, false);
+        }
+
         if (recyclerView.getItemDecorationCount() == 0) {
             int s = DimensionUtils.getDimension(context,
                     TypedValue.COMPLEX_UNIT_DIP, ITEM_SEPARATOR_SIZE_DIP);
@@ -95,6 +103,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 recyclerView.addItemDecoration(separatorItemDecoration);
             });
         }
+
         timer = new Timer();
         enableLastState = builder.withLastStateEnabled;
         speechComponent = builder.voiceComponent;
@@ -102,7 +111,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
         //layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = context.getSharedPreferences(
-                "interactive_chat", Context.MODE_PRIVATE);
+            INTERACTIVE_CHAT, Context.MODE_PRIVATE);
         context.runOnUiThread(() -> {
             //recyclerView.setItemAnimator(null);
             EmojiCompat.Config config = null;

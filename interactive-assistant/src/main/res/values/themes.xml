@@ -8,9 +8,15 @@
     <!--Base custom theme which will be shared between both light and dark theme variants-->
     <style name="Base.InteractiveTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
+        <item name="interactiveTheme">@style/InteractiveTheme.Wrapper</item>
+
+    </style>
+
+    <style name="InteractiveTheme.Wrapper">
         <!--Interactive Assistant attributes-->
-        <item name="interactive_loadingDotsColor">#777</item>
+        <item name="interactive_loadingDotsColor">?colorOnBackground</item>
         <item name="interactive_actionsContainerStyle">@style/InteractiveTheme.ActionContainerStyle</item>
+        <item name="interactive_actionsDivider">12dp</item>
         <item name="interactive_actionTextStyle">@style/InteractiveTheme.ActionTextStyle</item>
         <item name="interactive_actionTextSelectedStyle">@style/InteractiveTheme.ActionTextSelectedStyle</item>
         <item name="interactive_actionIconStyle">@style/InteractiveTheme.ActionIconStyle</item>
@@ -23,8 +29,7 @@
         <item name="interactive_messageTextPaddingVertical">12dp</item>
         <item name="interactive_messageTextCornerRadius">20dp</item>
         <item name="interactive_messageTextStrokeWidth">1sp</item>
-        <item name="interactive_messageTextStrokeColor">#eee</item>
-
+        <item name="interactive_messageTextStrokeColor">?colorOnBackground</item>
     </style>
 
     <style name="InteractiveTheme.ActionContainerStyle">
