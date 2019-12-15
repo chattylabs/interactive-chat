@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
+public class AutoCompleteAction implements HasId, CanSkipTracking, CanSkipSelected,
+                                           HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
 
     final String id;
     final float textSize;
@@ -20,7 +20,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     final int order;
     final Runnable onLoaded;
     boolean skipTracking;
-    boolean stopFlow;
+    boolean skipSelected;
     AutoCompleteTextView widget;
 
     public static class Builder {
@@ -33,7 +33,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
         private int order;
         private Runnable onLoaded;
         private boolean skipTracking;
-        private boolean stopFlow;
+        private boolean skipSelected;
 
         public Builder(String id) {
             this.id = id;
@@ -81,8 +81,8 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
             return this;
         }
 
-        public Builder stopFlow(boolean stopFlow) {
-            this.stopFlow = stopFlow;
+        public Builder skipSelected(boolean skipSelected) {
+            this.skipSelected = skipSelected;
             return this;
         }
 
@@ -94,17 +94,17 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
         }
     }
 
-    AutoCompleteAction(Builder builder) {
-        this.id = builder.id;
-        this.textSize = builder.textSize;
-        this.textLines = builder.textLines;
-        this.charCount = builder.charCount;
-        this.hints = builder.hints;
-        this.actions = builder.actions;
-        this.order = builder.order;
-        this.onLoaded = builder.onLoaded;
+    private AutoCompleteAction(Builder builder) {
+        this.id           = builder.id;
+        this.textSize     = builder.textSize;
+        this.textLines    = builder.textLines;
+        this.charCount    = builder.charCount;
+        this.hints        = builder.hints;
+        this.actions      = builder.actions;
+        this.order        = builder.order;
+        this.onLoaded     = builder.onLoaded;
         this.skipTracking = builder.skipTracking;
-        this.stopFlow = builder.stopFlow;
+        this.skipSelected = builder.skipSelected;
     }
 
     void attach(AutoCompleteTextView widget) {
@@ -156,8 +156,8 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanStopFlow,
     }
 
     @Override
-    public boolean stopFlow() {
-        return stopFlow;
+    public boolean skipSelected() {
+        return skipSelected;
     }
 
     @Override

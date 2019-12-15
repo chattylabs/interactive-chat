@@ -13,8 +13,8 @@ import java.util.List;
 import chattylabs.conversations.ConversationalFlow;
 
 public class ActionMultiChoice implements HasId,
-        HasOnSelected, CanSkipTracking, CanStopFlow, CanHandleState, CanCheckContentDescriptions,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
+                                          HasOnSelected, CanSkipTracking, CanSkipSelected, CanHandleState, CanCheckContentDescriptions,
+                                          HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
 
     @VisibleForTesting
     static final String SELECTED_OPTIONS = BuildConfig.LIBRARY_PACKAGE_NAME + ".MULTI_OPTION_SELECTED_OPTIONS";
@@ -25,16 +25,16 @@ public class ActionMultiChoice implements HasId,
     final ActionText confirmationAction;
     final OnOptionChangeListener onOptionChangeListener;
     final boolean skipTracking;
-    final boolean stopFlow;
+    final boolean skipSelected;
 
     private ActionMultiChoice(Builder builder) {
-        this.id = builder.id;
-        this.onLoaded = builder.onLoaded;
-        this.actionChipChoices = builder.actionChipChoices;
-        this.confirmationAction = builder.confirmationAction;
+        this.id                     = builder.id;
+        this.onLoaded               = builder.onLoaded;
+        this.actionChipChoices      = builder.actionChipChoices;
+        this.confirmationAction     = builder.confirmationAction;
         this.onOptionChangeListener = builder.onOptionChangeListener;
-        this.skipTracking = builder.skipTracking;
-        this.stopFlow = builder.stopFlow;
+        this.skipTracking           = builder.skipTracking;
+        this.skipSelected           = builder.skipSelected;
     }
 
     @NonNull @Override
@@ -62,8 +62,8 @@ public class ActionMultiChoice implements HasId,
     }
 
     @Override
-    public boolean stopFlow() {
-        return stopFlow;
+    public boolean skipSelected() {
+        return skipSelected;
     }
 
     @Override
@@ -154,7 +154,7 @@ public class ActionMultiChoice implements HasId,
         private ActionText confirmationAction;
         private OnOptionChangeListener onOptionChangeListener;
         private boolean skipTracking;
-        private boolean stopFlow;
+        private boolean skipSelected;
 
         public Builder(@NonNull String id) {
             this.id = id;
@@ -170,8 +170,8 @@ public class ActionMultiChoice implements HasId,
             return this;
         }
 
-        public Builder stopFlow(boolean stopFlow) {
-            this.stopFlow = stopFlow;
+        public Builder skipSelected(boolean skipSelected) {
+            this.skipSelected = skipSelected;
             return this;
         }
 

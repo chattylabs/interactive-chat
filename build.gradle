@@ -3,10 +3,10 @@ buildscript {
     ext.appcompat = "1.2.0-alpha01"
     ext.emoji = "1.0.0"
     ext.material = "1.2.0-alpha02"
-    ext.constraintlayout_version = "2.0.0-beta3"
+    ext.constraintlayout = "2.0.0-beta3"
     ext.android_commons = '0.8.0'
     ext.voice_user_interaction = '0.25.14'
-    ext.android_speech = '0.17.13'
+    ext.addon_android_speech = '0.17.13'
     repositories {
         mavenLocal()
         google()

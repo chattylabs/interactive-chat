@@ -9,8 +9,8 @@ import java.util.Objects;
 import chattylabs.conversations.ConversationalFlow;
 
 public class ActionIcon implements HasId, HasContentDescriptions,
-        HasOnSelected, CanSkipTracking, CanStopFlow, CanCheckContentDescriptions,
-        HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
+                                   HasOnSelected, CanSkipTracking, CanSkipSelected, CanCheckContentDescriptions,
+                                   HasActionViewBuilder, MustBuildActionFeedback, HasOnLoaded, Action {
     final String id;
     final int icon;
     final int iconAfter;
@@ -21,7 +21,7 @@ public class ActionIcon implements HasId, HasContentDescriptions,
     final Runnable onLoaded;
     final Action.OnSelected onSelected;
     boolean skipTracking;
-    boolean stopFlow;
+    boolean skipSelected;
 
     private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
         for (String pattern : patterns) {
@@ -48,7 +48,7 @@ public class ActionIcon implements HasId, HasContentDescriptions,
         private Runnable onLoaded;
         private OnSelected onSelected;
         private boolean skipTracking;
-        private boolean stopFlow;
+        private boolean skipSelected;
 
         public Builder(String id) {
             this.id = id;
@@ -99,8 +99,8 @@ public class ActionIcon implements HasId, HasContentDescriptions,
             return this;
         }
 
-        public Builder stopFlow(boolean stopFlow) {
-            this.stopFlow = stopFlow;
+        public Builder skipSelected(boolean skipSelected) {
+            this.skipSelected = skipSelected;
             return this;
         }
 
@@ -119,17 +119,17 @@ public class ActionIcon implements HasId, HasContentDescriptions,
     }
 
     private ActionIcon(Builder builder) {
-        this.id = builder.id;
-        this.icon = builder.icon;
-        this.iconAfter = builder.iconAfter;
-        this.text = builder.text;
-        this.tintColor = builder.tintColor;
+        this.id                  = builder.id;
+        this.icon                = builder.icon;
+        this.iconAfter           = builder.iconAfter;
+        this.text                = builder.text;
+        this.tintColor           = builder.tintColor;
         this.contentDescriptions = builder.contentDescriptions;
-        this.order = builder.order;
-        this.onLoaded = builder.onLoaded;
-        this.onSelected = builder.onSelected;
-        this.skipTracking = builder.skipTracking;
-        this.stopFlow = builder.stopFlow;
+        this.order               = builder.order;
+        this.onLoaded            = builder.onLoaded;
+        this.onSelected          = builder.onSelected;
+        this.skipTracking        = builder.skipTracking;
+        this.skipSelected        = builder.skipSelected;
     }
 
     @NonNull @Override
@@ -179,8 +179,8 @@ public class ActionIcon implements HasId, HasContentDescriptions,
     }
 
     @Override
-    public boolean stopFlow() {
-        return stopFlow;
+    public boolean skipSelected() {
+        return skipSelected;
     }
 
     @Override
