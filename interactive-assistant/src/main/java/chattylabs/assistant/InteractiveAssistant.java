@@ -111,7 +111,6 @@ public interface InteractiveAssistant {
 
     void enableSpeechSynthesizer(boolean enable);
 
-    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     void enableSpeechRecognizer(boolean enable);
 
     boolean isSpeechSynthesizerEnabled();
