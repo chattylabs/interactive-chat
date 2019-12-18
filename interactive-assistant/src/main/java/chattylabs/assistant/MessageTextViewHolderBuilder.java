@@ -44,10 +44,10 @@ class MessageTextViewHolderBuilder implements ViewHolderBuilder {
             } else {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
-            CharSequence text = InteractiveAssistant.processEmoji(message.text);
-            Spanned span = InteractiveAssistant.formatHTML(text);
+            Spanned span = InteractiveAssistant.formatHTML(message.text);
+            CharSequence text = InteractiveAssistant.processEmoji(span);
             textView.setTag(message.id);
-            textView.setText(span);
+            textView.setText(text);
         }
     }
 }

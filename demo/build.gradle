@@ -41,8 +41,8 @@ dependencies {
 
     // SDK
     implementation "chattylabs.android:commons:$android_commons"
-    implementation "chattylabs.android:voice-user-interaction:$voice_user_interaction"
-    implementation "chattylabs.android:addon-android-speech:$android_speech"
+    implementation elastic("chattylabs.android:voice-user-interaction:$voice_user_interaction", "$voice_user_interaction_internal")
+    implementation elastic("chattylabs.android:addon-android-speech:$addon_android_speech", "$addon_android_speech_internal")
     implementation project(':interactive-assistant')
 
     // Test dependencies

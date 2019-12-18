@@ -1,1 +1,13 @@
 include ':demo', ':interactive-assistant'
+
+def interaction = file("../android-conversational-flow/sdk-voice-user-interaction")
+if(interaction.exists()){
+    include ":interactive_assistant-android-vui-external"
+    project(":interactive_assistant-android-vui-external").projectDir = interaction
+}
+
+def speech = file("../android-conversational-flow/sdk-addon-android-speech")
+if(speech.exists()){
+    include ":interactive_assistant-addon-android-external"
+    project(":interactive_assistant-addon-android-external").projectDir = speech
+}

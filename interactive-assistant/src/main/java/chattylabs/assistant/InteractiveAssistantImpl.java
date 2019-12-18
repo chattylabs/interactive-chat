@@ -155,6 +155,10 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         });
     }
 
+    @Override public void showVolumeControls() {
+        speechComponent.showVolumeControls();
+    }
+
     @Override
     public void addNode(@NonNull Node node) {
         if (!graph.containsKey(node)) graph.put(node, null);
@@ -467,6 +471,20 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         speechSetupInProgress = true;
         showLoading();
         speechComponent.checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
+            synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
+            context.runOnUiThread(() -> {
+                hideLoading();
+                listener.execute(synthesizerStatus);
+            });
+            // TODO: P2 - to show TTS error screen
+        });
+    }
+
+    @Override
+    public void loadSynthesizerInstallation(SynthesizerListener.OnStatusChecked listener) {
+        speechSetupInProgress = true;
+        showLoading();
+        speechComponent.loadSynthesizerInstallation(context, synthesizerStatus -> {
             synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
             context.runOnUiThread(() -> {
                 hideLoading();
