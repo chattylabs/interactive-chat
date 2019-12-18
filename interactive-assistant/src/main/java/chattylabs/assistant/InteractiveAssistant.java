@@ -40,6 +40,8 @@ public interface InteractiveAssistant {
         }
     }
 
+    void showVolumeControls();
+
     interface IOptional {
         IOptional withVoiceComponent(ConversationalFlow voiceComponent);
         IOptional withFontRequest(FontRequest fontRequest);
@@ -121,6 +123,8 @@ public interface InteractiveAssistant {
     void setupSpeech(RecognizerListener.OnStatusChecked listener);
 
     void setupSpeech(SynthesizerListener.OnStatusChecked listener);
+
+    void loadSynthesizerInstallation(SynthesizerListener.OnStatusChecked listener);
 
     void release();
 

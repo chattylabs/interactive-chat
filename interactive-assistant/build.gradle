@@ -47,8 +47,8 @@ dependencies {
     implementation 'com.google.android:flexbox:2.0.0'
     implementation "chattylabs.android:commons:$android_commons"
     implementation 'com.eyalbira.loadingdots:loading-dots:1.0.2'
-    compileOnly "chattylabs.android:voice-user-interaction:$voice_user_interaction"
-    compileOnly "chattylabs.android:addon-android-speech:$addon_android_speech"
+    compileOnly elastic("chattylabs.android:voice-user-interaction:$voice_user_interaction", "$voice_user_interaction_internal")
+    compileOnly elastic("chattylabs.android:addon-android-speech:$addon_android_speech", "$addon_android_speech_internal")
 
     // Testing
     testImplementation 'junit:junit:4.12'

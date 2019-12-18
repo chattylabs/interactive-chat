@@ -40,10 +40,9 @@ class ActionMultiChoiceViewBuilder implements ActionViewBuilder {
                     defaultTextSize, onOptionChangeListener, false));
         }
 
-        final CharSequence text = InteractiveAssistant.processEmoji(
-                multiAction.getConfirmationAction().text);
-        final Spanned span = InteractiveAssistant.formatHTML(text);
-        confirmButton.setText(span);
+        final Spanned span = InteractiveAssistant.formatHTML(multiAction.getConfirmationAction().text);
+        final CharSequence text = InteractiveAssistant.processEmoji(span);
+        confirmButton.setText(text);
         return multiOptionAction;
     }
 
@@ -52,10 +51,10 @@ class ActionMultiChoiceViewBuilder implements ActionViewBuilder {
         final Chip chip = (Chip) LayoutInflater.from(context)
                 .inflate(R.layout.item_interactive_assistant_action_chip, container, false);
 
-        final CharSequence text = InteractiveAssistant.processEmoji(actionChipChoice.getText());
-        final Spanned span = InteractiveAssistant.formatHTML(text);
+        final Spanned span = InteractiveAssistant.formatHTML(actionChipChoice.getText());
+        final CharSequence text = InteractiveAssistant.processEmoji(span);
 
-        chip.setText(span);
+        chip.setText(text);
 
         if (defaultTextSize == 0) defaultTextSize = chip.getTextSize();
         if (actionChipChoice.textSize > 0) {

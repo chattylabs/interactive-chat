@@ -43,9 +43,9 @@ class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
             } else {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
             }
-            CharSequence text = InteractiveAssistant.processEmoji(textSelected.text);
-            Spanned span = InteractiveAssistant.formatHTML(text);
-            textView.setText(span);
+            Spanned span = InteractiveAssistant.formatHTML(textSelected.text);
+            CharSequence text = InteractiveAssistant.processEmoji(span);
+            textView.setText(text);
         }
     }
 }

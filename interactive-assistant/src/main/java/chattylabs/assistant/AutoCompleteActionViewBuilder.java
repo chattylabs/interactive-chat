@@ -40,9 +40,9 @@ class AutoCompleteActionViewBuilder implements ActionViewBuilder {
             final Button button =
                     (Button) inflater.inflate(R.layout.item_interactive_assistant_action_text,
                     viewGroup, false);
-            final CharSequence text = InteractiveAssistant.processEmoji(item.getText());
-            final Spanned span = InteractiveAssistant.formatHTML(text);
-            button.setText(span);
+            final Spanned span = InteractiveAssistant.formatHTML(item.getText());
+            final CharSequence text = InteractiveAssistant.processEmoji(span);
+            button.setText(text);
             final LinearLayout buttonLayout = (LinearLayout) widget.getChildAt(1);
             button.setOnClickListener(v -> {
                 widget.callOnClick();

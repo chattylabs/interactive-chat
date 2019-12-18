@@ -30,9 +30,9 @@ class ActionTextViewBuilder implements ActionViewBuilder {
         } else {
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, defaultTextSize);
         }
-        CharSequence text = InteractiveAssistant.processEmoji(actionText.text);
-        Spanned span = InteractiveAssistant.formatHTML(text);
-        button.setText(span);
+        Spanned span = InteractiveAssistant.formatHTML(actionText.text);
+        CharSequence text = InteractiveAssistant.processEmoji(span);
+        button.setText(text);
 
         button.setTag(R.id.interactive_assistant_action_id, actionText.id);
 
