@@ -6,6 +6,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.core.provider.FontRequest;
 import androidx.core.text.HtmlCompat;
@@ -51,11 +52,15 @@ public interface InteractiveAssistant {
     }
 
     class Builder {
-        ConversationalFlow voiceComponent;
         RecyclerView recyclerView;
+        @Nullable
+        ConversationalFlow voiceComponent;
+        @Nullable
         FontRequest fontRequest;
-        boolean withLastStateEnabled;
+        @Nullable
         Runnable doneListener;
+
+        boolean withLastStateEnabled;
 
         public IOptional withViewComponent(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
@@ -77,14 +82,14 @@ public interface InteractiveAssistant {
             }
 
             @Override
-            public IOptional withLastStateEnabled(boolean enable) {
-                Builder.this.withLastStateEnabled = enable;
+            public IOptional withOnDoneListener(Runnable callback) {
+                Builder.this.doneListener = callback;
                 return this;
             }
 
             @Override
-            public IOptional withOnDoneListener(Runnable callback) {
-                Builder.this.doneListener = callback;
+            public IOptional withLastStateEnabled(boolean enable) {
+                Builder.this.withLastStateEnabled = enable;
                 return this;
             }
 
@@ -94,6 +99,8 @@ public interface InteractiveAssistant {
             }
         };
     }
+
+    @Nullable ConversationalFlow getVoiceComponent();
 
     void addNode(@NonNull Node node);
 
@@ -122,8 +129,6 @@ public interface InteractiveAssistant {
     void setupSpeech(RecognizerListener.OnStatusChecked listener);
 
     void setupSpeech(SynthesizerListener.OnStatusChecked listener);
-
-    void loadSynthesizerInstallation(SynthesizerListener.OnStatusChecked listener);
 
     void release();
 

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -59,9 +60,12 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private final SimpleArrayMap<Node, ArrayList<Node>> graph = new SimpleArrayMap<>();
     private final LinearLayoutManager layoutManager;
     private final SharedPreferences sharedPreferences;
-    private ConversationalFlow speechComponent;
+    @Nullable
+    private ConversationalFlow voiceComponent;
     private SpeechSynthesizer speechSynthesizer;
     private SpeechRecognizer speechRecognizer;
+    @Nullable
+    private Runnable doneListener;
 
     private Timer timer;
     private TimerTask task;
@@ -69,7 +73,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private Flow flow;
     private Node currentNode;
     private Action lastAction;
-    private Runnable doneListener;
 
     private boolean initialized;
     private boolean started;
@@ -99,22 +102,20 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             int s = DimensionUtils.getDimension(context,
                     TypedValue.COMPLEX_UNIT_DIP, ITEM_SEPARATOR_SIZE_DIP);
             SeparatorItemDecoration separatorItemDecoration = new SeparatorItemDecoration(s);
-            context.runOnUiThread(() -> {
-                recyclerView.addItemDecoration(separatorItemDecoration);
-            });
+            context.runOnUiThread(() -> recyclerView.addItemDecoration(separatorItemDecoration));
         }
 
-        timer = new Timer();
+        timer           = new Timer();
         enableLastState = builder.withLastStateEnabled;
-        speechComponent = builder.voiceComponent;
-        doneListener = builder.doneListener;
-        layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+        voiceComponent  = builder.voiceComponent;
+        doneListener    = builder.doneListener;
+        layoutManager   = ((LinearLayoutManager) recyclerView.getLayoutManager());
         //layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = context.getSharedPreferences(
             INTERACTIVE_CHAT, Context.MODE_PRIVATE);
         context.runOnUiThread(() -> {
             //recyclerView.setItemAnimator(null);
-            EmojiCompat.Config config = null;
+            EmojiCompat.Config config;
             recyclerView.setAdapter(adapter);
             if (builder.fontRequest != null) {
                 config = new FontRequestEmojiCompatConfig(
@@ -156,7 +157,11 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     @Override public void showVolumeControls() {
-        speechComponent.showVolumeControls();
+        if (voiceComponent != null) voiceComponent.showVolumeControls();
+    }
+
+    @Override @Nullable public ConversationalFlow getVoiceComponent() {
+        return voiceComponent;
     }
 
     @Override
@@ -412,16 +417,16 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     @Override
     public void enableSpeechSynthesizer(boolean enable) {
         this.enableSynthesizer = enable;
-        if (speechComponent != null && synthesizerReady)
-            speechSynthesizer = speechComponent.getSpeechSynthesizer(context);
+        if (voiceComponent != null && synthesizerReady)
+            speechSynthesizer = voiceComponent.getSpeechSynthesizer(context);
     }
 
     @Override
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public void enableSpeechRecognizer(boolean enable) {
         this.enableRecognizer = enable;
-        if (speechComponent != null && recognizerReady)
-            speechRecognizer = speechComponent.getSpeechRecognizer(context);
+        if (voiceComponent != null && recognizerReady)
+            speechRecognizer = voiceComponent.getSpeechRecognizer(context);
     }
 
     @Override
@@ -438,8 +443,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     public void setupSpeech(OnSpeechStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
-        speechComponent.checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
-            speechComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
+        Objects.requireNonNull(voiceComponent).checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
+            voiceComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
                 synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
                 recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
                 context.runOnUiThread(() -> {
@@ -456,7 +461,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     public void setupSpeech(RecognizerListener.OnStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
-        speechComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
+        Objects.requireNonNull(voiceComponent).checkSpeechRecognizerStatus(context, recognizerStatus -> {
             recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
             context.runOnUiThread(() -> {
                 hideLoading();
@@ -470,21 +475,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     public void setupSpeech(SynthesizerListener.OnStatusChecked listener) {
         speechSetupInProgress = true;
         showLoading();
-        speechComponent.checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
-            synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
-            context.runOnUiThread(() -> {
-                hideLoading();
-                listener.execute(synthesizerStatus);
-            });
-            // TODO: P2 - to show TTS error screen
-        });
-    }
-
-    @Override
-    public void loadSynthesizerInstallation(SynthesizerListener.OnStatusChecked listener) {
-        speechSetupInProgress = true;
-        showLoading();
-        speechComponent.loadSynthesizerInstallation(context, synthesizerStatus -> {
+        Objects.requireNonNull(voiceComponent).checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
             synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
             context.runOnUiThread(() -> {
                 hideLoading();
@@ -642,7 +633,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             timer.cancel();
             timer = new Timer();
         }
-        if (speechComponent != null) speechComponent.shutdown();
+        if (voiceComponent != null) voiceComponent.shutdown();
     }
 
     private void schedule(Node item) {
