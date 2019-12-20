@@ -6,11 +6,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:theme="?interactiveTheme"
-        style="?interactive_messageImageStyle"
-        tools:ignore="ContentDescription"
-        tools:src="@tools:sample/avatars" />
+        style="?attr/interactive_inboundMessageTextStyle"
+        tools:text="asdasaa asd asd asd"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

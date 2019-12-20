@@ -1,6 +1,8 @@
 package chattylabs.assistant;
 
-class FeedbackText extends Feedback implements HasViewType {
+import androidx.annotation.LayoutRes;
+
+class FeedbackActionText extends Feedback implements HasViewLayout {
     String text;
     final float textSize;
 
@@ -20,12 +22,12 @@ class FeedbackText extends Feedback implements HasViewType {
             return this;
         }
 
-        public FeedbackText build() {
-            return new FeedbackText(this);
+        public FeedbackActionText build() {
+            return new FeedbackActionText(this);
         }
     }
 
-    FeedbackText(Builder builder) {
+    FeedbackActionText(Builder builder) {
         this.text = builder.text;
         this.textSize = builder.textSize;
     }
@@ -38,13 +40,13 @@ class FeedbackText extends Feedback implements HasViewType {
         return textSize;
     }
 
-    @Override
-    public int getViewType() {
-        return R.id.interactive_assistant_feedback_text_view_type;
+    @Override @LayoutRes
+    public int getViewLayout() {
+        return R.layout.item_interactive_assistant_action_text_selected;
     }
 
     @Override
     public ViewHolderBuilder getViewHolderBuilder() {
-        return FeedbackTextViewHolderBuilder.build();
+        return FeedbackActionTextViewHolderBuilder.build();
     }
 }

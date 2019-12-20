@@ -3,7 +3,6 @@ package chattylabs.assistant;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,18 +15,7 @@ class ActionListViewHolderBuilder implements ViewHolderBuilder {
     @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view;
-        if (viewType == R.id.interactive_assistant_action_multi_option_view_type) {
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            FrameLayout frame = new FrameLayout(viewGroup.getContext());
-            frame.setLayoutParams(params);
-            view = frame;
-        } else {
-            view = inflater.inflate(R.layout.item_interactive_assistant_action_list,
-                    viewGroup, false);
-        }
+        View view = inflater.inflate(viewType, viewGroup, false);
         return new ActionListViewHolderBuilder.ChatActionSetViewHolder(view);
     }
 

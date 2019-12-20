@@ -31,10 +31,10 @@ public class AssistantAdapter extends ViewAdapter<RecyclerView.ViewHolder> {
     }
 
     public void addItem(Node item) {
-        if (item instanceof HasViewType) {
-            int viewType = ((HasViewType) item).getViewType();
-            if (!viewHolders.containsKey(viewType))
-                viewHolders.put(viewType, ((HasViewType) item).getViewHolderBuilder());
+        if (item instanceof HasViewLayout) {
+            int viewLayout = ((HasViewLayout) item).getViewLayout();
+            if (!viewHolders.containsKey(viewLayout))
+                viewHolders.put(viewLayout, ((HasViewLayout) item).getViewHolderBuilder());
         }
         items.add(item);
         notifyItemInserted(getItemCount() - 1);
@@ -42,10 +42,10 @@ public class AssistantAdapter extends ViewAdapter<RecyclerView.ViewHolder> {
 
     public void checkViewHolders() {
         for (Node item : items) {
-            if (item instanceof HasViewType) {
-                int viewType = ((HasViewType) item).getViewType();
-                if (!viewHolders.containsKey(viewType))
-                    viewHolders.put(viewType, ((HasViewType) item).getViewHolderBuilder());
+            if (item instanceof HasViewLayout) {
+                int viewLayout = ((HasViewLayout) item).getViewLayout();
+                if (!viewHolders.containsKey(viewLayout))
+                    viewHolders.put(viewLayout, ((HasViewLayout) item).getViewHolderBuilder());
             }
         }
     }
@@ -74,7 +74,7 @@ public class AssistantAdapter extends ViewAdapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         Node item = items.get(position);
-        return ((HasViewType) item).getViewType();
+        return ((HasViewLayout) item).getViewLayout();
     }
 
     @NonNull

@@ -185,7 +185,7 @@ public class ActionIcon implements HasId, HasContentDescriptions,
 
     @Override
     public Node buildActionFeedback() {
-        return new FeedbackIcon.Builder()
+        return new FeedbackActionIcon.Builder()
                 .setIcon(iconAfter != 0 ? iconAfter : icon)
                 .setTintColor(tintColor).build();
     }

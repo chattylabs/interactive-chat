@@ -2,8 +2,9 @@ package chattylabs.assistant;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
 
-class FeedbackIcon extends Feedback implements HasViewType {
+class FeedbackActionIcon extends Feedback implements HasViewLayout {
     final int icon;
     final int tintColor;
 
@@ -23,12 +24,12 @@ class FeedbackIcon extends Feedback implements HasViewType {
             return this;
         }
 
-        public FeedbackIcon build() {
-            return new FeedbackIcon(this);
+        public FeedbackActionIcon build() {
+            return new FeedbackActionIcon(this);
         }
     }
 
-    private FeedbackIcon(Builder builder) {
+    private FeedbackActionIcon(Builder builder) {
         this.icon = builder.icon;
         this.tintColor = builder.tintColor;
     }
@@ -41,13 +42,13 @@ class FeedbackIcon extends Feedback implements HasViewType {
         return tintColor;
     }
 
-    @Override
-    public int getViewType() {
-        return R.id.interactive_assistant_feedback_image_view_type;
+    @Override @LayoutRes
+    public int getViewLayout() {
+        return R.layout.item_interactive_assistant_action_icon_selected;
     }
 
     @Override
     public ViewHolderBuilder getViewHolderBuilder() {
-        return FeedbackIconViewHolderBuilder.build();
+        return FeedbackActionIconViewHolderBuilder.build();
     }
 }

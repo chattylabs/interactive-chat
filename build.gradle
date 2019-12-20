@@ -7,6 +7,7 @@ buildscript {
     ext.android_commons = '0.8.0'
     ext.voice_user_interaction = '0.25.15'
     ext.addon_android_speech = '0.17.15'
+    ext.bintray = '0.9.2'
 
     ext.voice_user_interaction_internal = ":interactive_assistant-android-vui-external"
     ext.addon_android_speech_internal = ":interactive_assistant-addon-android-external"

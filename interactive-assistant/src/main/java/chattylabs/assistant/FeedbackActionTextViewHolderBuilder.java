@@ -10,18 +10,17 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
+class FeedbackActionTextViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
-        return new FeedbackTextViewHolderBuilder();
+        return new FeedbackActionTextViewHolderBuilder();
     }
 
     @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate(R.layout.item_interactive_assistant_action_text_selected,
-                viewGroup, false);
-        return new FeedbackTextViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
+        View view = inflater.inflate(viewType, viewGroup, false);
+        return new FeedbackActionTextViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
     }
 
     static class ChatActionTextSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
@@ -36,7 +35,7 @@ class FeedbackTextViewHolderBuilder implements ViewHolderBuilder {
 
         @Override
         public void onBind(ViewAdapter adapter, int position) {
-            FeedbackText textSelected = (FeedbackText) adapter.getItems().get(position);
+            FeedbackActionText textSelected = (FeedbackActionText) adapter.getItems().get(position);
             if (defaultTextSize == 0) defaultTextSize = textView.getTextSize();
             if (textSelected.textSize > 0) {
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSelected.textSize);

@@ -167,7 +167,7 @@ public class AutoCompleteAction implements HasId, CanSkipTracking, CanSkipSelect
 
     @Override
     public Node buildActionFeedback() {
-        return new FeedbackText.Builder()
+        return new FeedbackActionText.Builder()
                 .setText(getText())
                 .setTextSize(textSize).build();
     }

@@ -181,7 +181,7 @@ public class ActionText implements HasId, HasContentDescriptions,
 
     @Override
     public Node buildActionFeedback() {
-        return new FeedbackText.Builder()
+        return new FeedbackActionText.Builder()
                 .setText(textAfter != null ? getTextAfter().get() : text)
                 .setTextSize(textSize).build();
     }

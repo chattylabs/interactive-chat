@@ -22,9 +22,11 @@
         <item name="interactive_actionIconStyle">@style/InteractiveTheme.ActionIconStyle</item>
         <item name="interactive_actionIconSelectedStyle">@style/InteractiveTheme.ActionIconSelectedStyle</item>
         <item name="interactive_actionChipStyle">@style/InteractiveTheme.ActionChipStyle</item>
-        <item name="interactive_messageImageStyle">@style/InteractiveTheme.MessageImageStyle</item>
-        <item name="interactive_messageTextStyle">@style/InteractiveTheme.MessageTextStyle</item>
-        <item name="interactive_messageTextFirstStyle">@style/InteractiveTheme.MessageTextStyle</item>
+        <item name="interactive_outboundMessageImageStyle">@style/InteractiveTheme.MessageImageStyle</item>
+        <item name="interactive_outboundMessageTextStyle">@style/InteractiveTheme.MessageTextStyle</item>
+        <item name="interactive_outboundMessageTextFirstStyle">@style/InteractiveTheme.MessageTextStyle</item>
+        <item name="interactive_inboundMessageTextStyle">@style/InteractiveTheme.InboundMessageTextStyle</item>
+        <item name="interactive_inboundMessageTextFirstStyle">@style/InteractiveTheme.InboundMessageTextStyle</item>
         <item name="interactive_messageTextPaddingHorizontal">16dp</item>
         <item name="interactive_messageTextPaddingVertical">12dp</item>
         <item name="interactive_messageTextCornerRadius">20dp</item>
@@ -92,5 +94,13 @@
         <item name="android:layout_marginEnd">50dp</item>
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="InteractiveTheme.InboundMessageTextStyle" parent="InteractiveTheme.MessageTextStyle">
+        <item name="android:layout_marginEnd">0dp</item>
+        <item name="android:layout_marginStart">50dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_gravity">end</item>
     </style>
 </resources>

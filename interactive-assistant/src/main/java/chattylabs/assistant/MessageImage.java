@@ -3,11 +3,12 @@ package chattylabs.assistant;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
-public class MessageImage implements Node, HasId, HasOnLoaded, HasViewType {
+public class MessageImage implements Node, HasId, HasOnLoaded, HasViewLayout {
     final String id;
     final int image;
     final int tintColor;
@@ -53,9 +54,9 @@ public class MessageImage implements Node, HasId, HasOnLoaded, HasViewType {
         this.onLoaded = builder.onLoaded;
     }
 
-    @Override
-    public int getViewType() {
-        return R.id.interactive_assistant_message_image_view_type;
+    @Override @LayoutRes
+    public int getViewLayout() {
+        return R.layout.item_interactive_assistant_message_outbound_image;
     }
 
     @Override

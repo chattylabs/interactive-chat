@@ -6,10 +6,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:theme="?interactiveTheme"
-        style="?interactive_messageTextFirstStyle"
-        tools:text="@tools:sample/lorem/random" />
+        style="?attr/interactive_outboundMessageImageStyle"
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/avatars" />
 </androidx.appcompat.widget.LinearLayoutCompat>

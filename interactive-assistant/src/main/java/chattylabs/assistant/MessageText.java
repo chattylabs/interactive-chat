@@ -2,6 +2,7 @@ package chattylabs.assistant;
 
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
@@ -9,8 +10,8 @@ import java.util.Objects;
 import chattylabs.conversations.SpeechSynthesizer;
 import chattylabs.conversations.SynthesizerListener;
 
-public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewType,
-        CanSynthesizeSpeech {
+public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewLayout,
+                                    CanSynthesizeSpeech {
 
     final String id;
     String text;
@@ -18,7 +19,8 @@ public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewTy
     final int tintColor;
     final boolean aloud;
     final Runnable onLoaded;
-    final boolean treatedAsFirst;
+    final boolean isFirstMessage;
+    final boolean isInboundMessage;
 
     @Override
     public void consumeSynthesizer(SpeechSynthesizer component,
@@ -34,7 +36,8 @@ public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewTy
         private int tintColor;
         private boolean aloud;
         private Runnable onLoaded;
-        private boolean treatedAsFirst;
+        private boolean isFirstMessage;
+        private boolean isInboundMessage;
 
         public Builder(String id) {
             this.id = id;
@@ -65,8 +68,13 @@ public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewTy
             return this;
         }
 
-        public Builder setTreatedAsFirst(boolean treatedAsFirst) {
-            this.treatedAsFirst = treatedAsFirst;
+        public Builder setFirstMessage(boolean firstMessage) {
+            this.isFirstMessage = firstMessage;
+            return this;
+        }
+
+        public Builder setInboundMessage(boolean inboundMessage) {
+            isInboundMessage = inboundMessage;
             return this;
         }
 
@@ -79,24 +87,27 @@ public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewTy
     }
 
     private MessageText(Builder builder) {
-        this.id = builder.id;
-        this.text = builder.text;
-        this.tintColor = builder.tintColor;
-        this.aloud = builder.aloud;
-        this.onLoaded = builder.onLoaded;
-        this.textSize = builder.textSize;
-        this.treatedAsFirst = builder.treatedAsFirst;
+        this.id             = builder.id;
+        this.text           = builder.text;
+        this.tintColor      = builder.tintColor;
+        this.aloud          = builder.aloud;
+        this.onLoaded       = builder.onLoaded;
+        this.textSize       = builder.textSize;
+        this.isFirstMessage = builder.isFirstMessage;
+        this.isInboundMessage = builder.isInboundMessage;
     }
 
     public static Builder newBuilder(String id) {
         return new Builder(id);
     }
 
-    @Override
-    public int getViewType() {
-        return treatedAsFirst ?
-                R.id.interactive_assistant_message_first_view_type :
-                R.id.interactive_assistant_message_view_type;
+    @Override @LayoutRes
+    public int getViewLayout() {
+        return isFirstMessage ?
+                    isInboundMessage ? R.layout.item_interactive_assistant_message_inbound_first
+                    : R.layout.item_interactive_assistant_message_outbound_first
+               : isInboundMessage ? R.layout.item_interactive_assistant_message_inbound
+                                  : R.layout.item_interactive_assistant_message_outbound;
     }
 
     @Override
@@ -132,8 +143,12 @@ public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewTy
         return onLoaded;
     }
 
-    public boolean isTreatedAsFirst() {
-        return treatedAsFirst;
+    public boolean isFirstMessage() {
+        return isFirstMessage;
+    }
+
+    public boolean isInboundMessage() {
+        return isInboundMessage;
     }
 
     @Override

@@ -80,7 +80,7 @@ public class ActionMultiChoice implements HasId,
     @Override
     public Node buildActionFeedback() {
         Collections.sort(actionChipChoices);
-        return new FeedbackMultiChoice.Builder()
+        return new FeedbackActionMultiChoice.Builder()
                 .setActionChipChoices(actionChipChoices).build();
     }
 

@@ -9,9 +9,11 @@
     <attr name="interactive_actionIconStyle" format="reference"/>
     <attr name="interactive_actionIconSelectedStyle" format="reference"/>
     <attr name="interactive_actionChipStyle" format="reference"/>
-    <attr name="interactive_messageImageStyle" format="reference"/>
-    <attr name="interactive_messageTextStyle" format="reference"/>
-    <attr name="interactive_messageTextFirstStyle" format="reference"/>
+    <attr name="interactive_outboundMessageImageStyle" format="reference"/>
+    <attr name="interactive_outboundMessageTextStyle" format="reference"/>
+    <attr name="interactive_outboundMessageTextFirstStyle" format="reference"/>
+    <attr name="interactive_inboundMessageTextStyle" format="reference"/>
+    <attr name="interactive_inboundMessageTextFirstStyle" format="reference"/>
     <attr name="interactive_messageTextPaddingHorizontal" format="dimension"/>
     <attr name="interactive_messageTextPaddingVertical" format="dimension"/>
     <attr name="interactive_messageTextCornerRadius" format="dimension"/>

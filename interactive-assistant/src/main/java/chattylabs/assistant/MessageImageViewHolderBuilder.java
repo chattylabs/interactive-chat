@@ -17,8 +17,7 @@ class MessageImageViewHolderBuilder implements ViewHolderBuilder {
     @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate(R.layout.item_interactive_assistant_message_image,
-                viewGroup, false);
+        View view = inflater.inflate(viewType, viewGroup, false);
         return new ChatMessageImageViewHolder(view);
     }
 

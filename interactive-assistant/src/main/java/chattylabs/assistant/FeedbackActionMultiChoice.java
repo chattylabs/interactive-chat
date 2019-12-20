@@ -1,22 +1,24 @@
 package chattylabs.assistant;
 
+import androidx.annotation.LayoutRes;
+
 import java.util.List;
 
-class FeedbackMultiChoice extends Feedback implements HasViewType {
+class FeedbackActionMultiChoice extends Feedback implements HasViewLayout {
     List<ActionChipChoice> actionChipChoices;
 
-    private FeedbackMultiChoice(Builder builder) {
+    private FeedbackActionMultiChoice(Builder builder) {
         this.actionChipChoices = builder.actionChipChoices;
     }
 
-    @Override
-    public int getViewType() {
-        return R.id.interactive_assistant_multi_option_feedback_view_type;
+    @Override @LayoutRes
+    public int getViewLayout() {
+        return R.layout.item_interactive_assistant_action_multichoice;
     }
 
     @Override
     public ViewHolderBuilder getViewHolderBuilder() {
-        return FeedbackMultiChoiceViewHolderBuilder.build();
+        return FeedbackActionMultiChoiceViewHolderBuilder.build();
     }
 
     public static class Builder {
@@ -28,8 +30,8 @@ class FeedbackMultiChoice extends Feedback implements HasViewType {
             return this;
         }
 
-        public FeedbackMultiChoice build() {
-            return new FeedbackMultiChoice(this);
+        public FeedbackActionMultiChoice build() {
+            return new FeedbackActionMultiChoice(this);
         }
     }
 }

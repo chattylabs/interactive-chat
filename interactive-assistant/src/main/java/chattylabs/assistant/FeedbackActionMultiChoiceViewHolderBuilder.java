@@ -9,17 +9,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.flexbox.FlexboxLayout;
 
 
-class FeedbackMultiChoiceViewHolderBuilder implements ViewHolderBuilder {
+class FeedbackActionMultiChoiceViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
-        return new FeedbackMultiChoiceViewHolderBuilder();
+        return new FeedbackActionMultiChoiceViewHolderBuilder();
     }
 
     @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         final ViewGroup multiOptionAction = (ViewGroup) inflater
-                .inflate(R.layout.item_interactive_assistant_action_multichoice, viewGroup, false);
+                .inflate(viewType, viewGroup, false);
         return new ChatActionMultiOptionTextSelectedViewHolder(multiOptionAction);
     }
 
@@ -34,7 +34,7 @@ class FeedbackMultiChoiceViewHolderBuilder implements ViewHolderBuilder {
 
         @Override
         public void onBind(ViewAdapter adapter, int position) {
-            FeedbackMultiChoice optionsSelected = (FeedbackMultiChoice) adapter.getItems().get(position);
+            FeedbackActionMultiChoice optionsSelected = (FeedbackActionMultiChoice) adapter.getItems().get(position);
             multiOptionAction.getChildAt(1).setVisibility(View.GONE);
             FlexboxLayout optionsLayout = (FlexboxLayout) multiOptionAction.getChildAt(0);
             optionsLayout.removeAllViews();

@@ -1,5 +1,7 @@
 package chattylabs.assistant;
 
+import androidx.annotation.LayoutRes;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -9,7 +11,7 @@ import chattylabs.conversations.SpeechRecognizer;
 import static chattylabs.assistant.CanCheckContentDescriptions.MATCHED;
 import static chattylabs.assistant.CanCheckContentDescriptions.REPEAT;
 
-class ActionList extends ArrayList<Action> implements Node, HasViewType, CanRecognizeSpeech {
+class ActionList extends ArrayList<Action> implements Node, HasViewLayout, CanRecognizeSpeech {
 
     Action getVisited(Set<String> nodes) {
         for (Action action : this) {
@@ -21,11 +23,11 @@ class ActionList extends ArrayList<Action> implements Node, HasViewType, CanReco
         return get(0);
     }
 
-    @Override
-    public int getViewType() {
+    @Override @LayoutRes
+    public int getViewLayout() {
         if (size() == 1 && get(0) instanceof ActionMultiChoice)
-            return R.id.interactive_assistant_action_multi_option_view_type;
-        return R.id.interactive_assistant_action_list_view_type;
+            return R.layout.item_interactive_assistant_action_list_frame;
+        return R.layout.item_interactive_assistant_action_list;
     }
 
     @Override

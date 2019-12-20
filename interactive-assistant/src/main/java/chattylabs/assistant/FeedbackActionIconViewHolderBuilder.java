@@ -9,17 +9,16 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-class FeedbackIconViewHolderBuilder implements ViewHolderBuilder {
+class FeedbackActionIconViewHolderBuilder implements ViewHolderBuilder {
 
     public static ViewHolderBuilder build() {
-        return new FeedbackIconViewHolderBuilder();
+        return new FeedbackActionIconViewHolderBuilder();
     }
 
     @Override
     public RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View view = inflater.inflate(R.layout.item_interactive_assistant_action_icon_selected,
-                viewGroup, false);
+        View view = inflater.inflate(viewType, viewGroup, false);
         return new ChatActionIconSelectedViewHolder(view);
     }
 
@@ -34,7 +33,7 @@ class FeedbackIconViewHolderBuilder implements ViewHolderBuilder {
 
         @Override
         public void onBind(ViewAdapter adapter, int position) {
-            FeedbackIcon imageSelected = (FeedbackIcon) adapter.getItems().get(position);
+            FeedbackActionIcon imageSelected = (FeedbackActionIcon) adapter.getItems().get(position);
             image.setImageResource(imageSelected.icon);
             if (imageSelected.tintColor > 0) {
                 image.setImageTintList(ColorStateList.valueOf(imageSelected.tintColor));
