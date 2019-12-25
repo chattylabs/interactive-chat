@@ -16,7 +16,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.collection.SimpleArrayMap;
 import androidx.core.provider.FontRequest;
-import androidx.core.util.Pools;
 import androidx.emoji.text.EmojiCompat;
 import androidx.emoji.text.FontRequestEmojiCompatConfig;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -56,7 +55,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     private Activity context;
 
-    private final Pools.Pool<ArrayList<Node>> mListPool = new Pools.SimplePool<>(10);
     private final SimpleArrayMap<Node, ArrayList<Node>> graph = new SimpleArrayMap<>();
     private final LinearLayoutManager layoutManager;
     private final SharedPreferences sharedPreferences;
@@ -223,8 +221,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
         ArrayList<Node> edges = graph.get(node);
         if (edges == null) {
-            // If edges is null, we should try and get one from the pool and add it to the graph
-            edges = getEmptyList();
+            // If edges is null, we should try and get one and add it to the graph
+            edges = new ArrayList<>();
             graph.put(node, edges);
         }
         // Finally add the edge to the list
@@ -276,15 +274,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         } catch (ClassCastException ignored) {
             throw new IllegalStateException("Only Actions can represent several edges in the graph. Error in [" + id + "] node.");
         }
-    }
-
-    @NonNull
-    private ArrayList<Node> getEmptyList() {
-        ArrayList<Node> list = mListPool.acquire();
-        if (list == null) {
-            list = new ArrayList<>();
-        }
-        return list;
     }
 
     @Nullable
@@ -525,7 +514,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private void perform(Action action) {
         currentNode = action;
         lastAction = action;
-        if (speechSynthesizer != null) speechSynthesizer.shutdown();
+        if (speechSynthesizer != null) speechSynthesizer.stop();
         if (speechRecognizer != null) speechRecognizer.stop();
         if (action instanceof HasOnSelected && ((HasOnSelected) action).onSelected() != null) {
             ((HasOnSelected) action).onSelected().execute(action);
@@ -610,9 +599,15 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         sharedPreferences.edit().remove(LAST_VISITED_NODE).apply();
         sharedPreferences.edit().remove(VISITED_NODES).apply();
     }
+
     @Override
     public void release() {
         cancel();
+        if (timer != null) {
+            timer.cancel();
+        }
+        timer = null;
+        task = null;
         loadingHandler.removeCallbacksAndMessages(null);
         sharedPreferences.edit().clear().apply();
         graph.clear();
@@ -678,5 +673,4 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             } else next();
         }
     }
-
 }
