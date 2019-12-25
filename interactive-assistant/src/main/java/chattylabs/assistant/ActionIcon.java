@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
-import chattylabs.conversations.ConversationalFlow;
+import chattylabs.conversations.SpeechRecognizer;
 
 public class ActionIcon implements HasId, HasContentDescriptions,
                                    HasOnSelected, CanSkipTracking, CanSkipSelected, CanCheckContentDescriptions,
@@ -23,17 +23,17 @@ public class ActionIcon implements HasId, HasContentDescriptions,
     boolean skipTracking;
     boolean skipSelected;
 
-    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
+    private boolean checkWord(@NonNull SpeechRecognizer speechRecognizer, @NonNull String[] patterns, @NonNull String text) {
         for (String pattern : patterns) {
-            if (pattern != null && ConversationalFlow.matches(text, pattern)) return true;
+            if (pattern != null && speechRecognizer.matches(text, pattern)) return true;
         }
         return false;
     }
 
     @Override
-    public int matches(String result) {
+    public int matches(@NonNull SpeechRecognizer speechRecognizer, @NonNull String result) {
         String[] expected = this.getContentDescriptions();
-        return (expected != null && expected.length > 0 && checkWord(expected, result))
+        return (expected != null && expected.length > 0 && checkWord(speechRecognizer, expected, result))
                 ? MATCHED : NOT_MATCHED;
     }
 

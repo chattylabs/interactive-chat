@@ -41,7 +41,7 @@ class ActionList extends ArrayList<Action> implements Node, HasViewLayout, CanRe
         speechRecognizer.listen((RecognizerListener.OnMostConfidentResult) result -> {
             for (Action action : this) {
                 if (action instanceof CanCheckContentDescriptions) {
-                   int matches = ((CanCheckContentDescriptions) action).matches(result);
+                   int matches = ((CanCheckContentDescriptions) action).matches(speechRecognizer, result);
                    if (matches == MATCHED) {
                        onRecognized.execute(action);
                        break;

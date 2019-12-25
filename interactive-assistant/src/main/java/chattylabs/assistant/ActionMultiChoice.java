@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import chattylabs.conversations.ConversationalFlow;
+import chattylabs.conversations.SpeechRecognizer;
 
 public class ActionMultiChoice implements HasId,
                                           HasOnSelected, CanSkipTracking, CanSkipSelected, CanHandleState, CanCheckContentDescriptions,
@@ -115,22 +115,22 @@ public class ActionMultiChoice implements HasId,
         }
     }
 
-    private boolean checkWord(@NonNull String[] patterns, @NonNull String text) {
+    private boolean checkWord(@NonNull SpeechRecognizer speechRecognizer, @NonNull String[] patterns, @NonNull String text) {
         for (String pattern : patterns) {
-            if (pattern != null && ConversationalFlow.matches(text, pattern)) return true;
+            if (pattern != null && speechRecognizer.matches(text, pattern)) return true;
         }
         return false;
     }
 
     @Override
-    public int matches(String result) {
+    public int matches(@NonNull SpeechRecognizer speechRecognizer, @NonNull String result) {
         boolean atLeastOneOptionWasSelected = false;
 
         List<ActionChipChoice> currentActionChipChoices = this.getActionChipChoices();
 
         for(ActionChipChoice actionChipChoice : currentActionChipChoices) {
             String[] expected = actionChipChoice.getContentDescriptions();
-            if (expected != null && expected.length > 0 && checkWord(expected, result)) {
+            if (expected != null && expected.length > 0 && checkWord(speechRecognizer, expected, result)) {
                 actionChipChoice.chip.setChecked(true);
                 atLeastOneOptionWasSelected = true;
             }
@@ -139,7 +139,7 @@ public class ActionMultiChoice implements HasId,
         ActionText actionText = this.getConfirmationAction();
 
         String[] expected = actionText.getContentDescriptions();
-        if (expected != null && expected.length > 0 && checkWord(expected, result)) {
+        if (expected != null && expected.length > 0 && checkWord(speechRecognizer, expected, result)) {
             return MATCHED;
         } else if (atLeastOneOptionWasSelected) {
             return REPEAT;
