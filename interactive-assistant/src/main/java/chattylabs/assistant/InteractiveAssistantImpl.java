@@ -1,6 +1,5 @@
 package chattylabs.assistant;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.util.TypedValue;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.collection.SimpleArrayMap;
@@ -77,13 +75,9 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private boolean paused;
     private boolean enableSynthesizer;
     private boolean enableRecognizer;
-    private boolean synthesizerReady;
-    private boolean recognizerReady;
-    private boolean speechSetupInProgress;
     private boolean enableLastState;
 
-    private final AssistantAdapter adapter = new AssistantAdapter(
-            (view, action) -> perform(action));
+    private final AssistantAdapter adapter = new AssistantAdapter((view, action) -> perform(action));
 
     @SuppressLint("MissingPermission") InteractiveAssistantImpl(Builder builder) {
         RecyclerView recyclerView = builder.recyclerView;
@@ -362,7 +356,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 ((HasOnLoaded) item).onLoaded().run();
             }
         }
-        if (enableRecognizer && recognizerReady) {
+        if (enableRecognizer) {
             // TODO: show mic icon?
 
             ActionList actionList = (ActionList) getNext();
@@ -375,18 +369,14 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 currentNode = item;
             }
 
-        } else if (enableRecognizer && !speechSetupInProgress) {
-            throw new IllegalStateException("Have you called #setupSpeech()?");
-        } else {
-            currentNode = item;
-        }
+        } else  currentNode = item;
     }
 
     private void handleNotActionNode(Node item) {
         if (((HasOnLoaded) item).onLoaded() != null) {
             ((HasOnLoaded) item).onLoaded().run();
         }
-        if (enableSynthesizer && synthesizerReady) {
+        if (enableSynthesizer) {
             if (item instanceof HasText) {
                 if (item instanceof CanSynthesizeSpeech) {
                     showLoading();
@@ -398,24 +388,19 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             } else {
                 next();
             }
-        } else if (enableSynthesizer && !speechSetupInProgress) {
-            throw new IllegalStateException("Have you called #setupSpeech()?");
         } else next();
     }
 
     @Override
     public void enableSpeechSynthesizer(boolean enable) {
         this.enableSynthesizer = enable;
-        if (voiceComponent != null && synthesizerReady)
-            speechSynthesizer = voiceComponent.getSpeechSynthesizer(context);
+        speechSynthesizer = Objects.requireNonNull(voiceComponent).getSpeechSynthesizer(context);
     }
 
     @Override
-    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
     public void enableSpeechRecognizer(boolean enable) {
         this.enableRecognizer = enable;
-        if (voiceComponent != null && recognizerReady)
-            speechRecognizer = voiceComponent.getSpeechRecognizer(context);
+        speechRecognizer = Objects.requireNonNull(voiceComponent).getSpeechRecognizer(context);
     }
 
     @Override
@@ -430,12 +415,9 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @Override
     public void setupSpeech(OnSpeechStatusChecked listener) {
-        speechSetupInProgress = true;
         showLoading();
         Objects.requireNonNull(voiceComponent).checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
             voiceComponent.checkSpeechRecognizerStatus(context, recognizerStatus -> {
-                synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
-                recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
                 context.runOnUiThread(() -> {
                     hideLoading();
                     listener.onStatusChecked(synthesizerStatus, recognizerStatus);
@@ -448,10 +430,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @Override
     public void setupSpeech(RecognizerListener.OnStatusChecked listener) {
-        speechSetupInProgress = true;
         showLoading();
         Objects.requireNonNull(voiceComponent).checkSpeechRecognizerStatus(context, recognizerStatus -> {
-            recognizerReady = recognizerStatus == RecognizerListener.Status.AVAILABLE;
             context.runOnUiThread(() -> {
                 hideLoading();
                 listener.execute(recognizerStatus);
@@ -462,10 +442,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
 
     @Override
     public void setupSpeech(SynthesizerListener.OnStatusChecked listener) {
-        speechSetupInProgress = true;
         showLoading();
         Objects.requireNonNull(voiceComponent).checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
-            synthesizerReady = synthesizerStatus == SynthesizerListener.Status.AVAILABLE;
             context.runOnUiThread(() -> {
                 hideLoading();
                 listener.execute(synthesizerStatus);
@@ -617,9 +595,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         paused = false;
         enableSynthesizer = false;
         enableRecognizer = false;
-        synthesizerReady = false;
-        recognizerReady = false;
-        speechSetupInProgress = false;
         enableLastState = false;
     }
 
