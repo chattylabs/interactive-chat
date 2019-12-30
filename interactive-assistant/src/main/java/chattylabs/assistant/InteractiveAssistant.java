@@ -1,13 +1,10 @@
 package chattylabs.assistant;
 
-import android.Manifest;
-import android.content.Context;
 import android.text.SpannableString;
 import android.text.Spanned;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresPermission;
 import androidx.core.provider.FontRequest;
 import androidx.core.text.HtmlCompat;
 import androidx.emoji.text.EmojiCompat;
@@ -41,12 +38,13 @@ public interface InteractiveAssistant {
         }
     }
 
+    void setOnDoneListener(@Nullable Runnable onDoneListener);
+
     void showVolumeControls();
 
     interface IOptional {
         IOptional withVoiceComponent(ConversationalFlow voiceComponent);
         IOptional withFontRequest(FontRequest fontRequest);
-        IOptional withOnDoneListener(Runnable callback);
         IOptional withLastStateEnabled(boolean enable);
         InteractiveAssistant build();
     }
@@ -57,8 +55,6 @@ public interface InteractiveAssistant {
         ConversationalFlow voiceComponent;
         @Nullable
         FontRequest fontRequest;
-        @Nullable
-        Runnable doneListener;
 
         boolean withLastStateEnabled;
 
@@ -79,12 +75,6 @@ public interface InteractiveAssistant {
             public IOptional withFontRequest(FontRequest fontRequest) {
                 Builder.this.fontRequest = fontRequest;
                 return null;
-            }
-
-            @Override
-            public IOptional withOnDoneListener(Runnable callback) {
-                Builder.this.doneListener = callback;
-                return this;
             }
 
             @Override
@@ -135,6 +125,8 @@ public interface InteractiveAssistant {
     void pause();
 
     void resume();
+
+    Node getCurrentNode();
 
     void setCurrentNode(Node node);
 

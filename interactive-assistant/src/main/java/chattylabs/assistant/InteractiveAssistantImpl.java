@@ -61,7 +61,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private SpeechSynthesizer speechSynthesizer;
     private SpeechRecognizer speechRecognizer;
     @Nullable
-    private Runnable doneListener;
+    private Runnable onDoneListener;
 
     private Timer timer;
     private TimerTask task;
@@ -100,7 +100,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         timer           = new Timer();
         enableLastState = builder.withLastStateEnabled;
         voiceComponent  = builder.voiceComponent;
-        doneListener    = builder.doneListener;
         layoutManager   = ((LinearLayoutManager) recyclerView.getLayoutManager());
         //layoutManager.setSmoothScrollbarEnabled(false);
         sharedPreferences = context.getSharedPreferences(
@@ -146,6 +145,10 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 EmojiCompat.init(config);
             }
         });
+    }
+
+    @Override public void setOnDoneListener(@Nullable Runnable onDoneListener) {
+        this.onDoneListener = onDoneListener;
     }
 
     @Override public void showVolumeControls() {
@@ -338,7 +341,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         } else {
             if (!(currentNode instanceof ActionList)) {
                 hideLoading(); // Otherwise there is no more nodes
-                if (doneListener != null) doneListener.run();
+                if (onDoneListener != null) onDoneListener.run();
             }
         }
     }
@@ -563,7 +566,8 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         return sharedPreferences.getString(LAST_VISITED_NODE, node.getId());
     }
 
-    private Node getCurrentNode() {
+    @Override
+    public Node getCurrentNode() {
         return currentNode;
     }
 
@@ -589,13 +593,13 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
         loadingHandler.removeCallbacksAndMessages(null);
         sharedPreferences.edit().clear().apply();
         graph.clear();
-        currentNode = null;
-        lastAction = null;
-        doneListener = null;
-        paused = false;
+        currentNode       = null;
+        lastAction        = null;
+        onDoneListener    = null;
+        paused            = false;
         enableSynthesizer = false;
-        enableRecognizer = false;
-        enableLastState = false;
+        enableRecognizer  = false;
+        enableLastState   = false;
     }
 
     private void cancel() {
