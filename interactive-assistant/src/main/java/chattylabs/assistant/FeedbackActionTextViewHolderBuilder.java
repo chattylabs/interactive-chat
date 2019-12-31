@@ -20,15 +20,15 @@ class FeedbackActionTextViewHolderBuilder implements ViewHolderBuilder {
     public RecyclerView.ViewHolder createViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = inflater.inflate(viewType, viewGroup, false);
-        return new FeedbackActionTextViewHolderBuilder.ChatActionTextSelectedViewHolder(view);
+        return new ActionTextSelectedViewHolder(view);
     }
 
-    static class ChatActionTextSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
+    static class ActionTextSelectedViewHolder extends RecyclerView.ViewHolder implements Binder {
 
         TextView textView;
         float defaultTextSize;
 
-        ChatActionTextSelectedViewHolder(View v) {
+        ActionTextSelectedViewHolder(View v) {
             super(v);
             textView = (TextView) ((ViewGroup) v).getChildAt(0);
         }

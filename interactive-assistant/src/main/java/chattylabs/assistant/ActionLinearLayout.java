@@ -9,21 +9,21 @@ import androidx.annotation.Nullable;
 /**
  * This Container delegates the click listener to the confirmation Button.
  */
-public class ActionMultiChoiceLayout extends LinearLayout {
+public class ActionLinearLayout extends LinearLayout {
 
-    public ActionMultiChoiceLayout(Context context) {
+    public ActionLinearLayout(Context context) {
         this(context, null);
     }
 
-    public ActionMultiChoiceLayout(Context context, @Nullable AttributeSet attrs) {
+    public ActionLinearLayout(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ActionMultiChoiceLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ActionLinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public ActionMultiChoiceLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ActionLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 

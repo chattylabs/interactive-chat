@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<chattylabs.assistant.ActionLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        tools:max="100"
+        tools:progress="50" />
+
+    <include
+        layout="@layout/item_interactive_assistant_action_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end" />
+
+</chattylabs.assistant.ActionLinearLayout>

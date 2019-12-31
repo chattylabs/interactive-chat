@@ -27,7 +27,7 @@ class FeedbackActionText extends Feedback implements HasViewLayout {
         }
     }
 
-    FeedbackActionText(Builder builder) {
+    private FeedbackActionText(Builder builder) {
         this.text = builder.text;
         this.textSize = builder.textSize;
     }
