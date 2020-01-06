@@ -23,10 +23,11 @@ public class MessageText implements Node, HasId, HasOnLoaded, HasText, HasViewLa
     final boolean isInboundMessage;
 
     @Override
-    public void consumeSynthesizer(SpeechSynthesizer component,
+    public void consumeSynthesizer(SpeechSynthesizer speechSynthesizer,
                                    OnSynthesized onSynthesized) {
-        component.playTextNow(this.getText(),
-                (SynthesizerListener.OnDone) utteranceId -> onSynthesized.execute());
+        speechSynthesizer.playTextNow(this.getText(),
+                                      (SynthesizerListener.OnDone) utteranceId -> onSynthesized.execute(),
+                                      (SynthesizerListener.OnError) (utteranceId, errorCode) -> speechSynthesizer.shutdown());
     }
 
     public static final class Builder {

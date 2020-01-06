@@ -347,6 +347,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     }
 
     private void handleActionNode(Node item) {
+        if (speechSynthesizer != null) speechSynthesizer.stop();
         if (item instanceof ActionList) {
             for (Action action : (ActionList)  item) {
                 if (((HasOnLoaded) action).onLoaded() != null) {
@@ -366,8 +367,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             if (actionList != null) {
                 currentNode = item;
                 // We don't setup the currentNode because we don't know yet what's the action selected
-                ((CanRecognizeSpeech) actionList)
-                    .consumeRecognizer(speechRecognizer, this::perform);
+                ((CanRecognizeSpeech) actionList).consumeRecognizer(speechRecognizer, this::perform);
             } else {
                 currentNode = item;
             }
@@ -383,8 +383,7 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
             if (item instanceof HasText) {
                 if (item instanceof CanSynthesizeSpeech) {
                     showLoading();
-                    ((CanSynthesizeSpeech) item).consumeSynthesizer(speechSynthesizer,
-                                                                    () -> context.runOnUiThread(this::next));
+                    ((CanSynthesizeSpeech) item).consumeSynthesizer(speechSynthesizer, () -> context.runOnUiThread(this::next));
                 } else {
                     next();
                 }
@@ -495,7 +494,6 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
     private void perform(Action action) {
         currentNode = action;
         lastAction = action;
-        if (speechSynthesizer != null) speechSynthesizer.stop();
         if (speechRecognizer != null) speechRecognizer.stop();
         if (action instanceof HasOnSelected && ((HasOnSelected) action).onSelected() != null) {
             ((HasOnSelected) action).onSelected().execute(action);
