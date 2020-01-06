@@ -29,6 +29,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 29
     }
+    
     testOptions {
         //unitTests.returnDefaultValues = true
     }
