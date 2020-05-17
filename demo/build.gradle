@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.chattylabs.versioning'
 apply from: '../android-buildsystem/android.gradle'
-apply from: '../android-buildsystem/versioning.gradle'
 
 versioning {
 
@@ -18,6 +17,8 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
+        versionName versioning.name()
+        versionCode versioning.computedVersionCode()
         minSdkVersion 21
         targetSdkVersion 28
         applicationId "chattylabs.assistant.demo"

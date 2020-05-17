@@ -23,7 +23,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.chattylabs:versioning:0.19.5'
+        classpath 'com.chattylabs:versioning:0.20.2'
     }
 }
 

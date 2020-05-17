@@ -10,7 +10,6 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'com.chattylabs.versioning'
 apply from: '../android-buildsystem/android.gradle'
-apply from: '../android-buildsystem/versioning.gradle'
 
 versioning {
 
@@ -26,6 +25,8 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
+        versionName versioning.name()
+        versionCode versioning.code()
         minSdkVersion 21
         targetSdkVersion 29
     }
@@ -59,4 +60,4 @@ dependencies {
 
 description = 'Android Interactive Assistant'
 ext.website ="https://github.com/chattylabs/android-sdk-interactive-assistant"
-apply from: '../android-buildsystem/publish.gradle'
+apply from: rootDir.toString() + '/android-buildsystem/publish.gradle'
