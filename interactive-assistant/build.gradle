@@ -58,6 +58,7 @@ dependencies {
     testImplementation 'org.robolectric:robolectric:3.8'
 }
 
+group = 'chattylabs.android'
 description = 'Android Interactive Assistant'
 ext.website ="https://github.com/chattylabs/android-sdk-interactive-assistant"
 apply from: rootDir.toString() + '/android-buildsystem/publish.gradle'
