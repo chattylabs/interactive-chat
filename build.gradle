@@ -1,13 +1,13 @@
 buildscript {
     ext.kotlin_version = '1.3.61'
     ext.bintray = '0.9.2'
-    ext.appcompat = "1.2.0-alpha01"
+    ext.appcompat = "1.2.0-rc01"
     ext.emoji = "1.0.0"
-    ext.material = "1.2.0-alpha02"
-    ext.constraintlayout = "2.0.0-beta3"
+    ext.material = "1.2.0-alpha06"
+    ext.constraintlayout = "2.0.0-beta6"
     ext.android_commons = '0.8.0'
-    ext.voice_user_interaction = '0.25.31'
-    ext.addon_android_speech = '0.17.30'
+    ext.voice_user_interaction = '0.25.46'
+    ext.addon_android_speech = '0.17.46'
 
     ext.voice_user_interaction_internal = ":interactive_assistant-android-vui-external"
     ext.addon_android_speech_internal = ":interactive_assistant-addon-android-external"
