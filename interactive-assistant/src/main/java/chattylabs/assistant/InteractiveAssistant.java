@@ -120,6 +120,10 @@ public interface InteractiveAssistant {
 
     void setupSpeech(SynthesizerListener.OnStatusChecked listener);
 
+    boolean isCheckingSpeech(int requestCode);
+
+    void checkSpeech(int resultCode);
+
     void release();
 
     void pause();

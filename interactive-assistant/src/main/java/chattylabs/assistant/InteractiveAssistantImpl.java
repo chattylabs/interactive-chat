@@ -438,19 +438,33 @@ final class InteractiveAssistantImpl extends Flow.Edge implements InteractiveAss
                 hideLoading();
                 listener.execute(recognizerStatus);
             });
-            // TODO: P2 - to show TTS error screen
         });
     }
 
+    private SynthesizerListener.OnStatusChecked synthesizerStatusCheckListener;
+
     @Override
     public void setupSpeech(SynthesizerListener.OnStatusChecked listener) {
+        synthesizerStatusCheckListener = listener;
         showLoading();
         Objects.requireNonNull(voiceComponent).checkSpeechSynthesizerStatus(context, synthesizerStatus -> {
             context.runOnUiThread(() -> {
                 hideLoading();
-                listener.execute(synthesizerStatus);
+                synthesizerStatusCheckListener.execute(synthesizerStatus);
             });
-            // TODO: P2 - to show TTS error screen
+        });
+    }
+
+    @Override public boolean isCheckingSpeech(int requestCode) {
+        return voiceComponent.isCheckingSpeech(requestCode);
+    }
+
+    @Override public void checkSpeech(int resultCode) {
+        voiceComponent.checkSpeech(resultCode, synthesizerStatus -> {
+            context.runOnUiThread(() -> {
+                hideLoading();
+                synthesizerStatusCheckListener.execute(synthesizerStatus);
+            });
         });
     }
 
